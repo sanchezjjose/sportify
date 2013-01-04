@@ -7,6 +7,8 @@ GET     /                           controllers.Application.index
 
 # Other
 GET     /roster 				  	controllers.Application.roster
+GET     /schedule 				  	controllers.Application.schedule
+GET     /signup 				  	controllers.Application.signUp
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

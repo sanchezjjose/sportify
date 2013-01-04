@@ -11,7 +11,16 @@
     </head>
     <body>
         <header>
-            <a href="@routes.Application.index">@title</a>
+        	<div class="topbar">
+	        	<div class="container">
+		            <a href="@routes.Application.index">@title</a>
+		            <div class="nav">
+		            	<a href="@routes.Application.schedule">| Schedule |</a>
+		            	<a href="@routes.Application.roster">| Roster |</a>
+		            	<a href="@routes.Application.signUp">| Sign Up |</a>
+		            </div>
+	            </div>
+            </div>
         </header>
 
         <section>

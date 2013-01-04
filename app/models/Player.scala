@@ -1,6 +1,6 @@
 package models
 
-case class Player(name: String, isPlaying: Boolean)
+case class Player(firstName: String, lastName: String, number: Int, isPlaying: Boolean)
 
 object Player {
 
