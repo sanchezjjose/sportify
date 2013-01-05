@@ -6,6 +6,7 @@
 GET     /                           controllers.Application.index
 
 # Other
+GET     /home                       controllers.Application.home
 GET     /roster 				  	controllers.Application.roster
 GET     /schedule 				  	controllers.Application.schedule
 GET     /signup 				  	controllers.Application.signUp

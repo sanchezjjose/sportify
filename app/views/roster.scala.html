@@ -1,23 +1,31 @@
-@(teamName: String)
+@(header: String)
 
 @import helper._
+@import scala.io.Source
 
-@main(teamName) {
+@main("") {
     
-    <h1>Roster</h1>
-    
-    <ul>
-  		<li>
-  			Andrew Smith (Captain)	
-  		</li>
-  		<li>
-  			Michael Schupak
-  		</li>
-  		<li>
-  			Jose Sanchez
-  		</li>
-  		<li>
-  			Michael Herrero
-  		</li>
-    </ul>
+    <h1>@header</h1>
+
+    <div>
+	    <table border="1" cellspacing="1" cellpadding="3">
+		    <tbody>
+		        <tr>
+		          Team Roster
+		        </tr>
+		        <tr>
+		          <td>No.</td>
+		          <td>Name</td>
+		          <td>Position</td>
+		        </tr>
+			      @for(line <- Source.fromFile("/web/svc-gilt-sports/app/resources/roster.txt").getLines()) {
+			        <tr>
+			           <td>20</td>
+			           <td>@line</td>
+			           <td>PG</td>
+			        </tr>
+			      }
+			  </tbody>
+	    </table>
+    </div>
 }

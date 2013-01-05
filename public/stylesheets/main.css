@@ -23,7 +23,8 @@ html, body {
 }
 
 .topbar .nav a {
-  font-size: 18px
+  font-size: 18px;
+  padding: 30px;
 }
 
 section {

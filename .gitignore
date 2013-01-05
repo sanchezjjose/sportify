@@ -1,3 +1,4 @@
+*.class
 logs
 project/project
 project/target
