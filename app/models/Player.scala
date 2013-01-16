@@ -1,11 +1,19 @@
 package models
 
-case class Player(firstName: String, lastName: String, number: Int, isPlaying: Boolean)
+case class Player(userName: String,
+				  email: String,
+	              firstName: String,
+                  lastName: String,
+                  number: String)
 
-object Player {
+// case class Player(username: String,
+// 	              password: String,
+// 	              email: String,
+// 	              firstName: String,
+//                   lastName: String,
+//                   number: String)
 
-  val firstName = Nil
-  val lastName = Nil
-  val number = Nil
-  val isPlaying = Nil
-}
+// case class Player(firstName: String,
+//                   lastName: String,
+//                   number: String,
+//                   games: List[Game])

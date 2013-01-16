@@ -1,4 +1,4 @@
-@(header: String)
+@(header: String, view: HelloWorldView)
 
 @import helper._
 @import scala.io.Source
@@ -8,24 +8,24 @@
     <h1>@header</h1>
 
     <div>
-	    <table>
+	    <table border="1" cellspacing="1" cellpadding="3">
 		    <tbody>
 		        <tr>
-		          <td>Team Roster</td>
+		          Team Roster
 		        </tr>
 		        <tr>
 		          <td>No.</td>
 		          <td>Name</td>
 		          <td>Position</td>
 		        </tr>
-			    @for(line <- Source.fromFile("/web/svc-gilt-sports/app/resources/roster.txt").getLines()) {
+			      @for(line <- view.names) {
 			        <tr>
 			           <td>20</td>
 			           <td>@line</td>
 			           <td>PG</td>
 			        </tr>
-			    }
-			</tbody>
+			      }
+			  </tbody>
 	    </table>
     </div>
 }

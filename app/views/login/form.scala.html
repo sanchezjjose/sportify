@@ -1,0 +1,31 @@
+@(loginForm: Form[User])
+
+@import helper._
+
+@main(Html("Login"), nav = "login") {
+
+    @helper.form(action = routes.Login.submit) {
+
+    	<fieldset>
+    		<legend>Login</legend>
+
+            @inputText(
+                loginForm("username"),
+                '_label -> "Username",
+                '_help -> "Please enter your username.",
+                '_error -> loginForm.globalError
+            )
+
+            @inputText(
+                loginForm("password"),
+                '_label -> "Email",
+                '_help -> "Please enter your password.",
+                '_error -> loginForm.globalError
+            )
+    	</fieldset>
+
+        <div class="actions">
+            <input type="submit" class="btn primary" value="Login">
+        </div>
+	}
+}

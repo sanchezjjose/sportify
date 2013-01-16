@@ -1,0 +1,53 @@
+@(signupForm: Form[Player])
+
+@import helper._
+
+@main(Html("Sign Up"), nav = "signup") {
+
+    @helper.form(action = routes.SignUp.submit) {
+
+    	<fieldset>
+    		<legend>Account Information</legend>
+
+            @inputText(
+                signupForm("username"),
+                '_label -> "Username",
+                '_help -> "Please choose a username.",
+                '_error -> signupForm.globalError
+            )
+
+            @inputText(
+                signupForm("email"),
+                '_label -> "Email",
+                '_help -> "Your email address.",
+                '_error -> signupForm.globalError
+            )
+
+    		@inputText(
+    			signupForm("firstname"),
+    			'_label -> "First Name",
+                '_help -> "Please enter your first name.",
+    			'_error -> signupForm.globalError
+    		)
+
+    		@inputText(
+    			signupForm("lastname"),
+    			'_label -> "Last Name",
+                '_help -> "Please enter your last name.",
+    			'_error -> signupForm.globalError
+    		)
+
+    		@inputText(
+    			signupForm("number"),
+    			'_label -> "Number",
+    			'_help -> "Please enter a valid number.",
+    			'_error -> signupForm.globalError
+    		)
+    	</fieldset>
+
+        <div class="actions">
+            <input type="submit" class="btn primary" value="Sign Up">
+            <a href="@routes.Application.index" class="btn">Cancel</a>
+        </div>
+	}
+}

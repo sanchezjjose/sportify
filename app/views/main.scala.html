@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: Html, nav: String = "")(content: Html)
 
 <!DOCTYPE html>
 
@@ -13,11 +13,11 @@
         <header>
         	<div class="topbar">
 	        	<div class="container">
-		            <a href="@routes.Application.index">Gilt Basketball</a>
+		            <a href="@routes.Application.home">Gilt Basketball</a>
 		            <div class="nav">
 		            	<a href="@routes.Application.schedule">Schedule</a>
 		            	<a href="@routes.Application.roster">Roster</a>
-		            	<a href="@routes.Application.signUp">Sign Up</a>
+		            	<a href="@routes.SignUp.form">Sign Up</a>
 		            </div>
 	            </div>
             </div>

@@ -1,0 +1,24 @@
+@(player: Player)
+
+@main(Html("Account created!"), nav = "summary") {
+
+	<h2>Your account:</h2>
+    
+    <h6>Username</h6>
+    
+    <p>
+        @player.userName
+    </p>
+
+    <h6>Your Name</h6>
+    
+    <p>
+        @player.firstName @player.lastName
+    </p>
+
+    <h6>Jersey Number</h6>
+    
+    <p>
+        @player.number
+    </p>
+}
