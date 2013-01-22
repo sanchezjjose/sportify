@@ -1,8 +1,9 @@
 @(signupForm: Form[Player])
 
 @import helper._
+@import helper.twitterBootstrap._
 
-@main(Html("Sign Up"), nav = "signup") {
+@main(Html("Sign Up")) {
 
     @helper.form(action = routes.SignUp.submit) {
 

@@ -1,31 +1,45 @@
 @(header: String)
 
 @import helper._
+@import controllers._
 
 @main(Html("Schedule"), nav = "schedule") {
     
     <h1>@header</h1>
 
-    <div>
-	    <table border="1" cellpadding="15">
-		    <tbody>
-		        <tr>
-		          <td>Location</td>
-		          <td>Status</td>
-		        </tr>
-		        <tr>
-		           <td>
-					 3 Park Avenue
-				   </td>
-		           <td><button>IN</button> <button>OUT</button></td>
-		        </tr>
-		        <tr>
-		           <td>
-					 273 Essex St.
-				   </td>
-		           <td><button>IN</button> <button>OUT</button></td>
-		        </tr>
-			  </tbody>
-	    </table>
-    </div>
+    @helper.form(action = routes.ScheduleHandler.submit) {
+
+	    <div>
+		    <table border="1" cellpadding="15">
+			    <tbody>
+			        <tr>
+			          <td>Location</td>
+			          <td>Status</td>
+			        </tr>
+			        <tr>
+			           <td>
+			           	 02/01/13<br>
+			           	 7:00 p.m.<br>
+						 3 Park Avenue
+					   </td>
+			           <td>
+				           <input type="submit" class="btn primary" value="In">
+				           <input type="submit" class="btn" value="Out">
+			           </td>
+			        </tr>
+			        <tr>
+			           <td>
+			           	 02/09/13<br>
+			           	 9:15 p.m.<br>
+						 273 Essex St.
+					   </td>
+			           <td>
+				           <input type="submit" class="btn primary" value="In">
+				           <input type="submit" class="btn" value="Out">
+			           </td>
+			        </tr>
+				  </tbody>
+		    </table>
+	    </div>
+	}
 }

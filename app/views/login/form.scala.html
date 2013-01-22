@@ -1,6 +1,7 @@
 @(loginForm: Form[User])
 
 @import helper._
+@import twitterBootstrap._
 
 @main(Html("Login"), nav = "login") {
 
@@ -18,14 +19,15 @@
 
             @inputText(
                 loginForm("password"),
-                '_label -> "Email",
+                '_label -> "Password",
                 '_help -> "Please enter your password.",
                 '_error -> loginForm.globalError
             )
     	</fieldset>
 
         <div class="actions">
-            <input type="submit" class="btn primary" value="Login">
+            <input type="submit" class="btn primary" value="Login"> or
+            <a class="secondary-link" href="@routes.SignUp.signup"> Sign Up</a>
         </div>
 	}
 }

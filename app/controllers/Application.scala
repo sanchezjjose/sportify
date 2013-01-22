@@ -14,12 +14,16 @@ object Application extends Controller {
     Ok(views.html.index("Next Game"))
   }
 
-  def roster = Action {
-    Ok(views.html.roster("Gilt Unit Roster", RosterView(Source.fromFile("/web/svc-gilt-sports/app/resources/roster.txt").getLines())))
+  def schedule = Action {
+    Ok(views.html.schedule("Winter 2013 Season"))
   }
 
-  def schedule = Action {
-    Ok(views.html.schedule("Schedule"))
+  def roster = Action {
+    Ok(views.html.roster("Gilt Unit", RosterView(Source.fromFile("/web/svc-gilt-sports/app/resources/roster.txt").getLines())))
+  }
+
+  def news = Action {
+    Ok(views.html.news("News & Highlights"))
   }
 }
 

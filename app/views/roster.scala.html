@@ -19,9 +19,9 @@
 		        </tr>
 			      @for(line <- view.names) {
 			        <tr>
-			           <td>20</td>
-			           <td>@line</td>
-			           <td>PG</td>
+			           <td>@line.split(",")(1)</td>
+			           <td>@line.split(",")(0)</td>
+			           <td>@line.split(",")(2)</td>
 			        </tr>
 			      }
 			  </tbody>

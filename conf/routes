@@ -9,10 +9,12 @@ GET     /                           controllers.Application.index
 GET     /home                       controllers.Application.home
 GET     /roster 				  	controllers.Application.roster
 GET     /schedule 				  	controllers.Application.schedule
-GET     /signup 				  	controllers.SignUp.form
+POST    /schedule/submit            controllers.ScheduleHandler.submit
+GET     /signup 				  	controllers.SignUp.signup
 POST    /signup/submit              controllers.SignUp.submit
 GET     /login                      controllers.Login.login
-POST    /login/submit                      controllers.Login.submit
+POST    /login/submit               controllers.Login.submit
+GET     /news                       controllers.Application.news
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

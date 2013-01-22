@@ -26,7 +26,7 @@ object SignUp extends Controller {
 	/**
    	* Display an empty form.
     */
-	def form = Action {
+	def signup = Action {
    	  Ok(html.signup.form(signupForm))
   	}
 

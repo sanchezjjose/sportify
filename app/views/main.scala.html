@@ -5,26 +5,60 @@
 <html>
     <head>
         <title>@title</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
         <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
     </head>
     <body>
+
         <header>
         	<div class="topbar">
-	        	<div class="container">
-		            <a href="@routes.Application.home">Gilt Basketball</a>
-		            <div class="nav">
-		            	<a href="@routes.Application.schedule">Schedule</a>
-		            	<a href="@routes.Application.roster">Roster</a>
-		            	<a href="@routes.SignUp.form">Sign Up</a>
-		            </div>
-	            </div>
+                <div class="fill">
+    	        	<div class="container">
+    		            <a class="brand" href="@routes.Application.home">Gilt Basketball</a>
+    		            <ul class="nav">
+                            <li class="@("active".when(nav == "schedule"))">
+                                <a href="@routes.Application.schedule">Schedule</a>
+                            </li>
+                            <li class="@("active".when(nav == "roster"))">
+                                <a href="@routes.Application.roster">Roster</a>
+                            </li>
+                            <li class="@("active".when(nav == "news"))">
+                                <a href="@routes.Application.news">News</a>
+                            </li>
+                        </ul>
+                        <ul class="menu">
+                            <a href="@routes.Login.login">Logout</a>
+                        </ul>
+    	            </div>
+                </div>
             </div>
         </header>
 
-        <section>
-            @content
-        </section>
+        <div class="container">
+
+            <div class="content">
+                
+                <div class="page-header">
+                    <h1>@title</h1>
+                </div>
+
+                <div class="row">
+                    <div class="span14">
+                        @content
+                    </div>
+                </div>
+                
+            </div>
+
+            <footer>
+                <p>
+                    v 1.0
+                </p>
+            </footer>
+
+        </div>
+
     </body>
 </html>
