@@ -1,0 +1,36 @@
+@(loginForm: Form[(String,String)])(implicit flash: Flash)
+
+@import helper._
+@import twitterBootstrap._
+
+@main(Html("Login"), nav = "login") {
+
+    @helper.form(routes.Login.authenticate) {
+            
+            @loginForm.globalError.map { error =>
+                <p class="error">
+                    @error.message
+                </p>
+            }
+            
+            @flash.get("success").map { message =>
+                <p class="success">
+                    @message
+                </p>
+            }
+            
+            <p>
+                <input type="email" name="email" placeholder="Email Address" id="email" value="@loginForm("email").value">
+            </p>
+            <p>
+                <input type="password" name="password" id="password" placeholder="Password">
+            </p>
+            <p>
+                <div class="actions">
+                    <input type="submit" class="btn primary" value="Login"> or
+                    <a class="secondary-link" href="@routes.SignUp.signup"> Sign Up</a>
+                </div>
+            </p>
+            
+        }
+}

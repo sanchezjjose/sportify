@@ -15,6 +15,6 @@ object ScheduleHandler extends Controller {
     * Handle form submission.
     */
   	def submit = Action { 
-      Ok(html.schedule("Winter 2013"))
-  }
+      Ok(html.schedule("Winter 2013 Season"))
+  	}
 }

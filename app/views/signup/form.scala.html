@@ -1,4 +1,4 @@
-@(signupForm: Form[Player])
+@(signupForm: Form[User])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -11,16 +11,9 @@
     		<legend>Account Information</legend>
 
             @inputText(
-                signupForm("username"),
-                '_label -> "Username",
-                '_help -> "Please choose a username.",
-                '_error -> signupForm.globalError
-            )
-
-            @inputText(
                 signupForm("email"),
                 '_label -> "Email",
-                '_help -> "Your email address.",
+                '_help -> "Please enter your email address.",
                 '_error -> signupForm.globalError
             )
 

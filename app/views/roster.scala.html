@@ -1,6 +1,7 @@
-@(header: String, view: RosterView)
+@(header: String)
 
 @import helper._
+@import models._
 
 @main(Html("Roster"), nav = "roster") {
     
@@ -17,13 +18,13 @@
 		          <td>Name</td>
 		          <td>Position</td>
 		        </tr>
-			      @for(line <- view.names) {
-			        <tr>
-			           <td>@line.split(",")(1)</td>
-			           <td>@line.split(",")(0)</td>
-			           <td>@line.split(",")(2)</td>
-			        </tr>
-			      }
+			    @for(line <- Roster.parseNames) {
+			      <tr>
+			         <td>@line.split(",")(1)</td>
+			         <td>@line.split(",")(0)</td>
+			         <td>@line.split(",")(2)</td>
+			      </tr>
+			    }
 			  </tbody>
 	    </table>
     </div>
