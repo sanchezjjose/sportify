@@ -3,34 +3,67 @@
 @import helper._
 @import twitterBootstrap._
 
-@main(Html("Login"), nav = "login") {
+<html>
+    <head>
+        <title>Login</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
+    </head>
+    
+    <body>
 
-    @helper.form(routes.Login.authenticate) {
-            
-            @loginForm.globalError.map { error =>
-                <p class="error">
-                    @error.message
-                </p>
-            }
-            
-            @flash.get("success").map { message =>
-                <p class="success">
-                    @message
-                </p>
-            }
-            
-            <p>
-                <input type="email" name="email" placeholder="Email Address" id="email" value="@loginForm("email").value">
-            </p>
-            <p>
-                <input type="password" name="password" id="password" placeholder="Password">
-            </p>
-            <p>
-                <div class="actions">
-                    <input type="submit" class="btn primary" value="Login"> or
-                    <a class="secondary-link" href="@routes.SignUp.signup"> Sign Up</a>
+        <div class="container">
+
+            <div class="content">
+                
+                <div class="page-header">
+                    <h1>Login</h1>
                 </div>
-            </p>
+
+                <div class="row">
+                    <div class="span14">
+                        @helper.form(routes.Login.authenticate) {
             
-        }
-}
+                            @loginForm.globalError.map { error =>
+                                <p class="error">
+                                    @error.message
+                                </p>
+                            }
+                            
+                            @flash.get("success").map { message =>
+                                <p class="success">
+                                    @message
+                                </p>
+                            }
+                            
+                            <p>
+                                <input type="email" name="email" placeholder="Email Address" id="email" value="@loginForm("email").value">
+                            </p>
+                            <p>
+                                <input type="password" name="password" id="password" placeholder="Password">
+                            </p>
+                            <p>
+                                <div class="actions">
+                                    <input type="submit" class="btn primary" value="Login"> or
+                                    <a class="secondary-link" href="@routes.SignUp.signup"> Sign Up</a>
+                                </div>
+                            </p>
+                            
+                        }
+                    </div>
+                </div>
+                
+            </div>
+
+            <footer>
+                <p>
+                    v 1.0
+                </p>
+            </footer>
+
+        </div>
+
+    </body>
+</html>

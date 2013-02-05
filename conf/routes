@@ -9,10 +9,11 @@ GET     /                           controllers.Application.index
 GET     /home                       controllers.Application.home
 GET     /roster 				  	controllers.Application.roster
 GET     /schedule 				  	controllers.Application.schedule
-POST    /schedule/submit            controllers.ScheduleHandler.submit
+POST    /schedule/submit            controllers.Schedule.submit
 GET     /signup 				  	controllers.SignUp.signup
 POST    /signup/submit              controllers.SignUp.submit
 GET     /login                      controllers.Login.login
+GET     /logout                     controllers.Login.logout
 POST    /login/submit               controllers.Login.authenticate
 GET     /news                       controllers.Application.news
 

@@ -1,0 +1,30 @@
+{
+	"games" : [
+		{
+			"id" : "1",
+			"start-time" : "7:00 p.m.",
+			"address" : "3 Park Avenue",
+			"gym" : "PHS",
+			"opponent" : "Time Out",
+			"result" : "W 99-97"
+		}, 
+		{
+			"id" : "2",
+			"start-time" : "9:15 p.m.",
+			"address" : "345 Lexington Avenue",
+			"gym" : "SPH-S",
+			"opponent" : "Beer Thirty",
+			"result" : "W 78-76"
+		},
+		{
+			"id" : "3",
+			"start-time" : "7:15 p.m.",
+			"address" : "100 3rd Avenue",
+			"gym" : "Trinity High School",
+			"opponent" : "Closers",
+			"result" : "L 65-64"
+		}
+		
+	]	
+}
+

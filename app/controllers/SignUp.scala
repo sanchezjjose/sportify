@@ -40,7 +40,9 @@ object SignUp extends Controller {
        user => {
          User.insert(user)
          // User.create(new User(player.email, "password"))
-         Ok(html.signup.summary(user))
+         Ok(html.signup.summary(user)).withNewSession.flashing(
+            "success" -> "Your account has been created. Please login."
+         )
        }
     )
   }

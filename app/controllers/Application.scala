@@ -6,7 +6,7 @@ import scala.io.Source
 
 import models._
 
-object Application extends Controller {
+object Application extends Controller with Secured {
 
   def index = Action {
     Redirect(routes.Login.login)
@@ -20,8 +20,16 @@ object Application extends Controller {
     Ok(views.html.schedule("Winter 2013 Season"))
   }
 
-  def roster = Action {
-    Ok(views.html.roster("Gilt Unit"))
+  // def roster = IsAuthenticated {
+  //   Ok(views.html.roster("Gilt Unit"))
+  // }
+
+  def roster = IsAuthenticated { username => _ =>
+    User.findByEmail(username).map { user =>
+      Ok(
+        views.html.roster("Gilt Unit")
+      )
+    }.getOrElse(Redirect(routes.Login.login))
   }
 
   def news = Action {
