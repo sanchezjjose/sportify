@@ -8,7 +8,7 @@ import anorm.SqlParser._
 
 import java.util.Date
 
-case class Game(startTime: Date,
+case class Game(startTime: String,
                 address: String,
                 gym: String,
                 opponent: String,

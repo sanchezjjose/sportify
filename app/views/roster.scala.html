@@ -3,21 +3,23 @@
 @import helper._
 @import models._
 
-@main(Html("Roster"), nav = "roster") {
+@main(Html("Roster."), nav = "roster") {
     
-    <h1>@header</h1>
+    <h2>@header</h2>
 
-    <div>
-	    <table border="1" cellspacing="1" cellpadding="3">
+    <div class="container">
+	    <table class="table table-striped table-hover">
 		    <tbody>
-		        <tr>
-		          Team Roster
-		        </tr>
-		        <tr>
-		          <td>No.</td>
-		          <td>Name</td>
-		          <td>Position</td>
-		        </tr>
+			    <header>
+			        <tr>
+			          Team Roster
+			        </tr>
+			        <tr>
+			          <td>No.</td>
+			          <td>Name</td>
+			          <td>Position</td>
+			        </tr>
+			    </header>
 			    @for(line <- Roster.parseNames) {
 			      <tr>
 			         <td>@line.split(",")(1)</td>

@@ -45,20 +45,6 @@ body {
     border-left: 1px solid #eee;
 }
 
-.topbar .btn {
-    border: 0;
-}
-
-.topbar p {
-    color: #888;
-}
-
-.topbar .menu {
-  display: block;
-  float: right;
-  margin: 0 10px 0 0;
-}
-
 .profile {
     margin-left: 32px;
 }
@@ -86,4 +72,10 @@ body {
 
 .actions .secondary-link {
   text-decoration: none;
+}
+
+.navbar .logout {
+  display: block;
+  float: right;
+  margin: 10px 50px 0 0;
 }

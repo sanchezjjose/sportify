@@ -1,44 +1,38 @@
-@(header: String)
+@(header: String, games: List[Game])
 
 @import helper._
 @import controllers._
-@import twitterBootstrap._
 
-@main(Html("Schedule"), nav = "schedule") {
+@main(Html("Schedule."), nav = "schedule") {
     
-    <h1>@header</h1>
+    <h2>@header</h2>
 
     @helper.form(action = routes.Schedule.submit) {
 
-	    <div>
-		    <table border="1" cellpadding="15">
+	    <div class="container">
+		    <table class="table table-striped table-hover">
 			    <tbody>
-			        <tr>
-			          <td>Location</td>
-			          <td>Status</td>
-			        </tr>
-			        <tr>
-			           <td>
-			           	 02/01/13<br>
-			           	 7:00 p.m.<br>
-						 3 Park Avenue
-					   </td>
-			           <td>
-				           <input type="submit" class="btn primary" value="In">
-				           <input type="submit" class="btn" value="Out">
-			           </td>
-			        </tr>
-			        <tr>
-			           <td>
-			           	 02/09/13<br>
-			           	 9:15 p.m.<br>
-						 273 Essex St.
-					   </td>
-			           <td>
-				           <input type="submit" class="btn primary" value="In">
-				           <input type="submit" class="btn" value="Out">
-			           </td>
-			        </tr>
+			    	<thead>
+				        <tr>
+				          <td>Location</td>
+				          <td>Status</td>
+				        </tr>
+			    	</thead>
+			        @for(game <- Schedule.getGames) { 
+				        <tr>
+				           <td>
+				           	 @game.startTime <br>
+				           	 @game.address <br>
+				           	 @game.gym <br>
+				           	 @game.opponent <br>
+				           	 @game.result 
+						   </td>
+				           <td>
+					           <input type="submit" class="btn btn-primary" value="In">
+					           <input type="submit" class="btn" value="Out">
+				           </td>
+				        </tr>
+			        }
 				</tbody>
 		    </table>
 	    </div>
