@@ -16,8 +16,12 @@ object Application extends Controller with Secured {
     Ok(views.html.index("Next Game"))
   }
 
-  def schedule = Action {
-    Ok(views.html.schedule("Winter 2013 Season", Schedule.getGames))
+  // def schedule = Action {
+  //   Ok(views.html.schedule("Winter 2013 Season", Schedule.getGames))
+  // }
+
+  def schedule = Action { implicit request =>
+      Ok(views.html.schedule("Winter 2013 Season", Schedule.getGames))
   }
 
   def roster = IsAuthenticated { username => _ =>

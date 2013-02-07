@@ -79,3 +79,12 @@ body {
   float: right;
   margin: 10px 50px 0 0;
 }
+
+#myForm {
+    float: left;
+    padding: 5px;
+}
+
+#myForm .btn {
+    width: 50px;
+}

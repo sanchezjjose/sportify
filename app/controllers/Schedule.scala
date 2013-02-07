@@ -4,7 +4,6 @@ import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-
 import views._
 import models._
 
@@ -34,8 +33,14 @@ object Schedule extends Controller {
   	/**
     * Handle form submission.
     */
-  	def submit = Action { 
-      Ok(html.schedule("Winter 2013 Season", getGames))
+  	def submit = Action { implicit request =>
+      if (request.body.toString.contains("in")) {
+        Redirect(routes.Application.schedule).flashing(
+         "success" -> "You are playing. See you there!") 
+        } else {
+          Redirect(routes.Application.schedule).flashing(
+         "fail" -> "Ok, you are not playing in this game. Maybe next time!")
+        }
   	}
 
   	/**
