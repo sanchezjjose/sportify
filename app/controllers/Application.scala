@@ -12,27 +12,27 @@ object Application extends Controller with Secured {
     Redirect(routes.Login.login)
   }
 
-  def home = Action {
-    Ok(views.html.index("Next Game"))
+  def home = IsAuthenticated { username => _ =>
+    User.findByEmail(username).map { user =>
+      Ok(views.html.index("Next Game"))
+    }.getOrElse(Redirect(routes.Login.login))
   }
 
-  // def schedule = Action {
-  //   Ok(views.html.schedule("Winter 2013 Season", Schedule.getGames))
-  // }
-
-  def schedule = Action { implicit request =>
+  def schedule = IsAuthenticated { username => implicit request =>
+    User.findByEmail(username).map { user => 
       Ok(views.html.schedule("Winter 2013 Season", Schedule.getGames))
+    }.getOrElse(Redirect(routes.Login.login))
   }
 
   def roster = IsAuthenticated { username => _ =>
     User.findByEmail(username).map { user =>
-      Ok(
-        views.html.roster("Gilt Unit")
-      )
+      Ok(views.html.roster("Gilt Unit"))
     }.getOrElse(Redirect(routes.Login.login))
   }
 
-  def news = Action {
-    Ok(views.html.news("News & Highlights"))
+  def news = IsAuthenticated { username => _ =>
+    User.findByEmail(username).map { user =>
+      Ok(views.html.news("News & Highlights"))
+    }.getOrElse(Redirect(routes.Login.login))
   }
 }
