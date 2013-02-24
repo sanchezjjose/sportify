@@ -22,7 +22,7 @@ object Game {
    *
    * @param game The game values
    */
-  def insert(game: Game) = {
+  /*def insert(game: Game) = {
     DB.withConnection { implicit connection =>
       SQL(
         """
@@ -39,5 +39,5 @@ object Game {
         'result -> game.result
       ).executeUpdate()
     }
-  }
+  }*/
 }

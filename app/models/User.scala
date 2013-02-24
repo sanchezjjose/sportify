@@ -1,10 +1,5 @@
 package models
 
-import play.api.db._
-import play.api.Play.current
-
-import anorm._
-import anorm.SqlParser._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
 import com.novus.salat.global._
@@ -18,22 +13,6 @@ case class User(email: String,
 
 object User {
   
-  // -- Parsers
-  
-  /**
-   * Parse a User from a ResultSet
-   */
-  val simple = {
-    get[String]("users.email") ~
-    get[String]("users.first_name") ~
-    get[String]("users.last_name") ~
-    get[Int]("users.jersey_number") map {
-      case email~firstName~lastName~number => User(email, firstName, lastName, number)
-    }
-  }
-  
-  // -- Queries
-  
   /**
    * Retrieve a User from email.
    */
@@ -45,14 +24,10 @@ object User {
   /**
    * Retrieve all users.
    */
-  def findAll: Seq[User] = {
-//    DB.withConnection { implicit connection =>
-//      SQL("select * from users").as(User.simple *)
-//    }
-
+  /*def findAll: Seq[User] = {
     val dbObjects = MongoManager.collection.find()
     dbObjects.map(o => grater[User].asDBObject(o))
-  }
+  }*/
   
   /**
    * Authenticate a User.
