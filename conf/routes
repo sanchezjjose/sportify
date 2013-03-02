@@ -9,7 +9,7 @@ GET     /                           controllers.Application.index
 GET     /home                       controllers.Application.home
 GET     /roster 				  	controllers.Application.roster
 GET     /schedule 				  	controllers.Application.schedule
-POST    /schedule                   controllers.Schedule.submit
+GET     /schedule/submit            controllers.Schedule.submit
 GET     /signup 				  	controllers.SignUp.signup
 POST    /signup/submit              controllers.SignUp.submit
 GET     /login                      controllers.Login.login

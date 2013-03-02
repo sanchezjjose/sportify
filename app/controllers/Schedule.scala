@@ -34,13 +34,25 @@ object Schedule extends Controller {
     * Handle form submission.
     */
   	def submit = Action { implicit request =>
-      if (request.body.toString.contains("in")) {
-        Redirect(routes.Application.schedule).flashing(
-         "success" -> "You are playing. See you there!") 
-        } else {
-          Redirect(routes.Application.schedule).flashing(
-         "fail" -> "Ok, you are not playing in this game. Maybe next time!")
-        }
+      if (request.queryString.get("name").flatMap(_.headOption).get.contains("in")) {
+        Ok(
+            Json.toJson(
+              Map(
+                "status" -> Json.toJson("in"),
+                "msg" -> Json.toJson("You are playing. See you there!")
+              )
+            )
+        )
+      } else {
+        Ok(
+            Json.toJson(
+              Map(
+                "status" -> Json.toJson("out"),
+                "msg" -> Json.toJson("Ok, you are not playing in this game. Maybe next time!")
+              )
+            )
+        )
+      }
   	}
 
   	/**

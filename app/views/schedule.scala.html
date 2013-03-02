@@ -5,7 +5,7 @@
 
 @main(Html("Schedule."), nav = "schedule") {
     
-    <h2>@header</h2>
+    <h2 class="header">@header</h2>
 
     @if( flash.get("success") ) {
 	    <div class="alert alert-success" >
@@ -38,18 +38,39 @@
 			           	 @game.result 
 					   </td>
 			           <td>
-				        @helper.form(action = routes.Schedule.submit, 'id -> "myForm") {
-				           <input type="submit" class="btn btn-primary" value="In">
-				           <input type="hidden" name="name" value="in">
-				        }
-				        @helper.form(action = routes.Schedule.submit, 'id -> "myForm") {
-				           <input type="submit" class="btn btn-secondary" value="Out">
-				           <input type="hidden" name="name" value="out">
-				        }
+			           	 <a href="/schedule/submit?name=in" class="btn btn-primary">In</a>
+			           	 <a href="/schedule/submit?name=out" class="btn btn-secondary">Out</a>
 			           </td>
 			        </tr>
 		        }
 			</tbody>
 	    </table>
     </div>
+    <script type="text/javascript">
+   	  $(document).ready(function () {
+   	  	function init () {
+   	  		$('.btn').click(function (ev) {
+   	  			ev.preventDefault();
+   	  			$.ajax({
+   	  				url: $(this).attr('href'),
+   	  				success: function (data) {
+   	  					$('.alert').remove();
+   	  					if (data.status === 'in') {
+							$('.header').after('<div class="alert alert-success">'+data.msg+'</div>');
+   	  					} else {
+							$('.header').after('<div class="alert alert-error" >'+data.msg+'</div>');
+   	  					}
+   	  					setTimeout(function clearMsg () {
+   	  						$('.alert').fadeOut('1000', function (el) {
+   	  							$(el).remove();
+   	  						});
+   	  					}, 5000);
+   	  				}
+   	  			});
+   	  		});
+   	  	}
+   	  	init();
+   	  });
+   	 </script>
 }
+
