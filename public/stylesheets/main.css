@@ -74,10 +74,10 @@ body {
   text-decoration: none;
 }
 
-.navbar .logout {
+#logout-dropdown {
   display: block;
   float: right;
-  margin: 10px 50px 0 0;
+  margin: 0 0 0 450px;
 }
 
 #myForm {
