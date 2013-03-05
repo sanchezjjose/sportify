@@ -28,7 +28,7 @@
 			          <td>Status</td>
 			        </tr>
 		    	</thead>
-		        @for(game <- Schedule.getGames) { 
+		        @for(game <- games) { 
 			        <tr>
 			           <td width="600px">
 			           	 @game.startTime <br>
@@ -38,14 +38,17 @@
 			           	 @game.result 
 					   </td>
 			           <td>
-			           	 <a href="/schedule/submit?name=in" class="btn btn-primary">In</a>
-			           	 <a href="/schedule/submit?name=out" class="btn btn-secondary">Out</a>
+			           	 <div class="schedule form">
+			           	 	<a href="/schedule/submit?status=in?game_id=9" class="btn btn-primary">In</a>
+			           	 	<a href="/schedule/submit?status=out?game_id=9" class="btn btn-secondary">Out</a>
+			           	 </div>
 			           </td>
 			        </tr>
 		        }
 			</tbody>
 	    </table>
     </div>
+
     <script type="text/javascript">
    	  $(document).ready(function () {
    	  	function init () {

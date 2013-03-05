@@ -12,6 +12,8 @@ case class User(email: String,
                 number: Int)
 
 object User {
+
+  var loggedInUser: User = _
   
   /**
    * Retrieve a User from email.
@@ -24,10 +26,10 @@ object User {
   /**
    * Retrieve all users.
    */
-  /*def findAll: Seq[User] = {
+  def findAll: Iterator[User] = {
     val dbObjects = MongoManager.collection.find()
-    dbObjects.map(o => grater[User].asDBObject(o))
-  }*/
+    for (x <- dbObjects) yield grater[User].asObject(x)
+  }
   
   /**
    * Authenticate a User.

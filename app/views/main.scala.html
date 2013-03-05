@@ -27,12 +27,12 @@
                         <li class="@("active".when(nav == "news"))">
                             <a href="@routes.Application.news">News</a>
                         </li>
-                        <li class="dropdown" id="logout-dropdown">
+                        <li class="dropdown" id="#">
                            <a class="dropdown-toggle"
                               data-toggle="dropdown"
                               href="#logout-dropdown">                               
                                 <i class="icon-user"></i>
-                                Welcome @Application.authenticatedUser.name
+                                Welcome @User.loggedInUser.firstName
                                 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">

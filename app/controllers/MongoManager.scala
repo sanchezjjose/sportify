@@ -19,4 +19,5 @@ import com.mongodb.casbah.Imports._
 object MongoManager {
   val mongoConn = MongoClient("localhost",27017)
   val collection = mongoConn("sports")("users")
+  val gameCollection = mongoConn("sports")("games")
 }

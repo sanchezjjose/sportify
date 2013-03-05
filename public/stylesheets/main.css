@@ -74,17 +74,17 @@ body {
   text-decoration: none;
 }
 
-#logout-dropdown {
+.nav .dropdown {
   display: block;
   float: right;
   margin: 0 0 0 450px;
 }
 
-#myForm {
+.schedule {
     float: left;
-    padding: 5px;
+    padding: 10px;
 }
 
-#myForm .btn {
-    width: 50px;
+.schedule .btn {
+    width: 30px;
 }
