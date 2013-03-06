@@ -15,6 +15,14 @@ case class User(_id: ObjectId,
 object User {
 
   var loggedInUser: User = _
+
+  /**
+   * Retrieve a User from id.
+   */
+  def findById(_id: ObjectId): Option[User] = {
+    val dbObject = MongoManager.collection.findOne( MongoDBObject("_id" -> _id) )
+    dbObject.map(o => grater[User].asObject(o))
+  }
   
   /**
    * Retrieve a User from email.

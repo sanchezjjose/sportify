@@ -18,7 +18,7 @@ object Schedule extends Controller {
   */
 	def submit = Action { implicit request =>
 
-    val game : Option[Game] = Game.findByGameId(9)
+    val game : Option[Game] = Game.findByGameId(9) // Get this game from request
     val player = request.session.get("email").get
 
     // Add user to game.
