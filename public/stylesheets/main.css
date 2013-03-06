@@ -73,8 +73,8 @@ body {
 }
 
 .nav .dropdown {
-  position: absolute;
-  right: 0px;
+    position: absolute;
+    right: 0px;
 }
 
 .schedule {
@@ -84,4 +84,9 @@ body {
 
 .schedule .btn {
     width: 30px;
+}
+
+#theMap iframe {
+     height: 100%;
+     width: 100%;
 }
