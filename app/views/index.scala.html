@@ -4,31 +4,29 @@
 
 @main(Html("Next Game."), nav = "home") {
 
-    <ul>
-      <h4>@game.opponent</h4>
+  <ul>
+      <h4>@game.gym</h4>
+      <b>Who</b>: @game.opponent <br>
       <b>When</b>: @game.startTime <br>
-      <b>Where</b>: @Html(game.address.replace(".","<br>")) <br><br>
-
-
-    <iframe width="100%" height="250" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
-            src="https://maps.google.com/maps?hl=en&amp;q='@game.address'&amp;ie=UTF8&amp;hq=&amp;hnear='@game.address'&amp;gl=us&amp;t=m&amp;z=14&amp;ll=40.746787,-73.981187&amp;output=embed">
-    </iframe> <br />
-    <small>
-      <a href="https://maps.google.com/maps?hl=en&amp;q='11106'11106'&amp;gl=us&amp;t=m&amp;z=14&amp;ll=40.746787,-73.981187&amp;source=embed" style="color:#0000FF;text-align:left">View Larger Map</a></small>
-      </a>
-    </small>
+      <b>Where</b>: @game.address <br>
+      @if(!game.locationDetails.isEmpty()){
+        <b><font color="red">*&nbsp;</font></b>@game.locationDetails <br>
+  	  } 
 
       <h3>(@game.playerIds.size) Confirmed.</h3>
-	   	<ul>
-            @{for(playerId <- game.playerIds) {
-                var player = User.findById(playerId)
-                if(player.isDefined) {
-	   		      <li>
-                    player.get.firstName player.get.lastName
-	   		      </li>
-                }
-              }
-            }
-	   	</ul>
-    </ul>
+	  <ul>
+          @for(playerId <- game.playerIds){
+            @if(User.findById(playerId).isDefined){ 
+               o&nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName
+	   	    }
+          }
+	  </ul>
+
+	<br><br>
+
+	<h2>Directions</h2>
+    <iframe width="625" height="360" frameborder="5" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=2+Park+Avenue,+New+York&amp;aq=&amp;sll=40.746787,-73.981187&amp;sspn=0.049484,0.111494&amp;gl=us&amp;ie=UTF8&amp;hq=&amp;hnear=2+Park+Ave,+New+York,+10016&amp;t=m&amp;z=14&amp;iwloc=A&amp;ll=40.746332,-73.982596&amp;output=embed"></iframe><br />
+
+      
+  </ul>
 }

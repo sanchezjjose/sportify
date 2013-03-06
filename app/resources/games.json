@@ -5,94 +5,106 @@
 			"start_time" : "Tue 01/08, 9:15",
 			"address" : "68th Street and 2nd Avenue",
 			"gym" : "JR2",
+			"location_details" : "",
 			"opponent" : "CORCORAN ELITES",
 			"result" : "L 73-72"
 		}, 
 		{
 			"game_id" : 2,
 			"start_time" : "Wed 01/16, 7:00",
-			"address" : "225 East 23rd St. (between 2nd and 3rd Ave.)",
+			"address" : "225 East 23rd Street",
 			"gym" : "ASL",
+			"location_details" : "",
 			"opponent" : "RELAUNCH",
 			"result" : "L 65-63"
 		},
 		{
 			"game_id" : 3,
 			"start_time" : "Tue 01/22, 9:15",
-			"address" : "First Avenue and 56th Street. Entrance is at 1011 First Avenue",
+			"address" : "First Avenue and 56th Street",
 			"gym" : "CAT",
+			"location_details" : "Entrance is at 1011 First Avenue",
 			"opponent" : "GHoop",
 			"result" : "W 47-45"
 		},
 		{
 			"game_id" : 4,
 			"start_time" : "Tue 01/29, 9:15",
-			"address" : "225 West 24th Street. Between 7th & 8th Avenues",
+			"address" : "225 West 24th Street",
 			"gym" : "FHS",
+			"location_details" : "",
 			"opponent" : "MEAN STREET POSSE",
 			"result" : "W 58-55"
 		},
 		{
 			"game_id" : 5,
 			"start_time" : "Thu 02/07, 9:15",
-			"address" : "525 West 50th St. Between 10th & 11th Avenues. Gym is on the 5th floor.",
+			"address" : "525 West 50th Street",
 			"gym" : "PHS",
+			"location_details" : "Gym is on the 5th floor.",
 			"opponent" : "DINO'S BAR AND GRILL",
 			"result" : "L 47-24"
 		},
 		{
 			"game_id" : 6,
 			"start_time" : "Mon 02/11, 7:00",
-			"address" : "225 East 23rd St. (between 2nd and 3rd Ave.)",
+			"address" : "225 East 23rd Street",
 			"gym" : "ASL",
+			"location_details" : "",
 			"opponent" : "CARVER KIDS",
 			"result" : "W 64-52"
 		},
         {
             "game_id" : 7,
             "start_time" : "Thu 02/21, 7:00",
-            "address" : "49th Street between 9th and 10th Avenues. Enter gym through doors to left of main entrance.",
+            "address" : "49th Street between 9th and 10th Avenue",
             "gym" : "HSG",
+            "location_details" : "Enter gym through doors to left of main entrance",
             "opponent" : "POOR LIFE CHOICES",
             "result" : "L 38-27"
         },
         {
             "game_id" : 8,
             "start_time" : "Thu 02/28, 7:00",
-            "address" : "225 East 23rd St. (between 2nd and 3rd Ave.)",
+            "address" : "225 East 23rd St",
             "gym" : "ASL",
+            "location_details" : "",
             "opponent" : "TELEREP",
             "result" : "W 72-59"
         },
         {
             "game_id" : 9,
             "start_time" : "Thu 03/07, 7:00",
-            "address" : "77th Street between Columbus and Amsterdam Ave. Gym is on the 2nd floor.",
+            "address" : "77th Street between Columbus and Amsterdam Ave",
             "gym" : "OJH",
+            "location_details" : "Gym is on the 2nd floor.",
             "opponent" : "NIPSEY HUSTLE",
             "result" : "-"
         },
         {
             "game_id" : 10,
             "start_time" : "Wed 03/13, 8:10",
-            "address" : "525 West 50th St. Between 10th & 11th Avenues. Gym is on the 5th floor.",
+            "address" : "525 West 50th Street",
             "gym" : "PHS",
+            "location_details" : "Gym is on the 5th floor.",
             "opponent" : "High Execution Risk (H.E.R.)",
             "result" : "-"
         },
         {
             "game_id" : 11,
             "start_time" : "Thu 03/21, 8:10",
-            "address" : "1573 Madison Avenue at 106th Street. Enter gym on 106th Street.",
+            "address" : "1573 Madison Avenue at 106th Street",
             "gym" : "CPE",
+            "location_details" : "Enter gym on 106th Street.",
             "opponent" : "Sheed",
             "result" : "-"
         },
         {
             "game_id" : 12,
             "start_time" : "Mon 03/25, 7:30",
-            "address" : "350 Grand Street. There are 2 gyms (SPH-S) is the south gym located nearest the entrance. (SPH-N) is the north gym located down the hall.",
+            "address" : "350 Grand Street",
             "gym" : "SPH-N",
+            "location_details" : "There are 2 gyms (SPH-S) is the south gym located nearest the entrance. (SPH-N) is the north gym located down the hall.",
             "opponent" : "CORCORAN ELITES",
             "result" : "-"
         }

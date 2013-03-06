@@ -13,6 +13,7 @@ case class Game(game_id: Long,
                 startTime: String,
                 address: String,
                 gym: String,
+                locationDetails: String,
                 opponent: String,
                 result: String,
                 playerIds: Set[ObjectId] = Set.empty)
@@ -58,6 +59,7 @@ object Game {
                            startTime = (game \ "start_time").as[String],
                            address = (game \ "address").as[String],
                            gym = (game \ "gym").as[String],
+                           locationDetails = (game \ "location_details").as[String],
                            opponent = (game \ "opponent").as[String],
                            result = (game \ "result").as[String])
                     }

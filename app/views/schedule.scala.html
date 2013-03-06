@@ -28,23 +28,30 @@
 			          <td>Status</td>
 			        </tr>
 		    	</thead>
-		        @for(game <- games) { 
+		        @for(game <- games){ 
 			        <tr>
 			           <td width="600px">
+			           	 <b>Game @game.game_id</b> <br>
 			           	 @game.startTime <br>
 			           	 @game.address <br>
 			           	 @game.gym <br>
 			           	 @game.opponent <br>
-			           	 @game.result 
+			           	 @if(game.result.contains("W")){
+			           	 	 <font color="green">@game.result</font> 
+			           	 }else{
+							 <font color="red">@game.result</font>
+			           	 }
+			           	
 					   </td>
 			           <td>
 			           	 <div class="schedule form">
 			           	 	<a href="/schedule/submit?status=in?game_id=9" class="btn btn-primary">In</a>
+			           	 	&nbsp;&nbsp; <!-- replace this with css -->
 			           	 	<a href="/schedule/submit?status=out?game_id=9" class="btn btn-secondary">Out</a>
 			           	 </div>
 			           </td>
 			        </tr>
-		        }
+		          }
 			</tbody>
 	    </table>
     </div>
