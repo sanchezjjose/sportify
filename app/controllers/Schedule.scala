@@ -20,12 +20,13 @@ object Schedule extends Controller {
 
     val game : Option[Game] = Game.findByGameId(9) // Get this game from request
     val player = request.session.get("email").get
-
-    // Add user to game.
-    game.get.playerIds += User.findByEmail(player).get._id
-    Game.update(game.get)
     
     if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
+
+      // Add user to game.
+      game.get.playerIds += User.findByEmail(player).get._id
+      Game.update(game.get)
+
       Ok(Json.toJson(
             Map(
               "status" -> Json.toJson("in"),
@@ -33,6 +34,11 @@ object Schedule extends Controller {
             )
           ))
     } else {
+
+      // Remove user from game.
+      game.get.playerIds -= User.findByEmail(player).get._id
+      Game.update(game.get)
+
       Ok(Json.toJson(
             Map(
               "status" -> Json.toJson("out"),

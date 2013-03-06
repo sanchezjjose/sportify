@@ -1,7 +1,7 @@
 {
 	"games" : [
 		{
-			"id" : 1,
+			"game_id" : 1,
 			"start_time" : "Tue 01/08, 9:15",
 			"address" : "68th Street and 2nd Avenue",
 			"gym" : "JR2",
@@ -9,7 +9,7 @@
 			"result" : "L 73-72"
 		}, 
 		{
-			"id" : 2,
+			"game_id" : 2,
 			"start_time" : "Wed 01/16, 7:00",
 			"address" : "225 East 23rd St. (between 2nd and 3rd Ave.)",
 			"gym" : "ASL",
@@ -17,7 +17,7 @@
 			"result" : "L 65-63"
 		},
 		{
-			"id" : 3,
+			"game_id" : 3,
 			"start_time" : "Tue 01/22, 9:15",
 			"address" : "First Avenue and 56th Street. Entrance is at 1011 First Avenue",
 			"gym" : "CAT",
@@ -25,7 +25,7 @@
 			"result" : "W 47-45"
 		},
 		{
-			"id" : 4,
+			"game_id" : 4,
 			"start_time" : "Tue 01/29, 9:15",
 			"address" : "225 West 24th Street. Between 7th & 8th Avenues",
 			"gym" : "FHS",
@@ -33,7 +33,7 @@
 			"result" : "W 58-55"
 		},
 		{
-			"id" : 5,
+			"game_id" : 5,
 			"start_time" : "Thu 02/07, 9:15",
 			"address" : "525 West 50th St. Between 10th & 11th Avenues. Gym is on the 5th floor.",
 			"gym" : "PHS",
@@ -41,7 +41,7 @@
 			"result" : "L 47-24"
 		},
 		{
-			"id" : 6,
+			"game_id" : 6,
 			"start_time" : "Mon 02/11, 7:00",
 			"address" : "225 East 23rd St. (between 2nd and 3rd Ave.)",
 			"gym" : "ASL",
@@ -49,7 +49,7 @@
 			"result" : "W 64-52"
 		},
         {
-            "id" : 7,
+            "game_id" : 7,
             "start_time" : "Thu 02/21, 7:00",
             "address" : "49th Street between 9th and 10th Avenues. Enter gym through doors to left of main entrance.",
             "gym" : "HSG",
@@ -57,7 +57,7 @@
             "result" : "L 38-27"
         },
         {
-            "id" : 8,
+            "game_id" : 8,
             "start_time" : "Thu 02/28, 7:00",
             "address" : "225 East 23rd St. (between 2nd and 3rd Ave.)",
             "gym" : "ASL",
@@ -65,7 +65,7 @@
             "result" : "W 72-59"
         },
         {
-            "id" : 9,
+            "game_id" : 9,
             "start_time" : "Thu 03/07, 7:00",
             "address" : "77th Street between Columbus and Amsterdam Ave. Gym is on the 2nd floor.",
             "gym" : "OJH",
@@ -73,7 +73,7 @@
             "result" : "-"
         },
         {
-            "id" : 10,
+            "game_id" : 10,
             "start_time" : "Wed 03/13, 8:10",
             "address" : "525 West 50th St. Between 10th & 11th Avenues. Gym is on the 5th floor.",
             "gym" : "PHS",
@@ -81,7 +81,7 @@
             "result" : "-"
         },
         {
-            "id" : 11,
+            "game_id" : 11,
             "start_time" : "Thu 03/21, 8:10",
             "address" : "1573 Madison Avenue at 106th Street. Enter gym on 106th Street.",
             "gym" : "CPE",
@@ -89,7 +89,7 @@
             "result" : "-"
         },
         {
-            "id" : 12,
+            "game_id" : 12,
             "start_time" : "Mon 03/25, 7:30",
             "address" : "350 Grand Street. There are 2 gyms (SPH-S) is the south gym located nearest the entrance. (SPH-N) is the north gym located down the hall.",
             "gym" : "SPH-N",
