@@ -6,7 +6,8 @@ import com.novus.salat.global._
 import com.mongodb.casbah.Imports._
 import controllers.MongoManager
 
-case class User(email: String,
+case class User(_id: ObjectId,
+                email: String,
                 firstName: String,
                 lastName: String,
                 number: Int)

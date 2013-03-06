@@ -1,10 +1,5 @@
 package models
 
-import play.api.db._
-import play.api.Play.current
-import anorm._
-import anorm.SqlParser._
-import java.util.Date
 import scala.collection.mutable.Set
 import controllers.MongoManager
 import com.mongodb.casbah.commons.MongoDBObject
@@ -18,7 +13,7 @@ case class Game(id: Long,
                 gym: String,
                 opponent: String,
                 result: String,
-                players: Set[User])
+                playerIds: Set[ObjectId] = Set.empty)
 
 object Game {
 
@@ -33,6 +28,11 @@ object Game {
   def findAll: Iterator[Game] = {
     val dbObjects = MongoManager.gameCollection.find()
     for (x <- dbObjects) yield grater[Game].asObject(x)
+  }
+
+  def update(game: Game) = {
+    val dbo = grater[Game].asDBObject(game)
+    MongoManager.gameCollection.update(MongoDBObject("id" -> game.id), dbo)
   }
 
 	/**

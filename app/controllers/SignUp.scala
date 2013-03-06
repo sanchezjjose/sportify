@@ -1,9 +1,9 @@
 package controllers
 
-import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+import com.mongodb.casbah.Imports._
 
 import views._
 import models._
@@ -14,6 +14,7 @@ object SignUp extends Controller {
 
 		// Define a mapping that will handle Player values
 		mapping(
+      "_id" -> ignored(new ObjectId()),
 			"email" -> email,
 			"firstname" -> text,
 			"lastname" -> text,

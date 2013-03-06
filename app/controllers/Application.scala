@@ -1,8 +1,6 @@
 package controllers
 
-import play.api._
 import play.api.mvc._
-import scala.io.Source
 
 import models._
 
@@ -12,31 +10,19 @@ object Application extends Controller with Secured {
     Redirect(routes.Login.login)
   }
 
-  def home = IsAuthenticated { username => _ =>
-    User.findByEmail(username).map { user =>
-      User.loggedInUser = user
-      Ok(views.html.index("Next Game"))
-    }.getOrElse(Redirect(routes.Login.login))
+  def home = IsAuthenticated { user => _ =>
+    Ok(views.html.index("Next Game"))
   }
 
-  def schedule = IsAuthenticated { username => implicit request =>
-    User.findByEmail(username).map { user => 
-      User.loggedInUser = user
-      Ok(views.html.schedule("Winter 2013 Season", Game.findAll.toList)(user))
-    }.getOrElse(Redirect(routes.Login.login))
+  def schedule = IsAuthenticated { user => implicit request =>
+    Ok(views.html.schedule("Winter 2013 Season", Game.findAll.toList)(user))
   }
 
-  def roster = IsAuthenticated { username => _ =>
-    User.findByEmail(username).map { user =>
-      User.loggedInUser = user
-      Ok(views.html.roster("Gilt Unit"))
-    }.getOrElse(Redirect(routes.Login.login))
+  def roster = IsAuthenticated { user => _ =>
+    Ok(views.html.roster("Gilt Unit"))
   }
 
-  def news = IsAuthenticated { username => _ =>
-    User.findByEmail(username).map { user =>
-      User.loggedInUser = user
-      Ok(views.html.news("News & Highlights"))
-    }.getOrElse(Redirect(routes.Login.login))
+  def news = IsAuthenticated { user => _ =>
+    Ok(views.html.news("News & Highlights"))
   }
 }

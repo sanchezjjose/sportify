@@ -70,8 +70,11 @@ trait Secured {
   /** 
    * Action for authenticated users.
    */
-  def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) { user =>
-    Action(request => f(user)(request))
+  def IsAuthenticated(f: => User => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) { emailAddress =>
+    User.findByEmail(emailAddress).map { user =>
+      User.loggedInUser = user
+      Action(request => f(user)(request))
+    }.getOrElse(Action(request => onUnauthorized(request)))
   }
 
 }

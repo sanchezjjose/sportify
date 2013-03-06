@@ -8,7 +8,7 @@ body {
     text-align: center; /* center align it with the container */
 }
 .container {
-    width: 820px; /* downsize our container to make the content feel a bit tighter and more cohesive. NOTE: this removes two full columns from the grid, meaning you only go to 14 columns and not 16. */
+    width: 840px; /* downsize our container to make the content feel a bit tighter and more cohesive. NOTE: this removes two full columns from the grid, meaning you only go to 14 columns and not 16. */
 }
 
 /* The white background content wrapper */
@@ -30,12 +30,6 @@ body {
     background-color: #f5f5f5;
     padding: 20px 20px 10px;
     margin: -20px -20px 20px;
-}
-
-/* Styles you shouldn't keep as they are for displaying this base example only */
-.content .span10,
-.content .span4 {
-    min-height: 500px;
 }
 
 /* Give a quick and non-cross-browser friendly divider */
@@ -74,10 +68,16 @@ body {
   text-decoration: none;
 }
 
-.nav .dropdown {
-  display: block;
+.nav {
+  width: 840px;
+}
+
+  /*display: block;
   float: right;
-  margin: 0 0 0 450px;
+  margin: 0 0 0 400px;   */
+.nav .dropdown {
+  position: absolute;
+  right: 0px;
 }
 
 .schedule {
