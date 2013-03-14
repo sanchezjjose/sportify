@@ -7,7 +7,7 @@ import models._
 object Application extends Controller with Secured {
 
   def index = Action {
-    Game.loadGames
+    //Game.loadGames
     Redirect(routes.Login.login)
   }
 
