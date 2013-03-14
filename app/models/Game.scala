@@ -49,7 +49,7 @@ object Game {
   }
 
   def loadGames : Unit = {
-    val jsonString = Source.fromFile("/web/svc-gilt-sports/app/resources/games.json")
+    val jsonString = Source.fromFile("app/resources/games.json")
     val json: JsValue = Json.parse(jsonString mkString)
 
     val games = (json \ "games").as[List[JsObject]]
