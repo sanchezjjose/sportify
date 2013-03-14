@@ -4,6 +4,6 @@ import scala.io.Source
 
 object Roster {
 	def parseNames : Iterator[String] = {
-		Source.fromFile("/web/svc-gilt-sports/app/resources/roster.txt").getLines()
+		Source.fromFile("app/resources/roster.txt").getLines()
 	}
 }
