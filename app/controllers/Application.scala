@@ -8,7 +8,7 @@ object Application extends Controller with Secured {
 
   def index = Action {
     //Game.loadGames
-    Redirect(routes.Login.login)
+    Redirect(routes.Application.home)
   }
 
   def home = IsAuthenticated { user => _ =>
