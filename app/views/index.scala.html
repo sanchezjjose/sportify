@@ -5,10 +5,10 @@
 @main(Html("Next Game."), nav = "home") {
 
   <ul>
-      <h4>Gym - @game.gym</h4>
-      <b>Who</b>: @game.opponent <br>
-      <b>When</b>: @game.startTime <br>
-      <b>Where</b>: @game.address <br>
+      <h3>Gilt Unit vs. @game.opponent</h3>
+      
+      <b>Time</b>: @game.startTime P.M. <br>
+      <b>Location</b>: @game.address <br>
       @if(!game.locationDetails.isEmpty()){
         <b><font color="red">*&nbsp;</font></b>@game.locationDetails <br>
   	  } 
@@ -18,7 +18,7 @@
           @for(playerId <- game.playerIds){
             @if(User.findById(playerId).isDefined){ 
                o&nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName
-	   	    }
+	   	      }
           }
 	  </ul>
 
@@ -27,6 +27,7 @@
 	<h2>Directions</h2>
     <iframe width="625" height="360" frameborder="5" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=77th+Street+between+Columbus+and+Amsterdam+Ave,+New+York&amp;aq=&amp;sll=40.746787,-73.981187&amp;sspn=0.049484,0.111494&amp;gl=us&amp;ie=UTF8&amp;hq=&amp;hnear=77th+Street+between+Columbus+and+Amsterdam+Ave,+New+York&amp;t=m&amp;z=14&amp;iwloc=A&amp;ll=40.746332,-73.982596&amp;output=embed"></iframe><br />
 
+    h<!-- ttp://maps.googleapis.com/maps/api/directions/json?origin=2+Park+Ave,NY&destination=3540+30th+street,NY&sensor=false&mode=transit&departure_time=1343605500 -->
       
   </ul>
 }
