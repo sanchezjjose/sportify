@@ -8,6 +8,8 @@ import com.novus.salat.global._
 import com.mongodb.casbah.Imports._
 import io.Source
 import play.api.libs.json._
+import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
+import org.joda.time.DateTime
 
 case class Game(game_id: Long,
                 startTime: String,
@@ -19,6 +21,12 @@ case class Game(game_id: Long,
                 playerIds: Set[ObjectId] = Set.empty)
 
 object Game {
+
+  def findNextGame(): Unit = {
+    val fmt = DateTimeFormat.forPattern("E MM/dd, HH:mm a")
+    val dt = fmt.parseDateTime("Thu 03/07, 07:00 PM")
+    println(dt.dayOfWeek().get())
+  }
 
   def findByGameId(game_id: Long): Option[Game] = {
     val dbObject = MongoManager.gameCollection.findOne(MongoDBObject("game_id" -> game_id))

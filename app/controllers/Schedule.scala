@@ -18,7 +18,11 @@ object Schedule extends Controller {
   */
 	def submit = Action { implicit request =>
 
-    val game : Option[Game] = Game.findByGameId(9) // Get this game from request
+    val gameId = request.rawQueryString.split("=")(2).toInt
+
+    println(gameId)
+
+    val game : Option[Game] = Game.findByGameId(gameId)
     val player = request.session.get("email").get
     
     if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {

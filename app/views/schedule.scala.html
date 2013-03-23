@@ -7,18 +7,6 @@
     
     <h2 class="header">@header</h2>
 
-    @if( flash.get("success") ) {
-	    <div class="alert alert-success" >
-	   	  @flash.get("success")
-	    </div>
-	}
-
-	@if( flash.get("fail") ) {
-	    <div class="alert alert-error" >
-	   	  @flash.get("fail")
-	    </div>
-	}
-
     <div class="container">
 	    <table class="table table-striped table-hover">
 		    <tbody>
@@ -29,7 +17,7 @@
 			        </tr>
 		    	</thead>
 		        @for(game <- games){ 
-			        <tr>
+			        <tr id="@game.game_id">
 			           <td width="600px">
 			           	 <b>Game @game.game_id</b> <br>
 			           	 @game.startTime <br>
@@ -45,13 +33,13 @@
 					   </td>
 			           <td>
 			           	 <div class="schedule form">
-			           	 	<a href="/schedule/submit?status=in?game_id=9" class="btn btn-primary">In</a>
+			           	 	<a href="/schedule/submit?status=in?game_id=@game.game_id" class="btn btn-primary">In</a>
 			           	 	&nbsp;&nbsp; <!-- replace this with css -->
-			           	 	<a href="/schedule/submit?status=out?game_id=9" class="btn btn-secondary">Out</a>
+			           	 	<a href="/schedule/submit?status=out?game_id=@game.game_id" class="btn btn-secondary">Out</a>
 			           	 </div>
 			           </td>
 			        </tr>
-		          }
+		        }
 			</tbody>
 	    </table>
     </div>
