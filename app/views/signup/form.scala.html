@@ -20,7 +20,7 @@
         <div class="content">
             
             <div class="page-header">
-                <h1>Sign Up</h1>
+                <h1>Join The Team!</h1>
             </div>
 
             @helper.form(action = routes.SignUp.submit) {
@@ -62,7 +62,7 @@
                             @inputText(
                             signupForm("position"),
                             '_label -> "Position",
-                            '_help -> "Please enter a valid position.",
+                            '_help -> "Please enter a valid position (PG, SG, SF, F, C).",
                             '_error -> signupForm.globalError
                             )
                         </fieldset>
@@ -75,12 +75,6 @@
                 </div>
             }
         </div>
-
-        <footer>
-            <p>
-                v 1.0
-            </p>
-        </footer>
     </div>
 
     </body>
