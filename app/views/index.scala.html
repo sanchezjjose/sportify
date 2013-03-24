@@ -18,7 +18,7 @@
       <ul>
           @for(playerId <- game.playerIds){
             @if(User.findById(playerId).isDefined){
-               o&nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName
+               o&nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName <br>
               }
           }
       </ul>
