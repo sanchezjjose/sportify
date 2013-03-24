@@ -16,9 +16,10 @@ object SignUp extends Controller {
 		mapping(
       "_id" -> ignored(new ObjectId()),
 			"email" -> email,
-			"firstname" -> text,
-			"lastname" -> text,
-			"number" -> number
+			"firstname" -> nonEmptyText,
+			"lastname" -> nonEmptyText,
+			"number" -> number,
+      "position" -> nonEmptyText
 		)(User.apply)(User.unapply)
 	)
 
@@ -40,7 +41,6 @@ object SignUp extends Controller {
        // We got a valid Player value, display the summary
        user => {
          User.insert(user)
-         // User.create(new User(player.email, "password"))
          Ok(html.signup.summary(user)).withNewSession.flashing(
             "success" -> "Your account has been created. Please login."
          )

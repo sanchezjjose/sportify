@@ -20,11 +20,11 @@
 			          <td>Position</td>
 			        </tr>
 			    </header>
-			    @for(line <- Roster.parseNames) {
+			    @for(player <- User.findAll) {
 			      <tr>
-			         <td>@line.split(",")(1)</td>
-			         <td>@line.split(",")(0)</td>
-			         <td>@line.split(",")(2)</td>
+			         <td>@player.number</td>
+			         <td>@player.firstName @player.lastName</td>
+			         <td>@player.position</td>
 			      </tr>
 			    }
 			  </tbody>

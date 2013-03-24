@@ -22,10 +22,10 @@ case class Game(game_id: Long,
 
 object Game {
 
-  def findNextGame(): Unit = {
-    val fmt = DateTimeFormat.forPattern("E MM/dd, HH:mm a")
-    val dt = fmt.parseDateTime("Thu 03/07, 07:00 PM")
-    println(dt.dayOfWeek().get())
+  val format = DateTimeFormat.forPattern("E MM/dd/yyyy, H:mm a")
+
+  def findNextGame: Iterator[Game] = {
+    findAll.filter(g => DateTime.now().getMillis < format.parseDateTime(g.startTime).getMillis)
   }
 
   def findByGameId(game_id: Long): Option[Game] = {

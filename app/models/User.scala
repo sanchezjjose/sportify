@@ -10,7 +10,8 @@ case class User(_id: ObjectId,
                 email: String,
                 firstName: String,
                 lastName: String,
-                number: Int)
+                number: Int,
+                position: String)
 
 object User {
 
@@ -55,7 +56,7 @@ object User {
    */
   def insert(user: User) = {
     val dbo = grater[User].asDBObject(user)
-    dbo.put("password", "password")
+    dbo.put("password", "giltunit")
     MongoManager.collection += dbo
   }
   

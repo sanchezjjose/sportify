@@ -12,10 +12,7 @@ object Application extends Controller with Secured {
   }
 
   def home = IsAuthenticated { user => _ =>
-
-    Game.findNextGame()
-
-    Ok(views.html.index("Next Game", Game.findByGameId(12).get))
+    Ok(views.html.index("Next Game", Game.findNextGame.toList.headOption))
   }
 
   def schedule = IsAuthenticated { user => implicit request =>
