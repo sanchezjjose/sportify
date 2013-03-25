@@ -5,8 +5,9 @@ import com.novus.salat._
 import com.novus.salat.global._
 import com.mongodb.casbah.Imports._
 import controllers.MongoManager
+import java.util.UUID
 
-case class User(_id: ObjectId,
+case class User(_id: String,
                 email: String,
                 firstName: String,
                 lastName: String,
@@ -20,7 +21,7 @@ object User {
   /**
    * Retrieve a User from id.
    */
-  def findById(_id: ObjectId): Option[User] = {
+  def findById(_id: String): Option[User] = {
     val dbObject = MongoManager.collection.findOne( MongoDBObject("_id" -> _id) )
     dbObject.map(o => grater[User].asObject(o))
   }
@@ -56,6 +57,7 @@ object User {
    */
   def insert(user: User) = {
     val dbo = grater[User].asDBObject(user)
+    dbo.put("_id", UUID.randomUUID().toString)
     dbo.put("password", "giltunit")
     MongoManager.collection += dbo
   }

@@ -18,7 +18,7 @@ case class Game(game_id: Long,
                 locationDetails: String,
                 opponent: String,
                 result: String,
-                playerIds: Set[ObjectId] = Set.empty)
+                playerIds: Set[String] = Set.empty)
 
 object Game {
 

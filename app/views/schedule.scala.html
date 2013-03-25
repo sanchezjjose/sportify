@@ -22,8 +22,7 @@
 			           	 <b>Game @game.game_id</b> <br>
 			           	 @game.startTime <br>
 			           	 @game.address <br>
-			           	 @game.gym <br>
-			           	 @game.opponent <br>
+			           	 vs. @game.opponent <br>
                          <b>
 			           	 @if(game.result.contains("W")){
 			           	 	 <font color="green">@game.result</font> 
@@ -59,6 +58,7 @@
    	  					} else {
 							$('.header').after('<div class="alert alert-error" >'+data.msg+'</div>');
    	  					}
+   	  					window.scrollTo(0, 0);
    	  					setTimeout(function clearMsg () {
    	  						$('.alert').fadeOut('1000', function (el) {
    	  							$(el).remove();

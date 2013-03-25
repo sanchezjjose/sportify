@@ -3,10 +3,11 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import com.mongodb.casbah.Imports._
 
 import views._
 import models._
+import org.bson.types.ObjectId
+import java.util.UUID
 
 object SignUp extends Controller {
 
@@ -14,8 +15,8 @@ object SignUp extends Controller {
 
 		// Define a mapping that will handle Player values
 		mapping(
-      "_id" -> ignored(new ObjectId()),
-			"email" -> email,
+      "_id" -> ignored(UUID.randomUUID().toString),
+      "email" -> email,
 			"firstname" -> nonEmptyText,
 			"lastname" -> nonEmptyText,
 			"number" -> number,
