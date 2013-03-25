@@ -25,7 +25,7 @@ object Game {
   val format = DateTimeFormat.forPattern("E MM/dd/yyyy, H:mm a")
 
   def findNextGame: Iterator[Game] = {
-    findAll.filter(g => DateTime.now().getMillis < format.parseDateTime(g.startTime).getMillis)
+    findAll.filter(g => DateTime.now().getMillis < format.parseDateTime(g.startTime).plusDays(1).getMillis)
   }
 
   def findByGameId(game_id: Long): Option[Game] = {
