@@ -19,6 +19,9 @@
                 <div class="container">
                     <a class="brand" href="@routes.Application.home">Gilt Unit</a>
                     <ul class="nav">
+                        <li class="@("active".when(nav == "home"))">
+                            <a href="@routes.Application.home">Home</a>
+                        </li>
                         <li class="@("active".when(nav == "schedule"))">
                             <a href="@routes.Application.schedule">Schedule</a>
                         </li>
