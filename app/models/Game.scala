@@ -10,15 +10,19 @@ import io.Source
 import play.api.libs.json._
 import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
 import org.joda.time.DateTime
+import java.util.UUID
 
 case class Game(game_id: Long,
+                game_seq: Int,
                 startTime: String,
                 address: String,
                 gym: String,
                 locationDetails: String,
                 opponent: String,
                 result: String,
-                playerIds: Set[String] = Set.empty)
+                playerIds: Set[String] = Set.empty,
+                is_playoff_game: Boolean,
+                season: String)
 
 object Game {
 
@@ -37,7 +41,7 @@ object Game {
    * Retrieve all games.
    */
   def findAll: Iterator[Game] = {
-    val dbObjects = MongoManager.gameCollection.find().sort(MongoDBObject("game_id" -> 1))
+    val dbObjects = MongoManager.gameCollection.find(MongoDBObject("season" -> "Spring 2013")).sort(MongoDBObject("game_id" -> 1))
     for (x <- dbObjects) yield grater[Game].asObject(x)
   }
 
@@ -64,12 +68,16 @@ object Game {
 
     val gamesList = games.map { game =>
                       Game(game_id = (game \ "game_id").as[Long],
+                           game_seq = (game \ "game_seq").as[Int],
                            startTime = (game \ "start_time").as[String],
                            address = (game \ "address").as[String],
                            gym = (game \ "gym").as[String],
                            locationDetails = (game \ "location_details").as[String],
                            opponent = (game \ "opponent").as[String],
-                           result = (game \ "result").as[String])
+                           result = (game \ "result").as[String],
+                           playerIds = (game \ "playerIds").as[Set[String]],
+                           is_playoff_game = (game \ "is_playoff_game").as[Boolean],
+                           season = (game \ "season").as[String])
                     }
 
     for(game <- gamesList) insert(game)
