@@ -59,29 +59,45 @@
             </thead>
             @for(game <- games){
                 @if(game.game_seq > 8){
-                <tr id="@game.game_id">
+                    <tr id="@game.game_id">
+                        <td width="600px">
+                            <b>Game @game.game_seq</b> <br>
+                            @game.startTime <br>
+                            @game.address <br>
+                            vs. @game.opponent <br>
+                            <b>
+                                @if(game.result.contains("W")){
+                                <font color="green">@game.result</font>
+                                }else{
+                                <font color="red">@game.result</font>
+                                }
+                            </b>
+                        </td>
+                        <td>
+                            <div class="schedule form">
+                                <a href="/schedule/submit?status=in?game_id=@game.game_id" class="btn btn-danger">In</a>
+                                &nbsp;&nbsp; <!-- replace this with css -->
+                                <a href="/schedule/submit?status=out?game_id=@game.game_id" class="btn btn-secondary">Out</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+
+            <!-- display playoff column -->
+            @if(games.size <= 8) {
+                <tr>
                     <td width="600px">
-                        <b>Game @game.game_seq</b> <br>
-                        @game.startTime <br>
-                        @game.address <br>
-                        vs. @game.opponent <br>
-                        <b>
-                            @if(game.result.contains("W")){
-                            <font color="green">@game.result</font>
-                            }else{
-                            <font color="red">@game.result</font>
-                            }
-                        </b>
+                        TBD
                     </td>
                     <td>
                         <div class="schedule form">
-                            <a href="/schedule/submit?status=in?game_id=@game.game_id" class="btn btn-danger">In</a>
+                            <a href="javascript: void(0)" class="btn btn-danger disabled" disabled>In</a>
                             &nbsp;&nbsp; <!-- replace this with css -->
-                            <a href="/schedule/submit?status=out?game_id=@game.game_id" class="btn btn-secondary">Out</a>
+                            <a href="javascript: void(0)" class="btn btn-secondary disabled">Out</a>
                         </div>
                     </td>
                 </tr>
-                }
             }
             </tbody>
         </table>

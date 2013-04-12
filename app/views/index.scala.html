@@ -15,7 +15,7 @@
         <b><font color="red">*&nbsp;</font></b>@game.locationDetails <br>
       }
 
-      <h3>(@game.playerIds.size) Confirmed.</h3>
+      <h3>@game.playerIds.size Confirmed.</h3>
       <ul>
           @for(playerId <- game.playerIds){
             @if(User.findById(playerId).isDefined){
