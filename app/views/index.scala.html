@@ -4,33 +4,64 @@
 
 @main(Html("Next Game."), nav = "home") {
 
-  @gameOpt.map { game =>
-  <ul>
-      <h3>Gilt Unit vs. @game.opponent</h3>
+@gameOpt.map { game =>
 
-      <b>Game @game.game_seq</b> <br>
-      <b>Time</b>: @game.startTime <br>
-      <b>Location</b>: @game.address <br>
-      @if(!game.locationDetails.isEmpty()){
-        <b><font color="red">*&nbsp;</font></b>@game.locationDetails <br>
-      }
+<div class="span12">
+    <h3>Gilt Unit vs. @game.opponent</h3>
 
-      <h3>@game.playerIds.size Confirmed.</h3>
-      <ul>
-          @for(playerId <- game.playerIds){
-            @if(User.findById(playerId).isDefined){
-               o&nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName <br>
-              }
-          }
-      </ul>
+    <h4>Game @game.game_seq</h4>
+    <b>Time</b>: @game.startTime <br>
+    <b>Location</b>: @game.address <br>
+    @if(!game.locationDetails.isEmpty()){
+    <b><font color="red">*&nbsp;</font></b>@game.locationDetails <br>
+    }
+
+    <br><br>
+
+    <div class="span3 offset1">
+        <table class="table" width="100px">
+            <thead>
+                <tr><th>Confirmed</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                @for(playerId <- game.playersIn){
+                @if(User.findById(playerId).isDefined){
+                <td>
+                &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName
+                </td>
+                }
+                }
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <div class="span3 offset1">
+        <table class="table">
+            <thead>
+            <tr><th>Declined</th></tr>
+            </thead>
+            <tbody>
+            <tr>
+                @for(playerId <- game.playersOut){
+                @if(User.findById(playerId).isDefined){
+                <td>
+                &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName
+                </td>
+                }
+                }
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
     <br><br>
 
     <div id="map-canvas" style="width: 800px; height: 400px;"></div>
 
     <script type="text/javascript">
-
-      function initialize() {
+        function initialize() {
         var directionsDisplay;
         var map;
         var directionsService = new google.maps.DirectionsService();
@@ -38,38 +69,37 @@
 
         directionsDisplay = new google.maps.DirectionsRenderer();
         var mapOptions = {
-          zoom: 14,
-          center: manhattan,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
+        zoom: 14,
+        center: manhattan,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
         }
         map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
         directionsDisplay.setMap(map);
 
         var request = {
-          origin: '2 Park Ave, New York',
-          destination: '@game.address, New York',
-          travelMode: google.maps.DirectionsTravelMode.TRANSIT
+        origin: '2 Park Ave, New York',
+        destination: '@game.address, New York',
+        travelMode: google.maps.DirectionsTravelMode.TRANSIT
         };
 
         directionsService.route(request, function(response, status) {
-          if (status == google.maps.DirectionsStatus.OK) {
-            directionsDisplay.setDirections(response);
-          }
+        if (status == google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+        }
         });
-      }
+        }
 
-      function loadScript() {
+        function loadScript() {
         var script = document.createElement("script");
         script.type = "text/javascript";
         script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
         document.body.appendChild(script);
-      }
+        }
 
-      window.onload = loadScript;
-
+        window.onload = loadScript;
     </script>
 
+</div>
 
-  </ul>
-  }.getOrElse{ NO GAMES. }
+}.getOrElse{ NO GAMES. }
 }

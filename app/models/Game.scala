@@ -12,7 +12,7 @@ import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
 import org.joda.time.DateTime
 import java.util.UUID
 
-case class Game(game_id: Long,
+case class Game(game_id: Int,
                 game_seq: Int,
                 startTime: String,
                 address: String,
@@ -20,7 +20,8 @@ case class Game(game_id: Long,
                 locationDetails: String,
                 opponent: String,
                 result: String,
-                playerIds: Set[String] = Set.empty,
+                playersIn: Set[String] = Set.empty,
+                playersOut: Set[String] = Set.empty,
                 is_playoff_game: Boolean,
                 season: String)
 
@@ -28,8 +29,8 @@ object Game {
 
   val format = DateTimeFormat.forPattern("E MM/dd/yyyy, H:mm a")
 
-  def findNextGame: Iterator[Game] = {
-    findAll.filter(g => DateTime.now().getMillis < format.parseDateTime(g.startTime).plusDays(1).getMillis)
+  def findNextGame: Option[Game] = {
+    findAll.filter(g => DateTime.now().getMillis < format.parseDateTime(g.startTime).plusDays(1).getMillis).toList.headOption
   }
 
   def findByGameId(game_id: Long): Option[Game] = {
@@ -67,7 +68,7 @@ object Game {
     val games = (json \ "games").as[List[JsObject]]
 
     val gamesList = games.map { game =>
-                      Game(game_id = (game \ "game_id").as[Long],
+                      Game(game_id = (game \ "game_id").as[Int],
                            game_seq = (game \ "game_seq").as[Int],
                            startTime = (game \ "start_time").as[String],
                            address = (game \ "address").as[String],
@@ -75,7 +76,8 @@ object Game {
                            locationDetails = (game \ "location_details").as[String],
                            opponent = (game \ "opponent").as[String],
                            result = (game \ "result").as[String],
-                           playerIds = (game \ "playerIds").as[Set[String]],
+                           playersIn = (game \ "playersIn").as[Set[String]],
+                           playersOut = (game \ "playersOut").as[Set[String]],
                            is_playoff_game = (game \ "is_playoff_game").as[Boolean],
                            season = (game \ "season").as[String])
                     }
