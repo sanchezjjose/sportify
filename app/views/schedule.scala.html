@@ -17,11 +17,11 @@
 			        </tr>
 		    	</thead>
 		        @for(game <- games.filter(g => g.is_playoff_game == false)){
-                        @if(nextGame.isDefined && nextGame.get.game_id == game.game_id){
-                            <tr id="@game.game_id" class="success">
-                        }else{
-                            <tr id="@game.game_id">
-                        }
+                @if(nextGame.isDefined && nextGame.get.game_id == game.game_id){
+                    <tr id="@game.game_id" class="success">
+                }else{
+                    <tr id="@game.game_id">
+                }
                         <td width="600px">
                             <b>Game @game.game_seq</b> <br>
                             @game.startTime <br>
