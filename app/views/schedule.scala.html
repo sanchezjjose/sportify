@@ -112,7 +112,7 @@
    	  				success: function (data) {
    	  					$('.alert').remove();
    	  					if (data.status === 'in') {
-							$('.header').before('<div class="alert alert-success">'+data.msg+'</div>');
+							$('.header').before('<div class="alert alert-info">'+data.msg+'</div>');
    	  					} else {
 							$('.header').before('<div class="alert alert-error" >'+data.msg+'</div>');
    	  					}
