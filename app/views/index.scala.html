@@ -6,14 +6,14 @@
 
 @gameOpt.map { game =>
 
-<div class="span8 offset1">
-  @if(game.playersIn.size < 5) {
+<div class="span10">
+  @if(game.playersIn.size > 5) {
     <div class="alert alert-error">
-      <strong><center>Need @(5-game.playersIn.size) more players for this weeks game!</center></strong>
+      <strong><center>@(5-game.playersIn.size) more players needed for this weeks game!</center></strong>
     </div>
   } else {
   <div class="alert alert-info">
-    <strong><center>Remember to bring your game shirts. Let's get this W!</center></strong>
+    <strong><center>@Application.msg</center></strong>
   </div>
   }
 </div>

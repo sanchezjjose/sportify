@@ -1,10 +1,10 @@
 package controllers
 
+import play.api.Play.current
 import play.api.mvc._
-
 import models._
 
-object Application extends Controller with Secured {
+object Application extends Controller with Config with Secured {
 
   def index = Action {
     //Game.loadGames
@@ -26,4 +26,9 @@ object Application extends Controller with Secured {
   def news = IsAuthenticated { user => _ =>
     Ok(views.html.news("News & Highlights"))
   }
+}
+
+trait Config {
+  val config = play.api.Play.configuration
+  lazy val msg = config.getString("msg").getOrElse("Remember to bring your game shirts. Let's get this W!")
 }
