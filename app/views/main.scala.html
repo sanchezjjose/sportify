@@ -3,73 +3,67 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>@title</title>
-        <!-- <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.css")"> -->
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("bootstrap/css/bootstrap.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-glyphicons.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
         <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/schedule.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.at("bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap.min.js")" type="text/javascript"></script>
     </head>
     <body>
 
-        <div class="navbar navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="brand" href="@routes.Application.home">Gilt Unit</a>
-                    <ul class="nav">
-                        <li class="@("active".when(nav == "home"))">
-                            <a href="@routes.Application.home">Home</a>
-                        </li>
-                        <li class="@("active".when(nav == "schedule"))">
-                            <a href="@routes.Application.schedule">Schedule</a>
-                        </li>
-                        <li class="@("active".when(nav == "roster"))">
-                            <a href="@routes.Application.roster">Roster</a>
-                        </li>
-                        <li class="@("active".when(nav == "news"))">
-                            <a href="@routes.Application.news">News</a>
-                        </li>
-                        <li class="dropdown" id="#">
-                           <a class="dropdown-toggle"
-                              data-toggle="dropdown"
-                              href="#logout-dropdown">                               
-                                <i class="icon-user"></i>
-                                Welcome @User.loggedInUser.firstName
-                                <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="disabled">
-                                    <a href="">My Account</a>
-                                </li>
-                                <li>
-                                  <a href="@routes.Login.logout">Logout</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+    <div class="navbar navbar-fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="@routes.Application.home">Gilt-Unit</a>
+        <ul class="nav navbar-nav">
+          <li class="@("active".when(nav == "home"))">
+          <a href="@routes.Application.home">Home</a>
+          </li>
+          <li class="@("active".when(nav == "schedule"))">
+          <a href="@routes.Application.schedule">Schedule</a>
+          </li>
+          <li class="@("active".when(nav == "roster"))">
+          <a href="@routes.Application.roster">Roster</a>
+          </li>
+          <li class="@("active".when(nav == "news"))">
+          <a href="@routes.Application.news">News</a>
+          </li>
+          <li class="dropdown" id="#">
+            <a class="dropdown-toggle"
+               data-toggle="dropdown"
+               href="#logout-dropdown">
+              <span class="glyphicon glyphicon-user"></span>
+              Welcome @User.loggedInUser.firstName
+              <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="disabled">
+                <a href="">My Account</a>
+              </li>
+              <li>
+                <a href="@routes.Login.logout">Logout</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <div class="page-header">
+                <h1>@title</h1>
+            </div>
+            <div class="row">
+                <div class="span14">
+                    @content
                 </div>
             </div>
         </div>
-
-        <div class="container">
-
-            <div class="content">
-                
-                <div class="page-header">
-                    <h1>@title</h1>
-                </div>
-
-                <div class="row">
-                    <div class="span14">
-                        @content
-                    </div>
-                </div>
-                
-            </div>
-
-        </div>
+    </div>
 
     </body>
 </html>

@@ -64,17 +64,29 @@ body {
     display: none;
 }
 
-.actions .secondary-link {
-  text-decoration: none;
+.login {
+  margin-left: 10px;
 }
 
-.nav {
-  width: 840px;
+.login input {
+  width: 200px;
 }
 
-.nav .dropdown {
+.login .actions {
+  margin-top: 30px;
+}
+
+.login .btn {
+  width: 65px;
+}
+
+.login .btn-default {
+  margin-left: 10px;
+}
+
+.navbar .nav .dropdown {
     position: absolute;
-    right: 0px;
+    right: 320px;
 }
 
 .schedule {
@@ -84,5 +96,5 @@ body {
 }
 
 .schedule .btn {
-    width: 35px;
+    width: 65px;
 }
