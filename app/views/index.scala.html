@@ -6,116 +6,119 @@
 
 @gameOpt.map { game =>
 
-<div class="span10">
-  @if(game.playersIn.size < 5) {
-    <div class="alert alert-error">
-      <strong><center>@(5-game.playersIn.size) more player(s) needed for this weeks game!</center></strong>
+<div class="next-game">
+
+  <div class="span10">
+    @if(game.playersIn.size < 5) {
+      <div class="alert alert-error">
+        <strong><center>@(5-game.playersIn.size) more player(s) needed for this weeks game!</center></strong>
+      </div>
+    } else {
+    <div class="alert alert-info">
+      <strong><center>@Application.msg</center></strong>
     </div>
-  } else {
-  <div class="alert alert-info">
-    <strong><center>@Application.msg</center></strong>
+    }
   </div>
-  }
-</div>
 
-<div class="span12">
+  <div class="span12">
 
-  <h3>Gilt Unit vs. @game.opponent</h3>
+    <h3>Game @game.game_seq</h3> <br>
 
-  <h4>Game @game.game_seq</h4>
-  <b>Time</b>: @game.startTime <br>
-  <b>Location</b>: @game.address <br>
-  @if(!game.locationDetails.isEmpty()){
-    <b><font color="red">*&nbsp;</font></b>@game.locationDetails <br>
-  }
+    <h4>Gilt Unit vs. @game.opponent</h4>
+    @game.startTime <br> <br>
+    @game.address <br>
+    @if(!game.locationDetails.isEmpty()){
+      <b><font color="red">*&nbsp;</font></b>@game.locationDetails <br>
+    }
 
-  <br><br>
+    <br><br>
 
-  <div class="span3 offset1">
-    <table class="table">
-      <thead>
+    <div class="span3 offset1">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>@game.playersIn.size Confirmed</th>
+          </tr>
+        </thead>
+        <tbody>
         <tr>
-          <th>@game.playersIn.size Confirmed</th>
-        </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>
-        @for(playerId <- game.playersIn){
-          @if(User.findById(playerId).isDefined){
-            &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName <br>
-          }
-        }
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="span3 offset1">
-    <table class="table">
-      <thead>
-      <tr>
-        <th>@game.playersOut.size Declined</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>
-          @for(playerId <- game.playersOut){
+          <td>
+          @for(playerId <- game.playersIn){
             @if(User.findById(playerId).isDefined){
               &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName <br>
             }
           }
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <br><br>
+    <div class="span3 offset1">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>@game.playersOut.size Declined</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>
+            @for(playerId <- game.playersOut){
+              @if(User.findById(playerId).isDefined){
+                &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName <br>
+              }
+            }
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <div id="map-canvas" style="width: 800px; height: 400px;"></div>
+    <br><br>
 
-  <script type="text/javascript">
-    function initialize() {
-      var directionsDisplay;
-      var map;
-      var directionsService = new google.maps.DirectionsService();
-      var manhattan = new google.maps.LatLng(40.7711329, -73.9741874);
+    <div id="map-canvas"></div>
 
-      directionsDisplay = new google.maps.DirectionsRenderer();
-      var mapOptions = {
-        zoom: 14,
-        center: manhattan,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      }
-      map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-      directionsDisplay.setMap(map);
+    <script type="text/javascript">
+      function initialize() {
+        var directionsDisplay;
+        var map;
+        var directionsService = new google.maps.DirectionsService();
+        var manhattan = new google.maps.LatLng(40.7711329, -73.9741874);
 
-      var request = {
-        origin: '2 Park Ave, New York',
-        destination: '@game.address, New York',
-        travelMode: google.maps.DirectionsTravelMode.TRANSIT
-      };
-
-      directionsService.route(request, function(response, status) {
-        if (status == google.maps.DirectionsStatus.OK) {
-          directionsDisplay.setDirections(response);
+        directionsDisplay = new google.maps.DirectionsRenderer();
+        var mapOptions = {
+          zoom: 14,
+          center: manhattan,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
         }
-      });
-    }
+        map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+        directionsDisplay.setMap(map);
 
-    function loadScript() {
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
-      document.body.appendChild(script);
-    }
+        var request = {
+          origin: '2 Park Ave, New York',
+          destination: '@game.address, New York',
+          travelMode: google.maps.DirectionsTravelMode.TRANSIT
+        };
 
-    window.onload = loadScript;
-  </script>
+        directionsService.route(request, function(response, status) {
+          if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+          }
+        });
+      }
 
+      function loadScript() {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
+        document.body.appendChild(script);
+      }
+
+      window.onload = loadScript;
+    </script>
+
+  </div>
 </div>
 
 }.getOrElse{ NO GAMES. }

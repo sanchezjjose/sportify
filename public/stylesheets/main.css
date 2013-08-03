@@ -2,19 +2,20 @@ html, body {
     background-color: #eee;
 }
 body {
-    padding-top: 40px; /* 40px to make the container go all the way to the bottom of the topbar */
+    padding-top: 0px; /* 40px to make the container go all the way to the bottom of the topbar */
 }
 .container > footer p {
     text-align: center; /* center align it with the container */
 }
 .container {
+    padding: -20px;
     width: 840px; /* downsize our container to make the content feel a bit tighter and more cohesive. NOTE: this removes two full columns from the grid, meaning you only go to 14 columns and not 16. */
 }
 
 /* The white background content wrapper */
 .content {
     background-color: #fff;
-    padding: 20px;
+    padding: 0 20px;
     margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
     -webkit-border-radius: 0 0 6px 6px;
        -moz-border-radius: 0 0 6px 6px;
@@ -86,7 +87,7 @@ body {
 
 .navbar .nav .dropdown {
     position: absolute;
-    right: 320px;
+    right: 400px;
 }
 
 .schedule {
@@ -97,4 +98,15 @@ body {
 
 .schedule .btn {
     width: 65px;
+}
+
+#map-canvas {
+  width: 870px;
+  height: 420px;
+}
+
+.next-game .alert {
+  margin-top: -20px;
+  margin-left: -5px;
+  margin-right: -5px;
 }
