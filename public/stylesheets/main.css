@@ -96,15 +96,16 @@ body {
 }
 
 #map-canvas {
-  width: 870px;
+  width: auto;
   height: 420px;
 }
 
-.next-game .alert {
+.next-game .alert, .game-status-msg {
   margin-top: -20px;
   margin-left: -5px;
   margin-right: -5px;
 }
+
 
 .navbar .container {
   width: 1045px;
