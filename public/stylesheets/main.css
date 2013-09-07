@@ -85,11 +85,6 @@ body {
   margin-left: 10px;
 }
 
-.navbar .nav .dropdown {
-    position: absolute;
-    right: 400px;
-}
-
 .schedule {
     float: left;
     padding: 15px;
@@ -110,3 +105,8 @@ body {
   margin-left: -5px;
   margin-right: -5px;
 }
+
+.navbar .container {
+  width: 1045px;
+}
+

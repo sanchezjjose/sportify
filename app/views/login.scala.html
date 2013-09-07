@@ -15,7 +15,9 @@
         <div class="container">
 
             <h1>
-            Gilt Basketball
+                Gilt Basketball 
+            <img src="@routes.Assets.at("images/basketball-icon.png")" width="120" height="120" /> 
+
             </h1>
 
             <div class="content">
@@ -29,7 +31,7 @@
                         @helper.form(routes.Login.authenticate) {
             
                             @loginForm.globalError.map { error =>
-                                <p class="error">
+                                <p class="text-danger">
                                     @error.message
                                 </p>
                             }

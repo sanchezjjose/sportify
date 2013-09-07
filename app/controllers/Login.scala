@@ -17,7 +17,7 @@ object Login extends Controller {
     tuple(
       "email" -> text,
       "password" -> text
-    ) verifying ("Invalid email or password. Hint: g-unit", result => result match {
+    ) verifying ("Invalid email or password. Hint: team name", result => result match {
       case (email, password) => User.authenticate(email, password).isDefined
     })
   )
