@@ -4,7 +4,7 @@ import PlayProject._
 
 object ApplicationBuild extends Build {
 
-    val appName         = "svc-gilt-sports"
+    val appName         = "sportify"
     val appVersion      = "1.0-SNAPSHOT"
 
     val appDependencies = Seq(
