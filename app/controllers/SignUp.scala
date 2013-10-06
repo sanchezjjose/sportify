@@ -20,7 +20,8 @@ object SignUp extends Controller {
 			"firstname" -> nonEmptyText,
 			"lastname" -> nonEmptyText,
 			"number" -> number,
-      "position" -> nonEmptyText
+      "position" -> nonEmptyText,
+      "facebookUser" -> ignored(None)
 		)(User.apply)(User.unapply)
 	)
 

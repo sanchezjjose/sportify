@@ -23,9 +23,17 @@ object FacebookUser {
    *
    * @param facebookUser The facebook user
    */
-  def insert(access_token: String, user_id: String) = {
+  def insert(access_token: String, 
+    user_id: String, 
+    email: Option[String], 
+    firstName: String, 
+    lastName: Option[String]) = {
+
   	val facebookUser = FacebookUser(access_token, user_id)
     val dbo = grater[FacebookUser].asDBObject(facebookUser)
     MongoManager.facebookAuthColl += dbo
+
+    // Create a user with an option of a facebookUser
+    User.insert(email, firstName, lastName, Option(facebookUser))
   }
 }

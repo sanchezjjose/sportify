@@ -38,7 +38,7 @@
                         console.log(access_token);
                         console.log(user_id);
 
-                        // window.location = '@routes.Facebook.authenticate("abc123", "456789")'
+                        window.location = "@routes.Facebook.authenticate(" + access_token + "," + user_id + ")";
 
                     } else if (response.status === 'not_authorized') {
                         // the user is logged in to Facebook,

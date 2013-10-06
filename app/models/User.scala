@@ -12,7 +12,8 @@ case class User(_id: String,
                 firstName: String,
                 lastName: String,
                 number: Int,
-                position: String)
+                position: String,
+                facebookUser: Option[FacebookUser] = None)
 
 object User {
 
@@ -58,6 +59,16 @@ object User {
   def insert(user: User) = {
     val dbo = grater[User].asDBObject(user)
     dbo.put("_id", UUID.randomUUID().toString)
+    dbo.put("password", "giltunit")
+    MongoManager.usersColl += dbo
+  }
+
+  /**
+   * Insert a new user with an option of a facebook user.
+   */
+  def insert(email: Option[String], firstName: String, lastName: Option[String], facebookUser: Option[FacebookUser]) = {
+    val user = User(UUID.randomUUID().toString, email.getOrElse(""), firstName, lastName.getOrElse(""), 0, "SF", facebookUser)
+    val dbo = grater[User].asDBObject(user)
     dbo.put("password", "giltunit")
     MongoManager.usersColl += dbo
   }

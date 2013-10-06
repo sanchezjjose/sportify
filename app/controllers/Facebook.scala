@@ -7,6 +7,7 @@ import models._
 object Facebook extends Controller with Secured {
 
   def authenticate(access_token: String, user_id: String) = Action {
+    // Create facebook entry if one does not already exist
     FacebookUser.findByAccessToken(access_token).getOrElse {
       FacebookUser.insert(access_token, user_id)
     }
