@@ -67,10 +67,15 @@ object User {
    * Insert a new user with an option of a facebook user.
    */
   def insert(email: Option[String], firstName: String, lastName: Option[String], facebookUser: Option[FacebookUser]) = {
-    val user = User(UUID.randomUUID().toString, email.getOrElse(""), firstName, lastName.getOrElse(""), 0, "SF", facebookUser)
+    val _id = if (facebookUser.isDefined) {
+      facebookUser.get.user_id
+    } else {
+      UUID.randomUUID().toString
+    }
+    val user = User(_id, email.getOrElse(""), firstName, lastName.getOrElse(""), 0, "SF", facebookUser)
     val dbo = grater[User].asDBObject(user)
     dbo.put("password", "giltunit")
+
     MongoManager.usersColl += dbo
   }
-  
 }

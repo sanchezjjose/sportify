@@ -17,7 +17,7 @@ GET     /logout                     controllers.Login.logout
 POST    /login/submit               controllers.Login.authenticate
 GET     /news                       controllers.Application.news
 
-GET     /login/facebook/submit      controllers.Facebook.authenticate(access_token, user_id)
+GET     /signup/facebook/:access_token/:user_id     controllers.Facebook.authenticate(access_token, user_id)
 
 GET     /game/update_score          controllers.Application.updateScore(game_id, result, score)
 
