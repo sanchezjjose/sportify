@@ -22,6 +22,14 @@ object User {
   /**
    * Retrieve a User from id.
    */
+  def findByFacebookUserId(user_id: String): Option[User] = {
+    val dbObject = MongoManager.usersColl.findOne( MongoDBObject("facebookUser.user_id" -> user_id) )
+    dbObject.map(o => grater[User].asObject(o))
+  }
+
+  /**
+   * Retrieve a User from id.
+   */
   def findById(_id: String): Option[User] = {
     val dbObject = MongoManager.usersColl.findOne( MongoDBObject("_id" -> _id) )
     dbObject.map(o => grater[User].asObject(o))

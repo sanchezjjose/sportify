@@ -21,8 +21,10 @@ object Schedule extends Controller {
 
     val gameId = request.rawQueryString.split("=")(2).toInt
     val game : Option[Game] = Game.findByGameId(gameId)
-    val player = request.session.get("email").get
-    val userId = User.findByEmail(player).get._id
+//    val player = request.session.get("email").get
+//    val userId = User.findByEmail(player).get._id
+
+    val userId = User.loggedInUser._id
     
     if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
 

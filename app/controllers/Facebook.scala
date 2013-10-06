@@ -7,9 +7,9 @@ import play.api.libs.ws.WS
 
 object Facebook extends Controller with Secured {
 
-  def authenticate(access_token: String, user_id: String) = Action {
+  def authenticate(access_token: String, user_id: String) = Action { implicit request =>
 
-    Async {
+//    Async {
       WS.url("https://graph.facebook.com/"+user_id+"?fields=email,first_name,last_name").get().map { response =>
 
         val json = response.json
@@ -22,9 +22,15 @@ object Facebook extends Controller with Secured {
           FacebookUser.insert(access_token, user_id, email, firstName, lastName)
         }
 
+        //TODO: REMOVE THIS SICKENING HACK
+        val userOpt = User.findById(user_id)
+        User.loggedInUser = userOpt.get
+
 //        Ok(response.body).as("application/json")
-        Ok(views.html.index("Next Game", Game.findNextGame)).withSession("user_id" -> user_id)
-      }
+//        Ok(views.html.index("Next Game", Game.findNextGame)).withSession("user_id" -> user_id)
+//      }
     }
+
+    Ok(views.html.index("Next Game", Game.findNextGame)).withSession("user_info" -> user_id)
   }
 }

@@ -18,6 +18,11 @@ object FacebookUser {
   	dbObject.map( o => grater[FacebookUser].asObject(o) )
   }
 
+  def findByUserId(user_id: String): Option[FacebookUser] = {
+    val dbObject = MongoManager.facebookAuthColl.findOne( MongoDBObject("user_id" -> user_id) )
+    dbObject.map( o => grater[FacebookUser].asObject(o) )
+  }
+
   /**
    * Add new users FB information.
    */

@@ -15,6 +15,43 @@
     </head>
     <body>
 
+    <script>
+        window.fbAsyncInit = function() {
+
+          FB.init({
+              appId      : '584728524918442', // App ID
+              channelUrl : '//@routes.Assets.at("javascripts/channel.html")', // Channel File
+              status     : true, // check login status
+              cookie     : true, // enable cookies to allow the server to access the session
+              xfbml      : true  // parse XFBML
+          });
+
+          FB.Event.subscribe('auth.authResponseChange', function(response) {
+
+            var button = document.getElementById('btn-logout');
+
+            if (response.status === 'connected') {
+              button.onclick = function() {
+                FB.logout(function(response) {
+                  Log.info('FB.logout callback', response);
+                });
+              };
+            }
+          });
+        };
+
+        // Load the SDK asynchronously
+        (function(d){
+          var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+          if (d.getElementById(id)) {return;}
+          js = d.createElement('script'); js.id = id; js.async = true;
+          js.src = "//connect.facebook.net/en_US/all.js";
+          ref.parentNode.insertBefore(js, ref);
+        }(document));
+
+    </script>
+
+
     <nav class="navbar navbar-default" role="navigation">
       <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -60,7 +97,7 @@
                   <a href="">My Account</a>
                 </li>
                 <li>
-                  <a href="@routes.Login.logout">Logout</a>
+                  <a id="btn-logout" href="@routes.Login.logout">Logout</a>
                 </li>
               </ul>
             </li>
@@ -72,7 +109,7 @@
     <div class="container">
         <div class="content">
             <div class="page-header">
-                <h1><img src="@routes.Assets.at("images/basketball-icon.png")" width="70" height="70" />  @title</h1>
+                <h1 class="text-warning"><img src="@routes.Assets.at("images/basketball-icon.png")" width="70" height="70" />  @title</h1>
             </div>
             <div class="row">
                 <div class="span14">

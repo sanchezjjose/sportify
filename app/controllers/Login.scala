@@ -35,7 +35,7 @@ object Login extends Controller {
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(html.login(formWithErrors)),
-      user => Redirect(routes.Application.home).withSession("email" -> user._1)
+      user => Redirect(routes.Application.home).withSession("user_info" -> user._1)
     )
   }
 
@@ -56,9 +56,9 @@ object Login extends Controller {
 trait Secured {
   
   /**
-   * Retrieve the connected user email.
+   * Retrieve the connected user session variable.
    */
-  private def username(request: RequestHeader) = request.session.get("email")
+  private def sessionKey(request: RequestHeader) = request.session.get("user_info")
 
   /**
    * Redirect to login if the user in not authorized.
@@ -70,11 +70,25 @@ trait Secured {
   /** 
    * Action for authenticated users.
    */
-  def IsAuthenticated(f: => User => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) { emailAddress =>
-    User.findByEmail(emailAddress).map { user =>
+  def IsAuthenticated(f: => User => Request[AnyContent] => Result) = Security.Authenticated(sessionKey, onUnauthorized) { key =>
+
+    // First check by email
+    User.findByEmail(key).map { user =>
       User.loggedInUser = user
       Action(request => f(user)(request))
-    }.getOrElse(Action(request => onUnauthorized(request)))
+    }.getOrElse{
+
+      // Next check by facebook user_id
+      User.findByFacebookUserId(key).map { user =>
+        User.loggedInUser = user
+        Action(request => f(user)(request))
+
+      }.getOrElse {
+
+        // Finally return onAuthorized
+        Action(request => onUnauthorized(request))
+      }
+    }
   }
 
 }

@@ -32,14 +32,8 @@
                         // the user's ID, a valid access token, a signed
                         // request, and the time the access token
                         // and signed request each expire
-                        var access_token = response.authResponse.accessToken;
-                        var user_id = response.authResponse.userID;
 
-                        console.log(access_token);
-                        console.log(user_id);
-
-                        window.location.href = "/signup/facebook/" + access_token + "/" + user_id;
-
+                        console.log("LOGGED INTO FACEBOOK")
                     } else if (response.status === 'not_authorized') {
                         // the user is logged in to Facebook,
                         // but has not authenticated your app
@@ -61,8 +55,14 @@
                         // login status of the person. In this case, we're handling the situation where they
                         // have logged in to the app.
 
-                        testAPI();
-                        storeFacebookData();
+                        var access_token = response.authResponse.accessToken;
+                        var user_id = response.authResponse.userID;
+
+                        console.log(access_token);
+                        console.log(user_id);
+
+                        window.location.href = "/signup/facebook/" + access_token + "/" + user_id;
+
                     } else if (response.status === 'not_authorized') {
                         // In this case, the person is logged into Facebook, but not into the app, so we call
                         // FB.login() to prompt them to do so.
@@ -94,29 +94,11 @@
                 ref.parentNode.insertBefore(js, ref);
             }(document));
 
-            // Here we run a very simple test of the Graph API after login is successful.
-            // This testAPI() function is only called in those cases.
-            function testAPI() {
-                console.log('Welcome!  Fetching your information.... ');
-                FB.api('/me', function(response) {
-                    console.log('Good to see you, ' + response.name + '.');
-                });
-            }
-
-            function storeFacebookData() {
-                // Gets the User object (https://developers.facebook.com/docs/reference/api/user)
-                FB.api('/me', function(response) {
-                    // Here we store the users access_token and user_id
-                    // Then add user to the session
-                    // Then we redirect them to the home page
-                    console.log(response.username)
-                });
-            }
         </script>
 
         <div class="container">
 
-            <h1>
+            <h1 class="text-warning">
                 Sportify 
             <img src="@routes.Assets.at("images/basketball-icon.png")" width="120" height="120" /> 
 
