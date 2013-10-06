@@ -6,6 +6,7 @@ import play.api.libs.json._
 import play.api.data.Form
 import play.api.data.Forms.tuple
 import play.api.data.Forms.text
+
 object Schedule extends Controller {
 
   val form = Form(

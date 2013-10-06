@@ -44,7 +44,7 @@ object Login extends Controller {
    */
   def logout = Action {
     Redirect(routes.Login.login).withNewSession.flashing(
-      "success" -> "You've been logged out"
+      "success" -> "You've been successfully logged out."
     )
   }
 

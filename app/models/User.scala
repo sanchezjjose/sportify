@@ -22,7 +22,7 @@ object User {
    * Retrieve a User from id.
    */
   def findById(_id: String): Option[User] = {
-    val dbObject = MongoManager.collection.findOne( MongoDBObject("_id" -> _id) )
+    val dbObject = MongoManager.usersColl.findOne( MongoDBObject("_id" -> _id) )
     dbObject.map(o => grater[User].asObject(o))
   }
   
@@ -30,7 +30,7 @@ object User {
    * Retrieve a User from email.
    */
   def findByEmail(email: String): Option[User] = {
-    val dbObject = MongoManager.collection.findOne( MongoDBObject("email" -> email) )
+    val dbObject = MongoManager.usersColl.findOne( MongoDBObject("email" -> email) )
     dbObject.map(o => grater[User].asObject(o))
   }
   
@@ -38,7 +38,7 @@ object User {
    * Retrieve all users.
    */
   def findAll: Iterator[User] = {
-    val dbObjects = MongoManager.collection.find()
+    val dbObjects = MongoManager.usersColl.find()
     for (x <- dbObjects) yield grater[User].asObject(x)
   }
   
@@ -46,7 +46,7 @@ object User {
    * Authenticate a User.
    */
   def authenticate(email: String, password: String): Option[User] = {
-    val dbObject = MongoManager.collection.findOne( MongoDBObject("email" -> email, "password" -> password) )
+    val dbObject = MongoManager.usersColl.findOne( MongoDBObject("email" -> email, "password" -> password) )
     dbObject.map(o => grater[User].asObject(o))
   }
 
@@ -59,7 +59,7 @@ object User {
     val dbo = grater[User].asDBObject(user)
     dbo.put("_id", UUID.randomUUID().toString)
     dbo.put("password", "giltunit")
-    MongoManager.collection += dbo
+    MongoManager.usersColl += dbo
   }
   
 }

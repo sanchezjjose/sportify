@@ -7,15 +7,19 @@ GET     /                           controllers.Application.index
 
 # Other
 GET     /home                       controllers.Application.home
-GET     /roster 				  	        controllers.Application.roster
-GET     /schedule 				        	controllers.Application.schedule
+GET     /roster 				  	controllers.Application.roster
+GET     /schedule 				    controllers.Application.schedule
 GET     /schedule/submit            controllers.Schedule.submit
-GET     /signup 				  	        controllers.SignUp.signup
+GET     /signup 				  	controllers.SignUp.signup
 POST    /signup/submit              controllers.SignUp.submit
 GET     /login                      controllers.Login.login
 GET     /logout                     controllers.Login.logout
 POST    /login/submit               controllers.Login.authenticate
 GET     /news                       controllers.Application.news
+
+GET     /login/facebook/submit      controllers.Facebook.authenticate(access_token, user_id)
+
+GET     /game/update_score          controllers.Application.updateScore(game_id, result, score)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

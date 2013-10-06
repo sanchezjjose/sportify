@@ -26,6 +26,11 @@ object Application extends Controller with Config with Secured {
   def news = IsAuthenticated { user => _ =>
     Ok(views.html.news("News & Highlights"))
   }
+
+  def updateScore(game_id: String, result: String, score: String) = Action {
+    Game.updateScore(game_id, result, score)
+    Redirect(routes.Application.schedule)
+  }
 }
 
 trait Config {

@@ -34,7 +34,7 @@ object Game {
   }
 
   def findByGameId(game_id: Long): Option[Game] = {
-    val dbObject = MongoManager.gameCollection.findOne(MongoDBObject("game_id" -> game_id))
+    val dbObject = MongoManager.gamesColl.findOne(MongoDBObject("game_id" -> game_id))
     dbObject.map(o => grater[Game].asObject(o))
   }
 
@@ -42,13 +42,23 @@ object Game {
    * Retrieve all games.
    */
   def findAll: Iterator[Game] = {
-    val dbObjects = MongoManager.gameCollection.find(MongoDBObject("season" -> "Fall 2013")).sort(MongoDBObject("game_id" -> 1))
+    val dbObjects = MongoManager.gamesColl.find(MongoDBObject("season" -> "Fall 2013")).sort(MongoDBObject("game_id" -> 1))
     for (x <- dbObjects) yield grater[Game].asObject(x)
   }
 
   def update(game: Game) = {
     val dbo = grater[Game].asDBObject(game)
-    MongoManager.gameCollection.update(MongoDBObject("game_id" -> game.game_id), dbo)
+    MongoManager.gamesColl.update(MongoDBObject("game_id" -> game.game_id), dbo)
+  }
+
+  def updateScore(game_id: String, result: String, score: String) = {
+    val gameOpt = findByGameId(game_id.toInt)
+
+    gameOpt.map { game =>
+
+      val resultUpdated = $set("result" -> "%s %s".format(result, score))
+      MongoManager.gamesColl.update(MongoDBObject("game_id" -> game.game_id), resultUpdated)
+    }
   }
 
 	/**
@@ -58,9 +68,11 @@ object Game {
    */
   def insert(game: Game) = {
     val dbo = grater[Game].asDBObject(game)
-    MongoManager.gameCollection += dbo
+    MongoManager.gamesColl += dbo
   }
 
+
+  //TODO: convert this to endpoint -- /games/load/<resource_location>
   def loadGames : Unit = {
     val jsonString = Source.fromFile("app/resources/games.json")
     val json: JsValue = Json.parse(jsonString mkString)
