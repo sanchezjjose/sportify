@@ -68,6 +68,7 @@ object User {
     val dbo = grater[User].asDBObject(user)
     dbo.put("_id", UUID.randomUUID().toString)
     dbo.put("password", "giltunit")
+
     MongoManager.usersColl += dbo
   }
 
@@ -85,5 +86,12 @@ object User {
     dbo.put("password", "giltunit")
 
     MongoManager.usersColl += dbo
+  }
+
+  /**
+   * Update access token.
+   */
+  def updateAccessToken(access_token: String, user_id: String) = {
+    MongoManager.usersColl.update(MongoDBObject("facebookUser.user_id" -> user_id), $set("facebookUser.access_token" -> access_token))
   }
 }

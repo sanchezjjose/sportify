@@ -31,7 +31,11 @@
             var button = document.getElementById('btn-logout');
 
             if (response.status === 'connected') {
+
+              console.log("Setting onclick() event to the Logout button to logout of facebook")
+
               button.onclick = function() {
+                console.log("Logging out of facebook now...")
                 FB.logout(function(response) {
                   Log.info('FB.logout callback', response);
                 });
@@ -48,7 +52,6 @@
           js.src = "//connect.facebook.net/en_US/all.js";
           ref.parentNode.insertBefore(js, ref);
         }(document));
-
     </script>
 
 
@@ -89,7 +92,7 @@
                  data-toggle="dropdown"
                  href="#logout-dropdown">
                 <span class="glyphicon glyphicon-user"></span>
-                Welcome @User.loggedInUser.firstName
+                    Welcome @User.loggedInUser.firstName
                 <b class="caret"></b>
               </a>
               <ul class="dropdown-menu">

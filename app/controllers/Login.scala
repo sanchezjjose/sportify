@@ -1,6 +1,5 @@
 package controllers
 
-import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -10,8 +9,6 @@ import models._
 
 
 object Login extends Controller {
-
-  // -- Authentication
 
   val loginForm = Form(
     tuple(
@@ -74,12 +71,16 @@ trait Secured {
 
     // First check by email
     User.findByEmail(key).map { user =>
+
       User.loggedInUser = user
       Action(request => f(user)(request))
     }.getOrElse{
 
       // Next check by facebook user_id
       User.findByFacebookUserId(key).map { user =>
+
+        println("B: " + user.facebookUser.get.access_token)
+
         User.loggedInUser = user
         Action(request => f(user)(request))
 

@@ -34,4 +34,12 @@ object FacebookUser {
     // Create a user with an option of a facebookUser
     User.insert(email, firstName, lastName, Option(facebookUser))
   }
+
+  /**
+   * Update access token.
+   */
+  def updateAccessToken(access_token: String, user_id: String) = {
+    MongoManager.facebookAuthColl.update(MongoDBObject("user_id" -> user_id), $set("access_token" -> access_token))
+    MongoManager.usersColl.update(MongoDBObject("facebookUser.user_id" -> user_id), $set("facebookUser.access_token" -> access_token))
+  }
 }
