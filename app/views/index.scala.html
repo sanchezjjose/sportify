@@ -6,6 +6,8 @@
 
 @gameOpt.map { game =>
 
+
+
 <div class="next-game">
 
   <div class="span10">
@@ -24,7 +26,7 @@
 
     <h3>Game @game.game_seq</h3> <br>
 
-    <a href='@routes.Facebook.createEvent("BBall Game","2013-10-07T20:00:00","must win.","2 Park Ave, New York")' id="fb-event" class="btn">Remind Me On Facebook</a> <br><br>
+    <a class="btn btn-primary" id="create-fb-event" class="btn">Remind Me On Facebook</a> <br><br>
 
     <h4>Gilt Unit vs. @game.opponent</h4>
     @game.startTime <br> <br>
@@ -78,6 +80,16 @@
     </div>
 
     <br><br>
+
+    <script type="text/javascript">
+        $("#create-fb-event").on('click', function() {
+          var href = "/home/facebook/event/" + @game.game_id;
+
+          console.log(href);
+           
+          window.location = href;
+        });
+    </script>
 
     <div id="map-canvas"></div>
 

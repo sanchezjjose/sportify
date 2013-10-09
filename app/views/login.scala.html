@@ -32,7 +32,6 @@
                         // the user's ID, a valid access token, a signed
                         // request, and the time the access token
                         // and signed request each expire
-
                         console.log("LOGGED INTO FACEBOOK")
                     } else if (response.status === 'not_authorized') {
                         // the user is logged in to Facebook,
@@ -139,7 +138,7 @@
 
                                   Learn more about options for the login button plugin:
                                   /docs/reference/plugins/login/ -->
-                                <fb:login-button show-faces="false" size="xlarge" width="200" max-rows="1"></fb:login-button>
+                                <fb:login-button scope="create_event" show-faces="false" size="xlarge" width="200" max-rows="1"></fb:login-button>
                                 <p><br><b> OR <b><br><br></p> 
 
                                 <p>

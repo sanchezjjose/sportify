@@ -8,9 +8,8 @@ import com.novus.salat.global._
 import com.mongodb.casbah.Imports._
 import io.Source
 import play.api.libs.json._
-import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
+import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTime
-import java.util.UUID
 
 case class Game(game_id: Int,
                 game_seq: Int,

@@ -3,28 +3,28 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
+GET     /                                                controllers.Application.index
 
 # Other
-GET     /home                       controllers.Application.home
-GET     /home/facebook/event        controllers.Facebook.createEvent(name, startTime, description, location)
+GET     /home                                            controllers.Application.home
+GET     /home/facebook/event/:game_id                    controllers.Facebook.createEvent(game_id: Int)
 
-GET     /roster 				  	controllers.Application.roster
+GET     /roster 				  	                     controllers.Application.roster
 
-GET     /schedule 				    controllers.Application.schedule
-GET     /schedule/submit            controllers.Schedule.submit
+GET     /schedule 				                         controllers.Application.schedule
+GET     /schedule/submit                                 controllers.Schedule.submit
 
-GET     /signup 				  	controllers.SignUp.signup
-POST    /signup/submit              controllers.SignUp.submit
+GET     /signup 				  	                     controllers.SignUp.signup
+POST    /signup/submit                                   controllers.SignUp.submit
 
-GET     /login                      controllers.Login.login
-GET     /logout                     controllers.Login.logout
-POST    /login/submit               controllers.Login.authenticate
-GET     /login/facebook/:access_token/:user_id     controllers.Facebook.authenticate(access_token, user_id)
+GET     /login                                           controllers.Login.login
+GET     /logout                                          controllers.Login.logout
+POST    /login/submit                                    controllers.Login.authenticate
+GET     /login/facebook/:access_token/:user_id           controllers.Facebook.authenticate(access_token, user_id)
 
-GET     /news                       controllers.Application.news
+GET     /news                                            controllers.Application.news
 
-GET     /game/update_score          controllers.Application.updateScore(game_id, result, score)
+GET     /game/update_score                               controllers.Application.updateScore(game_id, result, score)
 
 
 # Map static resources from the /public folder to the /assets URL path

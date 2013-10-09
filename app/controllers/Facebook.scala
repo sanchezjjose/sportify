@@ -3,14 +3,15 @@ package controllers
 import play.api.mvc._
 import models._
 import play.api.libs.ws.WS
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.DateTimeZone
 
 
 object Facebook extends Controller with Secured {
 
   def authenticate(access_token: String, user_id: String) = Action { implicit request =>
 
-    // Async { put code below here and make non-blocking }
-
+  // Async { put code below here and make non-blocking }
 
     println("A: " + access_token)
 
@@ -35,22 +36,33 @@ object Facebook extends Controller with Secured {
     Redirect(routes.Application.home).withSession("user_info" -> user_id)
   }
 
-  def createEvent(name: String, startTime: String, description: String, location: String) = IsAuthenticated { user => _ =>
+  def createEvent(gameId: Int) = IsAuthenticated { user => _ =>
 
-    WS.url("https://graph.facebook.com/me/events").post(
-      Map("name" -> Seq(name),
-          "start_time" -> Seq(startTime),
-          "description" -> Seq(description),
-          "location" -> Seq(location),
-          "privacy_type" -> Seq("SECRET"),
-          "access_token" -> Seq(user.facebookUser.get.access_token))
-    ).map { response =>
+    Game.findByGameId(gameId).map { game =>
 
+      // Convert between the original and ISO8601 format
+      val timeZone = DateTimeZone.forID("America/New_York")
+      val format = DateTimeFormat.forPattern("E MM/dd/yyyy, HH:mm aa")
+      val dateTime = format.parseDateTime(game.startTime).withZone(timeZone)
 
-      println("C: " + user.facebookUser.get.access_token)
-      println("D: " + User.loggedInUser.facebookUser.get.access_token)
+      // Create the ISO8601 format style and set the specific hour and day for the event
+      val iso8601Format = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+      val isoStartTime = dateTime.withHourOfDay(16).minusDays(1).toString(iso8601Format)
 
-      println(response.json)
+      // The data that will be posted to FB
+      val data = Map("name" -> Seq("Game Tomorrow: Gilt Unit vs. %s".format(game.opponent)),
+        "start_time" -> Seq(isoStartTime),
+        "description" -> Seq("You have a basketball game tomorrow, %s. Remember to bring your shirt.".format(game.startTime)),
+        "location" -> Seq(game.address + ", New York, New York"),
+        "privacy_type" -> Seq("SECRET"))
+
+      WS.url("https://graph.facebook.com/me/events?access_token=" + user.facebookUser.get.access_token).post(data).map { response =>
+
+        println("C: " + user.facebookUser.get.access_token)
+        println("D: " + User.loggedInUser.facebookUser.get.access_token)
+
+        println(response.json)
+      }
     }
 
     Redirect(routes.Application.home)
