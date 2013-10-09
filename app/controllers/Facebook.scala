@@ -13,7 +13,7 @@ object Facebook extends Controller with Secured {
   private val appSecret = "c2e02f8fbd8a68684ce31e0f091677f7"
 
   val graphApiBaseUrl = "https://graph.facebook.com/"
-  val graphApiCreateEventUrl = graphApiBaseUrl + "me/events?access_token=" + User.loggedInUser.facebookUser.get.access_token
+  val graphApiCreateEventBaseUrl = graphApiBaseUrl + "me/events?access_token="
 
   def authenticate(access_token: String, user_id: String) = Action { implicit request =>
 
@@ -62,7 +62,7 @@ object Facebook extends Controller with Secured {
         "location" -> Seq(game.address + ", New York, New York"),
         "privacy_type" -> Seq("SECRET"))
 
-      WS.url(graphApiCreateEventUrl).post(data).map { response =>
+      WS.url(graphApiCreateEventBaseUrl + User.loggedInUser.facebookUser.get.access_token).post(data).map { response =>
 
         println("C: " + user.facebookUser.get.access_token)
         println("D: " + User.loggedInUser.facebookUser.get.access_token)
@@ -77,6 +77,6 @@ object Facebook extends Controller with Secured {
       }
     }
 
-    Redirect(routes.Application.home)
+    Redirect(routes.Application.home).flashing("success" -> "You will be reminded by facebook 1 day prior to your next game!")
   }
 }

@@ -1,12 +1,10 @@
-@(header: String, gameOpt: Option[Game])
+@(header: String, gameOpt: Option[Game])(implicit flash: Flash)
 
 @import helper._
 
 @main(Html("Next Game."), nav = "home") {
 
 @gameOpt.map { game =>
-
-
 
 <div class="next-game">
 
@@ -21,6 +19,13 @@
     </div>
     }
   </div>
+
+  @if(flash.get("success").isDefined) {
+    <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <center>@flash.get("success")</center>
+    </div>
+  }
 
   <div class="span12">
 

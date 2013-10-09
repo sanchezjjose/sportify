@@ -10,7 +10,7 @@ object Application extends Controller with Config with Secured {
     Redirect(routes.Application.home)
   }
 
-  def home = IsAuthenticated { user => _ =>
+  def home = IsAuthenticated { user => implicit request =>
     Ok(views.html.index("Next Game", Game.findNextGame))
   }
 
