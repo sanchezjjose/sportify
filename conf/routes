@@ -6,6 +6,10 @@
 GET     /                                                controllers.Application.index
 
 # Other
+GET     /account                                         controllers.Account.account
+POST    /account/submit                                  controllers.Account.submit
+GET     /account/delete                                  controllers.Account.delete
+
 GET     /home                                            controllers.Application.home
 GET     /home/facebook/event/:game_id                    controllers.Facebook.createEvent(game_id: Int)
 

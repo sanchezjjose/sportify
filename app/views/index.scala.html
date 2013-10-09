@@ -26,14 +26,17 @@
 
     <h3>Game @game.game_seq</h3> <br>
 
-    <a class="btn btn-primary" id="create-fb-event" class="btn">Remind Me On Facebook</a> <br><br>
-
     <h4>Gilt Unit vs. @game.opponent</h4>
-    @game.startTime <br> <br>
+    @game.startTime <br><br>
+
+    
+
     @game.address <br>
     @if(!game.locationDetails.isEmpty()){
-      <b><font color="red">*&nbsp;</font></b>@game.locationDetails <br>
+      <b><font color="red">*&nbsp;</font></b>@game.locationDetails <br><br>
     }
+
+    <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a>
 
     <br><br>
 

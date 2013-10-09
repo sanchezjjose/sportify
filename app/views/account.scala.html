@@ -1,0 +1,79 @@
+@(accountForm: Form[User])(implicit flash: Flash)
+
+@import helper._
+
+@main(Html("Your Account Information.")) {
+
+    @if(flash.get("success").isDefined) {
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @flash.get("success")
+        </div>
+    }
+
+    <div class="container">
+
+        <div class="content">
+
+            @helper.form(action = routes.Account.submit) {
+
+            <div class="row">
+                <div class="span14">
+
+                    <fieldset>
+                        <legend>Account Information</legend>
+
+                        @inputText(
+                        accountForm("email"),
+                            '_label -> "Email",
+                            '_help -> "",
+                            '_error -> accountForm.globalError
+                        )
+
+                        @inputText(
+                        accountForm("firstname"),
+                            '_label -> "First Name",
+                            '_help -> "",
+                            '_error -> accountForm.globalError
+                        )
+
+                        @inputText(
+                        accountForm("lastname"),
+                            '_label -> "Last Name",
+                            '_help -> "",
+                            '_error -> accountForm.globalError
+                        )
+
+                        @inputText(
+                        accountForm("number"),
+                            '_label -> "Jersey Number",
+                            '_help -> "",
+                            '_error -> accountForm.globalError
+                        )
+
+                        @select(
+                            field = accountForm("position"),
+                            options = options(List("PG", "SG", "SF", "F", "C")),
+                            '_default -> "-------- Choose a Position --------",
+                            '_label -> "Position",
+                            '_error -> "Please select a player position.",
+                            '_showConstraints -> false
+                        )
+
+                    </fieldset>
+
+                    <div class="actions">
+                        <input type="submit" class="btn btn-primary" value="Save">
+                        <a href="@routes.Account.delete" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+            }
+
+            <!--REMOVE THESE BREAKS AND USE CSS INSTEAD-->
+            <br>
+
+        </div>
+    </div>
+
+}

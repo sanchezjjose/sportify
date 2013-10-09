@@ -99,6 +99,13 @@
 
         </script>
 
+        @if(flash.get("deleted").isDefined) {
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                @flash.get("deleted")
+            </div>
+        }
+
         <div class="container">
 
             <h1 class="text-warning">

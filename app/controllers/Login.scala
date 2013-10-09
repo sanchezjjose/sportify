@@ -39,7 +39,7 @@ object Login extends Controller {
   /**
    * Logout and clean the session.
    */
-  def logout = Action {
+  def logout = Action { implicit request => 
     Redirect(routes.Login.login).withNewSession.flashing(
       "success" -> "You've been successfully logged out."
     )

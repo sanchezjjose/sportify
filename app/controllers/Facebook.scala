@@ -9,13 +9,19 @@ import org.joda.time.DateTimeZone
 
 object Facebook extends Controller with Secured {
 
+  private val appId = "584728524918442"
+  private val appSecret = "c2e02f8fbd8a68684ce31e0f091677f7"
+
+  val graphApiBaseUrl = "https://graph.facebook.com/"
+  val graphApiCreateEventUrl = graphApiBaseUrl + "me/events?access_token=" + User.loggedInUser.facebookUser.get.access_token
+
   def authenticate(access_token: String, user_id: String) = Action { implicit request =>
 
   // Async { put code below here and make non-blocking }
 
     println("A: " + access_token)
 
-    WS.url("https://graph.facebook.com/"+user_id+"?fields=email,first_name,last_name").get().map { response =>
+    WS.url(graphApiBaseUrl + user_id + "?fields=email,first_name,last_name").get().map { response =>
 
       val json = response.json
       val email = (json \ "email").asOpt[String]
@@ -56,12 +62,18 @@ object Facebook extends Controller with Secured {
         "location" -> Seq(game.address + ", New York, New York"),
         "privacy_type" -> Seq("SECRET"))
 
-      WS.url("https://graph.facebook.com/me/events?access_token=" + user.facebookUser.get.access_token).post(data).map { response =>
+      WS.url(graphApiCreateEventUrl).post(data).map { response =>
 
         println("C: " + user.facebookUser.get.access_token)
         println("D: " + User.loggedInUser.facebookUser.get.access_token)
 
+        // TODO: check response for error, and generate new access_token here if expired
         println(response.json)
+
+//        if (response.getAHCResponse.getStatusCode != 200) {
+//          "https://graph.facebook.com/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s"
+//            .format(appId, "@routes.createEvent("+gameId+")", appSecret, "190")
+//        }
       }
     }
 

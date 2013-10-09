@@ -59,11 +59,13 @@
                                 '_error -> signupForm.globalError
                             )
 
-                            @inputText(
-                            signupForm("position"),
-                            '_label -> "Position",
-                            '_help -> "Please enter a valid position (PG, SG, SF, F, C).",
-                            '_error -> signupForm.globalError
+                            @select(
+                                field = signupForm("position"),
+                                options = options(List("PG", "SG", "SF", "F", "C")),
+                                '_default -> "-------- Choose a Position --------",
+                                '_label -> "Position",
+                                '_error -> "Please select a player position.",
+                                '_showConstraints -> false
                             )
                         </fieldset>
 

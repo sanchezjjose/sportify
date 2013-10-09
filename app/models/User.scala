@@ -88,10 +88,25 @@ object User {
     MongoManager.usersColl += dbo
   }
 
+  def updateAccountInformation(updatedUser: User) = {
+    MongoManager.usersColl.update(MongoDBObject("_id" -> User.loggedInUser._id),
+      $set("email" -> updatedUser.email,
+        "firstName" -> updatedUser.firstName,
+        "lastName" -> updatedUser.lastName,
+        "number" -> updatedUser.number,
+        "position" -> updatedUser.position)
+    )
+  }
+
   /**
    * Update access token.
    */
   def updateAccessToken(access_token: String, user_id: String) = {
     MongoManager.usersColl.update(MongoDBObject("facebookUser.user_id" -> user_id), $set("facebookUser.access_token" -> access_token))
+  }
+
+  def delete(user: User) = {
+    val dbo = grater[User].asDBObject(user)
+    MongoManager.usersColl -= dbo
   }
 }
