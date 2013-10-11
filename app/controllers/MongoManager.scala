@@ -11,7 +11,7 @@ import com.mongodb.casbah.Imports._
 
 object MongoManager {
   val mongoConn = MongoClient("localhost",27017)
-  val usersColl = mongoConn("sports")("users")
-  val gamesColl = mongoConn("sports")("games")
-  val facebookAuthColl = mongoConn("sports")("facebook_autherizations")
+  val usersColl = mongoConn("***REMOVED***")("users")
+  val gamesColl = mongoConn("***REMOVED***")("games")
+  val facebookAuthColl = mongoConn("***REMOVED***")("facebook_autherizations")
 }
