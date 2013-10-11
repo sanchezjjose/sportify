@@ -18,7 +18,7 @@
             window.fbAsyncInit = function() {
 
                 FB.init({
-                    appId      : '584728524918442', // App ID
+                    appId      : '***REMOVED***', // App ID
                     channelUrl : '//@routes.Assets.at("javascripts/channel.html")', // Channel File
                     status     : true, // check login status
                     cookie     : true, // enable cookies to allow the server to access the session
@@ -73,7 +73,7 @@
 
                         FB.login(function(response) {
                            // handle the response
-                        }, {scope: 'create_event'});
+                        });
                     } else {
                         // In this case, the person is not logged into Facebook, so we call the login()
                         // function to prompt them to do so. Note that at this stage there is no indication
@@ -83,7 +83,7 @@
 
                         FB.login(function(response) {
                            // handle the response
-                        }, {scope: 'create_event'});
+                        });
                     }
                 });
             };

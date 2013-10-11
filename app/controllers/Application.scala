@@ -3,8 +3,11 @@ package controllers
 import play.api.Play.current
 import play.api.mvc._
 import models._
+import org.slf4j.LoggerFactory
 
-object Application extends Controller with Config with Secured {
+object Application extends Controller with Config with Secured with Loggable {
+
+  val logger = LoggerFactory.getLogger(getClass.getName)
 
   def index = Action {
     Redirect(routes.Application.home)

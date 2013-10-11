@@ -7,10 +7,15 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTimeZone
 
 
-object Facebook extends Controller with Secured {
+object Facebook extends Controller with Secured with Loggable {
 
-  private val appId = "584728524918442"
-  private val appSecret = "c2e02f8fbd8a68684ce31e0f091677f7"
+  // Development
+  private val appId = "***REMOVED***"
+  private val appSecret = "***REMOVED***"
+
+    // Production
+//  private val appId = "584728524918442"
+//  private val appSecret = "c2e02f8fbd8a68684ce31e0f091677f7"
 
   val graphApiBaseUrl = "https://graph.facebook.com/"
   val graphApiCreateEventBaseUrl = graphApiBaseUrl + "me/events?access_token="
@@ -19,7 +24,7 @@ object Facebook extends Controller with Secured {
 
   // Async { put code below here and make non-blocking }
 
-    println("A: " + access_token)
+    log.info("A: " + access_token)
 
     WS.url(graphApiBaseUrl + user_id + "?fields=email,first_name,last_name").get().map { response =>
 
@@ -52,8 +57,8 @@ object Facebook extends Controller with Secured {
       val dateTime = format.parseDateTime(game.startTime).withZone(timeZone)
 
       // Create the ISO8601 format style and set the specific hour and day for the event
-      val iso8601Format = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-      val isoStartTime = dateTime.withHourOfDay(16).minusDays(1).toString(iso8601Format)
+      val isoFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+      val isoStartTime = dateTime.withHourOfDay(16).minusDays(1).toString(isoFormat)
 
       // The data that will be posted to FB
       val data = Map("name" -> Seq("Game Tomorrow: Gilt Unit vs. %s".format(game.opponent)),
@@ -64,11 +69,11 @@ object Facebook extends Controller with Secured {
 
       WS.url(graphApiCreateEventBaseUrl + User.loggedInUser.facebookUser.get.access_token).post(data).map { response =>
 
-        println("C: " + user.facebookUser.get.access_token)
-        println("D: " + User.loggedInUser.facebookUser.get.access_token)
+        log.info("C: " + user.facebookUser.get.access_token)
+        log.info("D: " + User.loggedInUser.facebookUser.get.access_token)
 
         // TODO: check response for error, and generate new access_token here if expired
-        println(response.json)
+        log.info(response.json.toString())
 
 //        if (response.getAHCResponse.getStatusCode != 200) {
 //          "https://graph.facebook.com/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s"

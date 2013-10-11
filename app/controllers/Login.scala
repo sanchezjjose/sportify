@@ -7,8 +7,7 @@ import play.api.data.Forms._
 import views._
 import models._
 
-
-object Login extends Controller {
+object Login extends Controller with Loggable {
 
   val loginForm = Form(
     tuple(
@@ -50,7 +49,7 @@ object Login extends Controller {
 /**
  * Provide security features
  */
-trait Secured {
+trait Secured extends Loggable {
   
   /**
    * Retrieve the connected user session variable.
@@ -61,8 +60,6 @@ trait Secured {
    * Redirect to login if the user in not authorized.
    */
   private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Login.login)
-  
-  // --
   
   /** 
    * Action for authenticated users.
@@ -79,7 +76,7 @@ trait Secured {
       // Next check by facebook user_id
       User.findByFacebookUserId(key).map { user =>
 
-        println("B: " + user.facebookUser.get.access_token)
+        log.info("B: " + user.facebookUser.get.access_token)
 
         User.loggedInUser = user
         Action(request => f(user)(request))
