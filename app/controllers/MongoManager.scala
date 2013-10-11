@@ -10,7 +10,7 @@ import com.mongodb.casbah.Imports._
 
 
 object MongoManager {
-  val mongoConn = MongoClient("mongodb://heroku:c4d0cb4db9057b377c2cb4aeca01a676@***REMOVED***",***REMOVED***)
+  val mongoConn = MongoClient("heroku:c4d0cb4db9057b377c2cb4aeca01a676@***REMOVED***",***REMOVED***)
   val usersColl = mongoConn("***REMOVED***")("users")
   val gamesColl = mongoConn("***REMOVED***")("games")
   val facebookAuthColl = mongoConn("***REMOVED***")("facebook_autherizations")
