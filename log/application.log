@@ -1,39 +1,353 @@
-2013-10-10 19:22:44,866 - [INFO] - from application in play-akka.actor.actions-dispatcher-21 
-B: CAACnZAFBCqWwBAP2BbZCs520YW1WmP15PiMgoQZBr37WBYW5d6VEoq9AiNZCIFWn90enAaNNhYoWEdyvqzgkbyiZAfHCZAL2onFK7jZCSRq3xZCuWsP4ZCZCZBa97nM3eQakN8lrdhKcuBDjM7FcLRRKQqaMj4OnuiFau1TleTqMBCZBu7QgzUhRpiKH5qMZCvAHkCxEFNEjBlzSPYQZDZD
-
-2013-10-10 20:51:34,420 - [INFO] - from play in play-akka.actor.default-dispatcher-21 
+2013-11-01 12:05:44,545 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
 Application started (Dev)
 
-2013-10-10 20:59:17,215 - [INFO] - from play in play-akka.actor.default-dispatcher-25 
+2013-11-01 12:06:46,496 - [INFO] - from play in play-akka.actor.default-dispatcher-6 
 Application started (Dev)
 
-2013-10-10 20:59:59,770 - [INFO] - from application in play-akka.actor.actions-dispatcher-24 
-B: CAACnZAFBCqWwBAP2BbZCs520YW1WmP15PiMgoQZBr37WBYW5d6VEoq9AiNZCIFWn90enAaNNhYoWEdyvqzgkbyiZAfHCZAL2onFK7jZCSRq3xZCuWsP4ZCZCZBa97nM3eQakN8lrdhKcuBDjM7FcLRRKQqaMj4OnuiFau1TleTqMBCZBu7QgzUhRpiKH5qMZCvAHkCxEFNEjBlzSPYQZDZD
+2013-11-01 12:06:58,358 - [ERROR] - from application in play-akka.actor.actions-dispatcher-9 
 
-2013-10-10 21:00:09,106 - [INFO] - from application in play-akka.actor.actions-dispatcher-24 
-B: CAACnZAFBCqWwBAP2BbZCs520YW1WmP15PiMgoQZBr37WBYW5d6VEoq9AiNZCIFWn90enAaNNhYoWEdyvqzgkbyiZAfHCZAL2onFK7jZCSRq3xZCuWsP4ZCZCZBa97nM3eQakN8lrdhKcuBDjM7FcLRRKQqaMj4OnuiFau1TleTqMBCZBu7QgzUhRpiKH5qMZCvAHkCxEFNEjBlzSPYQZDZD
 
-2013-10-10 21:00:10,350 - [INFO] - from application in play-akka.actor.actions-dispatcher-24 
-B: CAACnZAFBCqWwBAP2BbZCs520YW1WmP15PiMgoQZBr37WBYW5d6VEoq9AiNZCIFWn90enAaNNhYoWEdyvqzgkbyiZAfHCZAL2onFK7jZCSRq3xZCuWsP4ZCZCZBa97nM3eQakN8lrdhKcuBDjM7FcLRRKQqaMj4OnuiFau1TleTqMBCZBu7QgzUhRpiKH5qMZCvAHkCxEFNEjBlzSPYQZDZD
+! @6g5pjf12h - Internal server error, for request [GET /roster] ->
 
-2013-10-10 21:00:12,311 - [INFO] - from application in play-akka.actor.actions-dispatcher-26 
-B: CAACnZAFBCqWwBAP2BbZCs520YW1WmP15PiMgoQZBr37WBYW5d6VEoq9AiNZCIFWn90enAaNNhYoWEdyvqzgkbyiZAfHCZAL2onFK7jZCSRq3xZCuWsP4ZCZCZBa97nM3eQakN8lrdhKcuBDjM7FcLRRKQqaMj4OnuiFau1TleTqMBCZBu7QgzUhRpiKH5qMZCvAHkCxEFNEjBlzSPYQZDZD
+play.core.ActionInvoker$$anonfun$receive$1$$anon$1: Execution exception [[AuthenticationFailedException: null]]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:134) [play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:115) [play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.actor.Actor$class.apply(Actor.scala:318) [akka-actor-2.0.2.jar:2.0.2]
+	at play.core.ActionInvoker.apply(Invoker.scala:113) [play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:626) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:197) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:179) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.ForkJoinExecutorConfigurator$MailboxExecutionTask.exec(AbstractDispatcher.scala:516) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) [akka-actor-2.0.2.jar:2.0.2]
+Caused by: javax.mail.AuthenticationFailedException: null
+	at javax.mail.Service.connect(Service.java:306) ~[mail-1.4.jar:1.4]
+	at javax.mail.Service.connect(Service.java:156) ~[mail-1.4.jar:1.4]
+	at javax.mail.Service.connect(Service.java:105) ~[mail-1.4.jar:1.4]
+	at models.MailSender.test(MailSender.scala:48) ~[classes/:na]
+	at controllers.Application$$anonfun$roster$1$$anonfun$apply$5$$anonfun$apply$6.apply(Application.scala:27) ~[classes/:2.0.4]
+	at controllers.Application$$anonfun$roster$1$$anonfun$apply$5$$anonfun$apply$6.apply(Application.scala:24) ~[classes/:2.0.4]
+	at controllers.Secured$$anonfun$IsAuthenticated$3$$anonfun$apply$3$$anonfun$apply$4.apply(Login.scala:73) ~[classes/:2.0.4]
+	at controllers.Secured$$anonfun$IsAuthenticated$3$$anonfun$apply$3$$anonfun$apply$4.apply(Login.scala:73) ~[classes/:2.0.4]
+	at play.api.mvc.Action$$anon$1.apply(Action.scala:170) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Security$$anonfun$Authenticated$1.apply(Security.scala:55) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Security$$anonfun$Authenticated$1.apply(Security.scala:53) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Action$$anon$1.apply(Action.scala:170) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:17) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:125) [play_2.9.1-2.0.4.jar:2.0.4]
+	... 11 common frames omitted
 
-2013-10-10 21:06:28,343 - [INFO] - from play in play-akka.actor.default-dispatcher-32 
+2013-11-01 12:08:26,248 - [INFO] - from play in play-akka.actor.default-dispatcher-7 
 Application started (Dev)
 
-2013-10-10 21:23:53,750 - [INFO] - from play in play-akka.actor.default-dispatcher-43 
+2013-11-01 12:08:26,311 - [ERROR] - from application in play-akka.actor.actions-dispatcher-9 
+
+
+! @6g5pjf12i - Internal server error, for request [GET /roster] ->
+
+play.core.ActionInvoker$$anonfun$receive$1$$anon$1: Execution exception [[SecurityException: Access to default session denied]]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:134) [play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:115) [play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.actor.Actor$class.apply(Actor.scala:318) [akka-actor-2.0.2.jar:2.0.2]
+	at play.core.ActionInvoker.apply(Invoker.scala:113) [play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:626) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:197) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:179) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.ForkJoinExecutorConfigurator$MailboxExecutionTask.exec(AbstractDispatcher.scala:516) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) [akka-actor-2.0.2.jar:2.0.2]
+Caused by: java.lang.SecurityException: Access to default session denied
+	at javax.mail.Session.getDefaultInstance(Session.java:311) ~[mail-1.4.jar:1.4]
+	at models.MailSender.test(MailSender.scala:27) ~[classes/:na]
+	at controllers.Application$$anonfun$roster$1$$anonfun$apply$5$$anonfun$apply$6.apply(Application.scala:27) ~[classes/:2.0.4]
+	at controllers.Application$$anonfun$roster$1$$anonfun$apply$5$$anonfun$apply$6.apply(Application.scala:24) ~[classes/:2.0.4]
+	at controllers.Secured$$anonfun$IsAuthenticated$3$$anonfun$apply$3$$anonfun$apply$4.apply(Login.scala:73) ~[classes/:2.0.4]
+	at controllers.Secured$$anonfun$IsAuthenticated$3$$anonfun$apply$3$$anonfun$apply$4.apply(Login.scala:73) ~[classes/:2.0.4]
+	at play.api.mvc.Action$$anon$1.apply(Action.scala:170) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Security$$anonfun$Authenticated$1.apply(Security.scala:55) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Security$$anonfun$Authenticated$1.apply(Security.scala:53) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Action$$anon$1.apply(Action.scala:170) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:17) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:125) [play_2.9.1-2.0.4.jar:2.0.4]
+	... 11 common frames omitted
+
+2013-11-01 12:12:47,059 - [INFO] - from play in play-akka.actor.default-dispatcher-2 
 Application started (Dev)
 
-2013-10-10 21:24:01,299 - [INFO] - from play in play-akka.actor.default-dispatcher-44 
+2013-11-01 12:12:48,139 - [ERROR] - from play in play-akka.actor.promises-dispatcher-3 
+Cannot invoke the action, eventually got an error: Thrown(akka.pattern.AskTimeoutException: Timed out)
+
+2013-11-01 12:12:48,139 - [ERROR] - from play in play-akka.actor.promises-dispatcher-2 
+Cannot invoke the action, eventually got an error: Thrown(akka.pattern.AskTimeoutException: Timed out)
+
+2013-11-01 12:20:30,490 - [INFO] - from play in play-akka.actor.default-dispatcher-2 
 Application started (Dev)
 
-2013-10-10 21:24:08,964 - [INFO] - from play in play-akka.actor.default-dispatcher-45 
+2013-11-01 12:20:30,572 - [ERROR] - from application in play-akka.actor.actions-dispatcher-13 
+
+
+! @6g5pkbnbd - Internal server error, for request [GET /roster] ->
+
+play.core.ActionInvoker$$anonfun$receive$1$$anon$1: Execution exception [[SecurityException: Access to default session denied]]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:134) [play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:115) [play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.actor.Actor$class.apply(Actor.scala:318) [akka-actor-2.0.2.jar:2.0.2]
+	at play.core.ActionInvoker.apply(Invoker.scala:113) [play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:626) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:197) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:179) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.ForkJoinExecutorConfigurator$MailboxExecutionTask.exec(AbstractDispatcher.scala:516) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) [akka-actor-2.0.2.jar:2.0.2]
+Caused by: java.lang.SecurityException: Access to default session denied
+	at javax.mail.Session.getDefaultInstance(Session.java:311) ~[mail-1.4.jar:1.4]
+	at models.MailSender.test(MailSender.scala:27) ~[classes/:na]
+	at controllers.Application$$anonfun$roster$1$$anonfun$apply$5$$anonfun$apply$6.apply(Application.scala:27) ~[classes/:2.0.4]
+	at controllers.Application$$anonfun$roster$1$$anonfun$apply$5$$anonfun$apply$6.apply(Application.scala:24) ~[classes/:2.0.4]
+	at controllers.Secured$$anonfun$IsAuthenticated$3$$anonfun$apply$3$$anonfun$apply$4.apply(Login.scala:73) ~[classes/:2.0.4]
+	at controllers.Secured$$anonfun$IsAuthenticated$3$$anonfun$apply$3$$anonfun$apply$4.apply(Login.scala:73) ~[classes/:2.0.4]
+	at play.api.mvc.Action$$anon$1.apply(Action.scala:170) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Security$$anonfun$Authenticated$1.apply(Security.scala:55) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Security$$anonfun$Authenticated$1.apply(Security.scala:53) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Action$$anon$1.apply(Action.scala:170) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:17) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:125) [play_2.9.1-2.0.4.jar:2.0.4]
+	... 11 common frames omitted
+
+2013-11-01 12:20:58,185 - [ERROR] - from application in play-akka.actor.actions-dispatcher-14 
+
+
+! @6g5pkbnbe - Internal server error, for request [GET /roster] ->
+
+play.core.ActionInvoker$$anonfun$receive$1$$anon$1: Execution exception [[SecurityException: Access to default session denied]]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:134) [play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:115) [play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.actor.Actor$class.apply(Actor.scala:318) [akka-actor-2.0.2.jar:2.0.2]
+	at play.core.ActionInvoker.apply(Invoker.scala:113) [play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:626) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:197) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:179) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.ForkJoinExecutorConfigurator$MailboxExecutionTask.exec(AbstractDispatcher.scala:516) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) [akka-actor-2.0.2.jar:2.0.2]
+Caused by: java.lang.SecurityException: Access to default session denied
+	at javax.mail.Session.getDefaultInstance(Session.java:311) ~[mail-1.4.jar:1.4]
+	at models.MailSender.test(MailSender.scala:27) ~[classes/:na]
+	at controllers.Application$$anonfun$roster$1$$anonfun$apply$5$$anonfun$apply$6.apply(Application.scala:27) ~[classes/:2.0.4]
+	at controllers.Application$$anonfun$roster$1$$anonfun$apply$5$$anonfun$apply$6.apply(Application.scala:24) ~[classes/:2.0.4]
+	at controllers.Secured$$anonfun$IsAuthenticated$3$$anonfun$apply$3$$anonfun$apply$4.apply(Login.scala:73) ~[classes/:2.0.4]
+	at controllers.Secured$$anonfun$IsAuthenticated$3$$anonfun$apply$3$$anonfun$apply$4.apply(Login.scala:73) ~[classes/:2.0.4]
+	at play.api.mvc.Action$$anon$1.apply(Action.scala:170) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Security$$anonfun$Authenticated$1.apply(Security.scala:55) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Security$$anonfun$Authenticated$1.apply(Security.scala:53) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Action$$anon$1.apply(Action.scala:170) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:17) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:125) [play_2.9.1-2.0.4.jar:2.0.4]
+	... 11 common frames omitted
+
+2013-11-01 12:26:25,743 - [INFO] - from play in play-akka.actor.default-dispatcher-10 
 Application started (Dev)
 
-2013-10-10 21:24:13,551 - [INFO] - from play in play-akka.actor.default-dispatcher-45 
+2013-11-01 12:34:16,780 - [INFO] - from play in play-akka.actor.default-dispatcher-11 
 Application started (Dev)
 
-2013-10-10 21:24:21,161 - [INFO] - from play in play-akka.actor.default-dispatcher-46 
+2013-11-01 12:39:53,491 - [INFO] - from play in play-akka.actor.default-dispatcher-12 
+Application started (Dev)
+
+2013-11-01 12:40:14,640 - [INFO] - from play in play-akka.actor.default-dispatcher-13 
+Application started (Dev)
+
+2013-11-01 12:40:20,168 - [INFO] - from play in play-akka.actor.default-dispatcher-13 
+Application started (Dev)
+
+2013-11-01 12:40:42,299 - [INFO] - from play in play-akka.actor.default-dispatcher-14 
+Application started (Dev)
+
+2013-11-01 12:42:11,320 - [ERROR] - from application in New I/O  worker #13 
+
+
+! Internal server error, for request [GET /home] ->
+
+sbt.PlayExceptions$CompilationException: Compilation error [Unit does not take parameters]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4$$anonfun$apply$12$$anonfun$apply$13.apply(PlayReloader.scala:236) ~[na:na]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4$$anonfun$apply$12$$anonfun$apply$13.apply(PlayReloader.scala:236) ~[na:na]
+	at scala.Option.map(Option.scala:133) ~[scala-library.jar:0.12.1-gilt]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4$$anonfun$apply$12.apply(PlayReloader.scala:236) ~[na:na]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4$$anonfun$apply$12.apply(PlayReloader.scala:233) ~[na:na]
+	at scala.Option.map(Option.scala:133) ~[scala-library.jar:0.12.1-gilt]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4.apply(PlayReloader.scala:233) ~[na:na]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4.apply(PlayReloader.scala:231) ~[na:na]
+	at scala.Either$LeftProjection.map(Either.scala:183) ~[scala-library.jar:0.12.1-gilt]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3.apply(PlayReloader.scala:231) ~[na:na]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3.apply(PlayReloader.scala:226) ~[na:na]
+	at scala.Option.getOrElse(Option.scala:108) ~[scala-library.jar:0.12.1-gilt]
+	at sbt.PlayReloader$$anon$2.reload(PlayReloader.scala:226) ~[na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:110) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:110) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.dispatch.Future$$anon$3.liftedTree1$1(Future.scala:195) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Future$$anon$3.run(Future.scala:194) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:94) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask$AdaptedRunnableAction.exec(ForkJoinTask.java:1381) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) ~[akka-actor-2.0.2.jar:2.0.2]
+
+2013-11-01 12:43:30,656 - [INFO] - from play in play-akka.actor.default-dispatcher-3 
+Application started (Dev)
+
+2013-11-01 12:45:32,248 - [INFO] - from play in play-akka.actor.default-dispatcher-4 
+Application started (Dev)
+
+2013-11-01 12:51:21,490 - [INFO] - from play in play-akka.actor.default-dispatcher-4 
+Application started (Dev)
+
+2013-11-01 12:55:19,998 - [INFO] - from play in play-akka.actor.default-dispatcher-9 
+Application started (Dev)
+
+2013-11-01 14:27:34,901 - [INFO] - from play in play-akka.actor.default-dispatcher-10 
+Application started (Dev)
+
+2013-11-01 14:27:34,925 - [ERROR] - from play.core.ActionInvoker in play-akka.actor.default-dispatcher-10 
+Read operation to server ***REMOVED***/54.226.71.234:***REMOVED*** failed on database ***REMOVED***
+com.mongodb.MongoException$Network: Read operation to server ***REMOVED***/54.226.71.234:***REMOVED*** failed on database ***REMOVED***
+	at com.mongodb.DBTCPConnector.innerCall(DBTCPConnector.java:253) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBTCPConnector.call(DBTCPConnector.java:216) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBApiLayer$MyCollection.__find(DBApiLayer.java:288) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBApiLayer$MyCollection.__find(DBApiLayer.java:273) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBCollection.findOne(DBCollection.java:728) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBCollection.findOne(DBCollection.java:670) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.casbah.MongoCollectionBase$class.findOne(MongoCollection.scala:211) ~[casbah-core_2.9.1-2.6.2.jar:2.6.2]
+	at com.mongodb.casbah.MongoCollection.findOne(MongoCollection.scala:866) ~[casbah-core_2.9.1-2.6.2.jar:2.6.2]
+	at models.User$.findByEmail(User.scala:42) ~[classes/:na]
+	at controllers.Secured$$anonfun$IsAuthenticated$3.apply(Login.scala:70) ~[classes/:2.0.4]
+	at controllers.Secured$$anonfun$IsAuthenticated$3.apply(Login.scala:67) ~[classes/:2.0.4]
+	at play.api.mvc.Security$$anonfun$1$$anonfun$apply$1.apply(Security.scala:44) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Security$$anonfun$1$$anonfun$apply$1.apply(Security.scala:43) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at scala.Option.map(Option.scala:133) ~[scala-library.jar:0.12.1-gilt]
+	at play.api.mvc.Security$$anonfun$1.apply(Security.scala:43) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Security$$anonfun$1.apply(Security.scala:42) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.BodyParser$$anon$4.apply(Action.scala:142) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.BodyParser$$anon$4.apply(Action.scala:141) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:118) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:115) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.actor.Actor$class.apply(Actor.scala:318) ~[akka-actor-2.0.2.jar:2.0.2]
+	at play.core.ActionInvoker.apply(Invoker.scala:113) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:626) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:197) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:179) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.ForkJoinExecutorConfigurator$MailboxExecutionTask.exec(AbstractDispatcher.scala:516) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) [akka-actor-2.0.2.jar:2.0.2]
+Caused by: java.net.SocketException: Connection reset
+	at java.net.SocketInputStream.read(SocketInputStream.java:168) ~[na:1.6.0_43]
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218) ~[na:1.6.0_43]
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:258) ~[na:1.6.0_43]
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:317) ~[na:1.6.0_43]
+	at org.bson.io.Bits.readFully(Bits.java:46) ~[mongo-java-driver-2.11.2.jar:na]
+	at org.bson.io.Bits.readFully(Bits.java:33) ~[mongo-java-driver-2.11.2.jar:na]
+	at org.bson.io.Bits.readFully(Bits.java:28) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.Response.<init>(Response.java:40) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBPort.go(DBPort.java:142) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBPort.call(DBPort.java:92) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBTCPConnector.innerCall(DBTCPConnector.java:244) ~[mongo-java-driver-2.11.2.jar:na]
+	... 29 common frames omitted
+
+2013-11-01 14:27:34,933 - [ERROR] - from akka.routing.RouterConfig$$anon$1 in play-akka.actor.default-dispatcher-10 
+Read operation to server ***REMOVED***/54.226.71.234:***REMOVED*** failed on database ***REMOVED***
+com.mongodb.MongoException$Network: Read operation to server ***REMOVED***/54.226.71.234:***REMOVED*** failed on database ***REMOVED***
+	at com.mongodb.DBTCPConnector.innerCall(DBTCPConnector.java:253) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBTCPConnector.call(DBTCPConnector.java:216) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBApiLayer$MyCollection.__find(DBApiLayer.java:288) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBApiLayer$MyCollection.__find(DBApiLayer.java:273) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBCollection.findOne(DBCollection.java:728) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBCollection.findOne(DBCollection.java:670) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.casbah.MongoCollectionBase$class.findOne(MongoCollection.scala:211) ~[casbah-core_2.9.1-2.6.2.jar:2.6.2]
+	at com.mongodb.casbah.MongoCollection.findOne(MongoCollection.scala:866) ~[casbah-core_2.9.1-2.6.2.jar:2.6.2]
+	at models.User$.findByEmail(User.scala:42) ~[classes/:na]
+	at controllers.Secured$$anonfun$IsAuthenticated$3.apply(Login.scala:70) ~[classes/:2.0.4]
+	at controllers.Secured$$anonfun$IsAuthenticated$3.apply(Login.scala:67) ~[classes/:2.0.4]
+	at play.api.mvc.Security$$anonfun$1$$anonfun$apply$1.apply(Security.scala:44) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Security$$anonfun$1$$anonfun$apply$1.apply(Security.scala:43) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at scala.Option.map(Option.scala:133) ~[scala-library.jar:0.12.1-gilt]
+	at play.api.mvc.Security$$anonfun$1.apply(Security.scala:43) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.Security$$anonfun$1.apply(Security.scala:42) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.BodyParser$$anon$4.apply(Action.scala:142) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.api.mvc.BodyParser$$anon$4.apply(Action.scala:141) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:118) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:115) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.actor.Actor$class.apply(Actor.scala:318) ~[akka-actor-2.0.2.jar:2.0.2]
+	at play.core.ActionInvoker.apply(Invoker.scala:113) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:626) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:197) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:179) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.ForkJoinExecutorConfigurator$MailboxExecutionTask.exec(AbstractDispatcher.scala:516) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) [akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) [akka-actor-2.0.2.jar:2.0.2]
+Caused by: java.net.SocketException: Connection reset
+	at java.net.SocketInputStream.read(SocketInputStream.java:168) ~[na:1.6.0_43]
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218) ~[na:1.6.0_43]
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:258) ~[na:1.6.0_43]
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:317) ~[na:1.6.0_43]
+	at org.bson.io.Bits.readFully(Bits.java:46) ~[mongo-java-driver-2.11.2.jar:na]
+	at org.bson.io.Bits.readFully(Bits.java:33) ~[mongo-java-driver-2.11.2.jar:na]
+	at org.bson.io.Bits.readFully(Bits.java:28) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.Response.<init>(Response.java:40) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBPort.go(DBPort.java:142) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBPort.call(DBPort.java:92) ~[mongo-java-driver-2.11.2.jar:na]
+	at com.mongodb.DBTCPConnector.innerCall(DBTCPConnector.java:244) ~[mongo-java-driver-2.11.2.jar:na]
+	... 29 common frames omitted
+
+2013-11-01 14:27:35,925 - [ERROR] - from play in play-akka.actor.promises-dispatcher-42 
+Cannot invoke the action, eventually got an error: Thrown(akka.pattern.AskTimeoutException: Timed out)
+
+2013-11-01 14:29:23,760 - [INFO] - from play in play-akka.actor.default-dispatcher-12 
+Application started (Dev)
+
+2013-11-01 14:29:50,448 - [INFO] - from play in play-akka.actor.default-dispatcher-14 
+Application started (Dev)
+
+2013-11-01 14:31:25,412 - [INFO] - from play in play-akka.actor.default-dispatcher-15 
+Application started (Dev)
+
+2013-11-01 14:33:22,757 - [INFO] - from play in play-akka.actor.default-dispatcher-17 
+Application started (Dev)
+
+2013-11-01 14:37:03,020 - [INFO] - from play in play-akka.actor.default-dispatcher-18 
+Application started (Dev)
+
+2013-11-01 14:37:28,014 - [INFO] - from play in play-akka.actor.default-dispatcher-18 
+Application started (Dev)
+
+2013-11-01 14:38:35,894 - [INFO] - from play in play-akka.actor.default-dispatcher-21 
+Application started (Dev)
+
+2013-11-01 14:41:10,914 - [INFO] - from play in play-akka.actor.default-dispatcher-24 
+Application started (Dev)
+
+2013-11-01 14:47:02,065 - [INFO] - from play in play-akka.actor.default-dispatcher-26 
+Application started (Dev)
+
+2013-11-01 14:50:17,145 - [INFO] - from play in play-akka.actor.default-dispatcher-27 
 Application started (Dev)
 

@@ -5,6 +5,8 @@
 # Home page
 GET     /                                                controllers.Application.index
 
+GET     /send-email                                      controllers.Application.sendEmail
+
 # Other
 GET     /account                                         controllers.Account.account
 POST    /account/submit                                  controllers.Account.submit

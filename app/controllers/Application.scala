@@ -33,6 +33,11 @@ object Application extends Controller with Config with Secured with Loggable {
     Game.updateScore(game_id, result, score)
     Redirect(routes.Application.schedule)
   }
+
+  def sendEmail = Action {
+    new MailSender().nextGameReminder()
+    Redirect(routes.Application.home)
+  }
 }
 
 trait Config {
