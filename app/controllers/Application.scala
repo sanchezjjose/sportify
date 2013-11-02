@@ -18,6 +18,9 @@ object Application extends Controller with Config with Secured with Loggable {
   }
 
   def schedule = IsAuthenticated { user => implicit request =>
+
+    println(Game.findAll.toList.filter(_.is_playoff_game == true))
+
     Ok(views.html.schedule("Fall 2013", Game.findNextGame, Game.findAll.toList)(user))
   }
 

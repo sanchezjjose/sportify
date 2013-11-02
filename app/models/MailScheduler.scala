@@ -89,9 +89,9 @@ class MailSender {
 
       println("Sending an email to " + user.email + " for game id " + game.game_id)
 
-      transport.connect()
-      transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO))
-      transport.close()
+//      transport.connect()
+//      transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO))
+//      transport.close()
     }
   }
 

@@ -37,3 +37,70 @@ Application started (Dev)
 2013-11-02 03:00:41,899 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
 Application started (Dev)
 
+2013-11-02 17:11:48,701 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
+Application started (Dev)
+
+2013-11-02 17:12:44,185 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
+Application started (Dev)
+
+2013-11-02 17:14:55,615 - [INFO] - from play in play-akka.actor.default-dispatcher-7 
+Application started (Dev)
+
+2013-11-02 17:16:37,843 - [INFO] - from play in play-akka.actor.default-dispatcher-8 
+Application started (Dev)
+
+2013-11-02 17:18:44,767 - [INFO] - from play in play-akka.actor.default-dispatcher-11 
+Application started (Dev)
+
+2013-11-02 17:19:37,419 - [INFO] - from play in play-akka.actor.default-dispatcher-12 
+Application started (Dev)
+
+2013-11-02 17:22:12,248 - [INFO] - from play in play-akka.actor.default-dispatcher-15 
+Application started (Dev)
+
+2013-11-02 17:25:40,012 - [ERROR] - from application in New I/O  worker #1 
+
+
+! Internal server error, for request [GET /home] ->
+
+sbt.PlayExceptions$TemplateCompilationException: Compilation error [Not parsed?]
+	at sbt.PlayCommands$$anonfun$53.apply(PlayCommands.scala:466) ~[na:na]
+	at sbt.PlayCommands$$anonfun$53.apply(PlayCommands.scala:442) ~[na:na]
+	at sbt.Scoped$$anonfun$hf4$1.apply(Structure.scala:475) ~[na:na]
+	at sbt.Scoped$$anonfun$hf4$1.apply(Structure.scala:475) ~[na:na]
+	at scala.Function1$$anonfun$compose$1.apply(Function1.scala:41) ~[scala-library.jar:0.12.1-gilt]
+	at sbt.Scoped$Reduced$$anonfun$combine$1$$anonfun$apply$11.apply(Structure.scala:295) ~[na:na]
+	at sbt.Scoped$Reduced$$anonfun$combine$1$$anonfun$apply$11.apply(Structure.scala:295) ~[na:na]
+	at sbt.$tilde$greater$$anonfun$$u2219$1.apply(TypeFunctions.scala:40) ~[na:na]
+	at sbt.std.Transform$$anon$5.work(System.scala:67) ~[na:na]
+	at sbt.Execute$$anonfun$submit$1$$anonfun$apply$1.apply(Execute.scala:221) ~[na:na]
+	at sbt.Execute$$anonfun$submit$1$$anonfun$apply$1.apply(Execute.scala:221) ~[na:na]
+	at sbt.ErrorHandling$.wideConvert(ErrorHandling.scala:18) ~[na:na]
+	at sbt.Execute.work(Execute.scala:227) ~[na:na]
+	at sbt.Execute$$anonfun$submit$1.apply(Execute.scala:221) ~[na:na]
+	at sbt.Execute$$anonfun$submit$1.apply(Execute.scala:221) ~[na:na]
+	at sbt.CompletionService$$anon$1$$anon$2.call(CompletionService.scala:26) ~[na:na]
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303) ~[na:1.6.0_43]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138) ~[na:1.6.0_43]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:439) ~[na:1.6.0_43]
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303) ~[na:1.6.0_43]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138) ~[na:1.6.0_43]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895) [na:1.6.0_43]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918) [na:1.6.0_43]
+	at java.lang.Thread.run(Thread.java:680) [na:1.6.0_43]
+
+2013-11-02 17:25:47,702 - [INFO] - from play in play-akka.actor.default-dispatcher-16 
+Application started (Dev)
+
+2013-11-02 17:26:07,641 - [INFO] - from play in play-akka.actor.default-dispatcher-17 
+Application started (Dev)
+
+2013-11-02 17:27:35,249 - [INFO] - from play in play-akka.actor.default-dispatcher-18 
+Application started (Dev)
+
+2013-11-02 17:27:48,589 - [INFO] - from play in play-akka.actor.default-dispatcher-19 
+Application started (Dev)
+
+2013-11-02 17:28:26,247 - [INFO] - from play in play-akka.actor.default-dispatcher-20 
+Application started (Dev)
+

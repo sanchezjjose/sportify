@@ -14,9 +14,15 @@
         <strong><center>@(5-game.playersIn.size) more player(s) needed for this weeks game!</center></strong>
       </div>
     } else {
-    <div class="alert alert-info">
-      <strong><center>@Application.msg</center></strong>
-    </div>
+      @if(game.is_playoff_game == true) {
+          <div class="alert alert-danger">
+              <strong><center>PLAYOFFS!!!!! Who's ready??? Bring your shirts and lets get ready for battle. </center></strong>
+          </div>
+      } else {
+          <div class="alert alert-info">
+              <strong><center>@Application.msg</center></strong>
+          </div>
+      }
     }
   </div>
 
