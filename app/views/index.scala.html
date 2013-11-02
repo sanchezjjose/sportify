@@ -45,10 +45,13 @@
     @game.address <br>
 
     @if(!game.locationDetails.isEmpty()){
-      <b><font color="red">*&nbsp;</font></b>@game.locationDetails <br><br>
+      <b><font color="red">*&nbsp;</font></b>@game.locationDetails
     }
 
-    <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a>
+    @if(User.loggedInUser.facebookUser.isDefined) {
+      <br><br>
+      <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a>
+    }
 
     <br><br>
 

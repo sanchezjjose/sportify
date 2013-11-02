@@ -104,3 +104,79 @@ Application started (Dev)
 2013-11-02 17:28:26,247 - [INFO] - from play in play-akka.actor.default-dispatcher-20 
 Application started (Dev)
 
+2013-11-02 17:30:56,707 - [ERROR] - from application in New I/O  worker #1 
+
+
+! Internal server error, for request [GET /home] ->
+
+sbt.PlayExceptions$TemplateCompilationException: Compilation error [Not parsed?]
+	at sbt.PlayCommands$$anonfun$53.apply(PlayCommands.scala:466) ~[na:na]
+	at sbt.PlayCommands$$anonfun$53.apply(PlayCommands.scala:442) ~[na:na]
+	at sbt.Scoped$$anonfun$hf4$1.apply(Structure.scala:475) ~[na:na]
+	at sbt.Scoped$$anonfun$hf4$1.apply(Structure.scala:475) ~[na:na]
+	at scala.Function1$$anonfun$compose$1.apply(Function1.scala:41) ~[scala-library.jar:0.12.1-gilt]
+	at sbt.Scoped$Reduced$$anonfun$combine$1$$anonfun$apply$11.apply(Structure.scala:295) ~[na:na]
+	at sbt.Scoped$Reduced$$anonfun$combine$1$$anonfun$apply$11.apply(Structure.scala:295) ~[na:na]
+	at sbt.$tilde$greater$$anonfun$$u2219$1.apply(TypeFunctions.scala:40) ~[na:na]
+	at sbt.std.Transform$$anon$5.work(System.scala:67) ~[na:na]
+	at sbt.Execute$$anonfun$submit$1$$anonfun$apply$1.apply(Execute.scala:221) ~[na:na]
+	at sbt.Execute$$anonfun$submit$1$$anonfun$apply$1.apply(Execute.scala:221) ~[na:na]
+	at sbt.ErrorHandling$.wideConvert(ErrorHandling.scala:18) ~[na:na]
+	at sbt.Execute.work(Execute.scala:227) ~[na:na]
+	at sbt.Execute$$anonfun$submit$1.apply(Execute.scala:221) ~[na:na]
+	at sbt.Execute$$anonfun$submit$1.apply(Execute.scala:221) ~[na:na]
+	at sbt.CompletionService$$anon$1$$anon$2.call(CompletionService.scala:26) ~[na:na]
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303) ~[na:1.6.0_43]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138) ~[na:1.6.0_43]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:439) ~[na:1.6.0_43]
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303) ~[na:1.6.0_43]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138) ~[na:1.6.0_43]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895) [na:1.6.0_43]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918) [na:1.6.0_43]
+	at java.lang.Thread.run(Thread.java:680) [na:1.6.0_43]
+
+2013-11-02 17:31:02,948 - [ERROR] - from application in New I/O  worker #1 
+
+
+! Internal server error, for request [GET /home] ->
+
+sbt.PlayExceptions$CompilationException: Compilation error [value isPresent is not a member of Option[models.FacebookUser]]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4$$anonfun$apply$12$$anonfun$apply$13.apply(PlayReloader.scala:236) ~[na:na]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4$$anonfun$apply$12$$anonfun$apply$13.apply(PlayReloader.scala:236) ~[na:na]
+	at scala.Option.map(Option.scala:133) ~[scala-library.jar:0.12.1-gilt]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4$$anonfun$apply$12.apply(PlayReloader.scala:236) ~[na:na]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4$$anonfun$apply$12.apply(PlayReloader.scala:233) ~[na:na]
+	at scala.Option.map(Option.scala:133) ~[scala-library.jar:0.12.1-gilt]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4.apply(PlayReloader.scala:233) ~[na:na]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4.apply(PlayReloader.scala:231) ~[na:na]
+	at scala.Either$LeftProjection.map(Either.scala:183) ~[scala-library.jar:0.12.1-gilt]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3.apply(PlayReloader.scala:231) ~[na:na]
+	at sbt.PlayReloader$$anon$2$$anonfun$reload$3.apply(PlayReloader.scala:226) ~[na:na]
+	at scala.Option.getOrElse(Option.scala:108) ~[scala-library.jar:0.12.1-gilt]
+	at sbt.PlayReloader$$anon$2.reload(PlayReloader.scala:226) ~[na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:110) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:110) ~[play_2.9.1-2.0.4.jar:2.0.4]
+	at akka.dispatch.Future$$anon$3.liftedTree1$1(Future.scala:195) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.Future$$anon$3.run(Future.scala:194) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:94) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask$AdaptedRunnableAction.exec(ForkJoinTask.java:1381) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) ~[akka-actor-2.0.2.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) ~[akka-actor-2.0.2.jar:2.0.2]
+
+2013-11-02 17:31:18,162 - [INFO] - from play in play-akka.actor.default-dispatcher-21 
+Application started (Dev)
+
+2013-11-02 17:32:45,379 - [ERROR] - from play in play-akka.actor.promises-dispatcher-85 
+Cannot invoke the action, eventually got an error: Thrown(akka.pattern.AskTimeoutException: Timed out)
+
+2013-11-02 17:36:48,752 - [INFO] - from play in play-akka.actor.default-dispatcher-30 
+Application started (Dev)
+
+2013-11-02 17:37:13,243 - [INFO] - from play in play-akka.actor.default-dispatcher-31 
+Application started (Dev)
+
+2013-11-02 17:37:42,075 - [ERROR] - from play in play-akka.actor.promises-dispatcher-131 
+Cannot invoke the action, eventually got an error: Thrown(akka.pattern.AskTimeoutException: Timed out)
+
