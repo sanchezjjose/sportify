@@ -76,8 +76,6 @@ trait Secured extends Loggable {
       // Next check by facebook user_id
       User.findByFacebookUserId(key).map { user =>
 
-        log.info("B: " + user.facebookUser.get.access_token)
-
         User.loggedInUser = user
         Action(request => f(user)(request))
 

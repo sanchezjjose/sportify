@@ -14,4 +14,5 @@ object MongoManager {
   val usersColl = mongoConn("***REMOVED***")("users")
   val gamesColl = mongoConn("***REMOVED***")("games")
   val facebookAuthColl = mongoConn("***REMOVED***")("facebook_autherizations")
+  val emailMessagesColl = mongoConn("***REMOVED***")("email_messages")
 }

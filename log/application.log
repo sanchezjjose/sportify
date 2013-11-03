@@ -1,182 +1,105 @@
-2013-11-02 01:44:41,286 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
+2013-11-03 00:04:34,216 - [INFO] - from play in play-akka.actor.default-dispatcher-2 
 Application started (Dev)
 
-2013-11-02 01:52:20,629 - [INFO] - from play in play-akka.actor.default-dispatcher-3 
+2013-11-03 00:04:35,742 - [INFO] - from application in pool-12-thread-1 
+ADDING NEW EMAIL MESSAGES
+
+2013-11-03 00:05:34,573 - [INFO] - from application in pool-12-thread-2 
+SENDING EMAILS
+
+2013-11-03 00:07:34,300 - [INFO] - from application in pool-12-thread-1 
+SENDING EMAILS
+
+2013-11-03 00:09:34,308 - [INFO] - from application in pool-12-thread-1 
+SENDING EMAILS
+
+2013-11-03 00:11:34,275 - [INFO] - from application in pool-12-thread-2 
+SENDING EMAILS
+
+2013-11-03 00:13:34,275 - [INFO] - from application in pool-12-thread-2 
+SENDING EMAILS
+
+2013-11-03 00:15:34,275 - [INFO] - from application in pool-12-thread-1 
+SENDING EMAILS
+
+2013-11-03 00:17:52,239 - [INFO] - from application in pool-12-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:17:52,243 - [INFO] - from play in play-akka.actor.default-dispatcher-2 
 Application started (Dev)
 
-2013-11-02 01:52:21,695 - [ERROR] - from play in play-akka.actor.promises-dispatcher-2 
+2013-11-03 00:18:52,239 - [INFO] - from application in pool-12-thread-2 
+checking for new emails to send...
+
+2013-11-03 00:20:17,414 - [INFO] - from application in pool-12-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:20:17,417 - [INFO] - from play in play-akka.actor.default-dispatcher-3 
+Application started (Dev)
+
+2013-11-03 00:20:18,543 - [ERROR] - from play in play-akka.actor.promises-dispatcher-2 
 Cannot invoke the action, eventually got an error: Thrown(akka.pattern.AskTimeoutException: Timed out)
 
-2013-11-02 02:21:27,147 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
+2013-11-03 00:21:17,415 - [INFO] - from application in pool-12-thread-2 
+checking for new emails to send...
+
+2013-11-03 00:26:21,390 - [INFO] - from application in pool-12-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:26:21,395 - [INFO] - from play in play-akka.actor.default-dispatcher-2 
 Application started (Dev)
 
-2013-11-02 02:21:28,245 - [ERROR] - from play in play-akka.actor.promises-dispatcher-2 
-Cannot invoke the action, eventually got an error: Thrown(akka.pattern.AskTimeoutException: Timed out)
+2013-11-03 00:27:21,392 - [INFO] - from application in pool-12-thread-2 
+checking for new emails to send...
 
-2013-11-02 02:24:23,468 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
+2013-11-03 00:28:15,434 - [INFO] - from application in pool-12-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:28:15,437 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
 Application started (Dev)
 
-2013-11-02 02:24:24,529 - [ERROR] - from play in play-akka.actor.promises-dispatcher-1 
-Cannot invoke the action, eventually got an error: Thrown(akka.pattern.AskTimeoutException: Timed out)
+2013-11-03 00:29:15,435 - [INFO] - from application in pool-12-thread-2 
+checking for new emails to send...
 
-2013-11-02 02:28:03,721 - [ERROR] - from play in play-akka.actor.promises-dispatcher-4 
-Cannot invoke the action, eventually got an error: Thrown(akka.pattern.AskTimeoutException: Timed out)
+2013-11-03 00:31:25,224 - [INFO] - from application in pool-12-thread-1 
+checking for next game to create email messages...
 
-2013-11-02 02:45:04,995 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
+2013-11-03 00:31:25,229 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
 Application started (Dev)
 
-2013-11-02 02:48:07,398 - [INFO] - from play in play-akka.actor.default-dispatcher-2 
+2013-11-03 00:32:25,225 - [INFO] - from application in pool-12-thread-2 
+checking for new emails to send...
+
+2013-11-03 00:32:39,128 - [INFO] - from application in pool-101-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:32:39,128 - [INFO] - from play in play-akka.actor.default-dispatcher-2 
 Application started (Dev)
 
-2013-11-02 02:51:25,794 - [INFO] - from play in play-akka.actor.default-dispatcher-2 
+2013-11-03 00:33:22,026 - [INFO] - from application in pool-122-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:33:22,026 - [INFO] - from play in play-akka.actor.default-dispatcher-6 
 Application started (Dev)
 
-2013-11-02 02:59:18,524 - [INFO] - from play in play-akka.actor.default-dispatcher-2 
+2013-11-03 00:33:39,128 - [INFO] - from application in pool-101-thread-1 
+checking for new emails to send...
+
+2013-11-03 00:33:41,099 - [INFO] - from application in pool-143-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:33:41,099 - [INFO] - from play in play-akka.actor.default-dispatcher-7 
 Application started (Dev)
 
-2013-11-02 03:00:41,899 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
+2013-11-03 00:34:22,027 - [INFO] - from application in pool-122-thread-2 
+checking for new emails to send...
+
+2013-11-03 00:34:41,099 - [INFO] - from application in pool-143-thread-1 
+checking for new emails to send...
+
+2013-11-03 00:34:56,795 - [INFO] - from application in pool-160-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:34:56,796 - [INFO] - from play in play-akka.actor.default-dispatcher-8 
 Application started (Dev)
-
-2013-11-02 17:11:48,701 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
-Application started (Dev)
-
-2013-11-02 17:12:44,185 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
-Application started (Dev)
-
-2013-11-02 17:14:55,615 - [INFO] - from play in play-akka.actor.default-dispatcher-7 
-Application started (Dev)
-
-2013-11-02 17:16:37,843 - [INFO] - from play in play-akka.actor.default-dispatcher-8 
-Application started (Dev)
-
-2013-11-02 17:18:44,767 - [INFO] - from play in play-akka.actor.default-dispatcher-11 
-Application started (Dev)
-
-2013-11-02 17:19:37,419 - [INFO] - from play in play-akka.actor.default-dispatcher-12 
-Application started (Dev)
-
-2013-11-02 17:22:12,248 - [INFO] - from play in play-akka.actor.default-dispatcher-15 
-Application started (Dev)
-
-2013-11-02 17:25:40,012 - [ERROR] - from application in New I/O  worker #1 
-
-
-! Internal server error, for request [GET /home] ->
-
-sbt.PlayExceptions$TemplateCompilationException: Compilation error [Not parsed?]
-	at sbt.PlayCommands$$anonfun$53.apply(PlayCommands.scala:466) ~[na:na]
-	at sbt.PlayCommands$$anonfun$53.apply(PlayCommands.scala:442) ~[na:na]
-	at sbt.Scoped$$anonfun$hf4$1.apply(Structure.scala:475) ~[na:na]
-	at sbt.Scoped$$anonfun$hf4$1.apply(Structure.scala:475) ~[na:na]
-	at scala.Function1$$anonfun$compose$1.apply(Function1.scala:41) ~[scala-library.jar:0.12.1-gilt]
-	at sbt.Scoped$Reduced$$anonfun$combine$1$$anonfun$apply$11.apply(Structure.scala:295) ~[na:na]
-	at sbt.Scoped$Reduced$$anonfun$combine$1$$anonfun$apply$11.apply(Structure.scala:295) ~[na:na]
-	at sbt.$tilde$greater$$anonfun$$u2219$1.apply(TypeFunctions.scala:40) ~[na:na]
-	at sbt.std.Transform$$anon$5.work(System.scala:67) ~[na:na]
-	at sbt.Execute$$anonfun$submit$1$$anonfun$apply$1.apply(Execute.scala:221) ~[na:na]
-	at sbt.Execute$$anonfun$submit$1$$anonfun$apply$1.apply(Execute.scala:221) ~[na:na]
-	at sbt.ErrorHandling$.wideConvert(ErrorHandling.scala:18) ~[na:na]
-	at sbt.Execute.work(Execute.scala:227) ~[na:na]
-	at sbt.Execute$$anonfun$submit$1.apply(Execute.scala:221) ~[na:na]
-	at sbt.Execute$$anonfun$submit$1.apply(Execute.scala:221) ~[na:na]
-	at sbt.CompletionService$$anon$1$$anon$2.call(CompletionService.scala:26) ~[na:na]
-	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303) ~[na:1.6.0_43]
-	at java.util.concurrent.FutureTask.run(FutureTask.java:138) ~[na:1.6.0_43]
-	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:439) ~[na:1.6.0_43]
-	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303) ~[na:1.6.0_43]
-	at java.util.concurrent.FutureTask.run(FutureTask.java:138) ~[na:1.6.0_43]
-	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895) [na:1.6.0_43]
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918) [na:1.6.0_43]
-	at java.lang.Thread.run(Thread.java:680) [na:1.6.0_43]
-
-2013-11-02 17:25:47,702 - [INFO] - from play in play-akka.actor.default-dispatcher-16 
-Application started (Dev)
-
-2013-11-02 17:26:07,641 - [INFO] - from play in play-akka.actor.default-dispatcher-17 
-Application started (Dev)
-
-2013-11-02 17:27:35,249 - [INFO] - from play in play-akka.actor.default-dispatcher-18 
-Application started (Dev)
-
-2013-11-02 17:27:48,589 - [INFO] - from play in play-akka.actor.default-dispatcher-19 
-Application started (Dev)
-
-2013-11-02 17:28:26,247 - [INFO] - from play in play-akka.actor.default-dispatcher-20 
-Application started (Dev)
-
-2013-11-02 17:30:56,707 - [ERROR] - from application in New I/O  worker #1 
-
-
-! Internal server error, for request [GET /home] ->
-
-sbt.PlayExceptions$TemplateCompilationException: Compilation error [Not parsed?]
-	at sbt.PlayCommands$$anonfun$53.apply(PlayCommands.scala:466) ~[na:na]
-	at sbt.PlayCommands$$anonfun$53.apply(PlayCommands.scala:442) ~[na:na]
-	at sbt.Scoped$$anonfun$hf4$1.apply(Structure.scala:475) ~[na:na]
-	at sbt.Scoped$$anonfun$hf4$1.apply(Structure.scala:475) ~[na:na]
-	at scala.Function1$$anonfun$compose$1.apply(Function1.scala:41) ~[scala-library.jar:0.12.1-gilt]
-	at sbt.Scoped$Reduced$$anonfun$combine$1$$anonfun$apply$11.apply(Structure.scala:295) ~[na:na]
-	at sbt.Scoped$Reduced$$anonfun$combine$1$$anonfun$apply$11.apply(Structure.scala:295) ~[na:na]
-	at sbt.$tilde$greater$$anonfun$$u2219$1.apply(TypeFunctions.scala:40) ~[na:na]
-	at sbt.std.Transform$$anon$5.work(System.scala:67) ~[na:na]
-	at sbt.Execute$$anonfun$submit$1$$anonfun$apply$1.apply(Execute.scala:221) ~[na:na]
-	at sbt.Execute$$anonfun$submit$1$$anonfun$apply$1.apply(Execute.scala:221) ~[na:na]
-	at sbt.ErrorHandling$.wideConvert(ErrorHandling.scala:18) ~[na:na]
-	at sbt.Execute.work(Execute.scala:227) ~[na:na]
-	at sbt.Execute$$anonfun$submit$1.apply(Execute.scala:221) ~[na:na]
-	at sbt.Execute$$anonfun$submit$1.apply(Execute.scala:221) ~[na:na]
-	at sbt.CompletionService$$anon$1$$anon$2.call(CompletionService.scala:26) ~[na:na]
-	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303) ~[na:1.6.0_43]
-	at java.util.concurrent.FutureTask.run(FutureTask.java:138) ~[na:1.6.0_43]
-	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:439) ~[na:1.6.0_43]
-	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303) ~[na:1.6.0_43]
-	at java.util.concurrent.FutureTask.run(FutureTask.java:138) ~[na:1.6.0_43]
-	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895) [na:1.6.0_43]
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918) [na:1.6.0_43]
-	at java.lang.Thread.run(Thread.java:680) [na:1.6.0_43]
-
-2013-11-02 17:31:02,948 - [ERROR] - from application in New I/O  worker #1 
-
-
-! Internal server error, for request [GET /home] ->
-
-sbt.PlayExceptions$CompilationException: Compilation error [value isPresent is not a member of Option[models.FacebookUser]]
-	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4$$anonfun$apply$12$$anonfun$apply$13.apply(PlayReloader.scala:236) ~[na:na]
-	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4$$anonfun$apply$12$$anonfun$apply$13.apply(PlayReloader.scala:236) ~[na:na]
-	at scala.Option.map(Option.scala:133) ~[scala-library.jar:0.12.1-gilt]
-	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4$$anonfun$apply$12.apply(PlayReloader.scala:236) ~[na:na]
-	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4$$anonfun$apply$12.apply(PlayReloader.scala:233) ~[na:na]
-	at scala.Option.map(Option.scala:133) ~[scala-library.jar:0.12.1-gilt]
-	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4.apply(PlayReloader.scala:233) ~[na:na]
-	at sbt.PlayReloader$$anon$2$$anonfun$reload$3$$anonfun$4.apply(PlayReloader.scala:231) ~[na:na]
-	at scala.Either$LeftProjection.map(Either.scala:183) ~[scala-library.jar:0.12.1-gilt]
-	at sbt.PlayReloader$$anon$2$$anonfun$reload$3.apply(PlayReloader.scala:231) ~[na:na]
-	at sbt.PlayReloader$$anon$2$$anonfun$reload$3.apply(PlayReloader.scala:226) ~[na:na]
-	at scala.Option.getOrElse(Option.scala:108) ~[scala-library.jar:0.12.1-gilt]
-	at sbt.PlayReloader$$anon$2.reload(PlayReloader.scala:226) ~[na:na]
-	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:110) ~[play_2.9.1-2.0.4.jar:2.0.4]
-	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:110) ~[play_2.9.1-2.0.4.jar:2.0.4]
-	at akka.dispatch.Future$$anon$3.liftedTree1$1(Future.scala:195) ~[akka-actor-2.0.2.jar:2.0.2]
-	at akka.dispatch.Future$$anon$3.run(Future.scala:194) ~[akka-actor-2.0.2.jar:2.0.2]
-	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:94) ~[akka-actor-2.0.2.jar:2.0.2]
-	at akka.jsr166y.ForkJoinTask$AdaptedRunnableAction.exec(ForkJoinTask.java:1381) ~[akka-actor-2.0.2.jar:2.0.2]
-	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) ~[akka-actor-2.0.2.jar:2.0.2]
-	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) ~[akka-actor-2.0.2.jar:2.0.2]
-	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) ~[akka-actor-2.0.2.jar:2.0.2]
-	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) ~[akka-actor-2.0.2.jar:2.0.2]
-
-2013-11-02 17:31:18,162 - [INFO] - from play in play-akka.actor.default-dispatcher-21 
-Application started (Dev)
-
-2013-11-02 17:32:45,379 - [ERROR] - from play in play-akka.actor.promises-dispatcher-85 
-Cannot invoke the action, eventually got an error: Thrown(akka.pattern.AskTimeoutException: Timed out)
-
-2013-11-02 17:36:48,752 - [INFO] - from play in play-akka.actor.default-dispatcher-30 
-Application started (Dev)
-
-2013-11-02 17:37:13,243 - [INFO] - from play in play-akka.actor.default-dispatcher-31 
-Application started (Dev)
-
-2013-11-02 17:37:42,075 - [ERROR] - from play in play-akka.actor.promises-dispatcher-131 
-Cannot invoke the action, eventually got an error: Thrown(akka.pattern.AskTimeoutException: Timed out)
 

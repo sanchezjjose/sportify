@@ -5,7 +5,7 @@
 
 @main(Html(season + " Schedule."), nav = "schedule") {
 
-    <h2>Playoffs</h2>
+    <h2 class="header">Playoffs</h2>
 
     <div class="container">
         <table class="table table-striped table-hover">
@@ -100,9 +100,9 @@
    	  				success: function (data) {
    	  					$('.alert').remove();
    	  					if (data.status === 'in') {
-							$('.header').before('<div class="game-status-msg alert alert-info">'+data.msg+'</div>');
+							$('.header:first-child').before('<div class="game-status-msg alert alert-info">'+data.msg+'</div>');
    	  					} else {
-							$('.header').before('<div class="game-status-msg alert alert-danger" >'+data.msg+'</div>');
+							$('.header:first-child').before('<div class="game-status-msg alert alert-danger" >'+data.msg+'</div>');
    	  					}
    	  					window.scrollTo(0, 0);
    	  					setTimeout(function clearMsg () {

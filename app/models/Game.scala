@@ -45,6 +45,10 @@ object Game {
     for (x <- dbObjects) yield grater[Game].asObject(x)
   }
 
+  def findAllUpcomingGames: Iterator[Game] = {
+    Game.findAll.filter(game => DateTime.now().getMillis < format.parseDateTime(game.startTime).getMillis)
+  }
+
   def update(game: Game) = {
     val dbo = grater[Game].asDBObject(game)
     MongoManager.gamesColl.update(MongoDBObject("game_id" -> game.game_id), dbo)
