@@ -16,7 +16,7 @@ GET     /home/facebook/event/:game_id                    controllers.Facebook.cr
 GET     /roster 				  	                     controllers.Application.roster
 
 GET     /schedule 				                         controllers.Application.schedule
-GET     /schedule/rsvp                                   controllers.Schedule.rsvp(game_id: Int, user_id: Int, status: String)
+GET     /schedule/rsvp                                   controllers.Schedule.rsvp(game_id: Int, user_id: String, status: String)
 GET     /schedule/submit                                 controllers.Schedule.submit
 
 GET     /signup 				  	                     controllers.SignUp.signup

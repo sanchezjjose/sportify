@@ -31,12 +31,19 @@ class MailScheduler extends Loggable {
           val sendAt = format.parseDateTime(game.startTime).minusHours(20).getMillis
           User.findAll.filter(_.email != "").foreach { user =>
 
-            //TODO: remove this hack, the insert appears to actually be updating the record for some reason
-            if (EmailMessage.findByGameId(game.game_id).get.sent_at == None) {
-              val emailMessage = EmailMessage(user._id, game.game_id, sendAt, None, 0, user.email)
-              log.info("creating email message " + emailMessage)
+            val newMessage = EmailMessage(user._id, game.game_id, DateTime.now().getMillis, None, 0, user.email)
 
-              EmailMessage.insert(emailMessage)
+            //TODO: remove this hack, the insert appears to actually be updating the record for some reason
+            EmailMessage.findByGameId(game.game_id).map { message =>
+              if (message.sent_at == None) {
+                log.info("updating email message " + newMessage)
+
+                EmailMessage.insert(newMessage)
+              }
+            }.getOrElse {
+              log.info("creating new email message " + newMessage)
+
+              EmailMessage.insert(newMessage)
             }
           }
         }
@@ -92,7 +99,7 @@ class MailSender extends Loggable {
 
       val html =
         "You have an upcoming game against '" + game.opponent + "' on " + game.startTime + " <br><br> " +
-          "The address is " + game.address + ", New York, New York <br> " +
+          "The address is " + game.address.replace(".","") + ", New York, New York <br> " +
           "<u>Note</u>: <i> " + game.locationDetails + " </i> <br><br> " +
           "Let us know if you are " +
           "<a href='http://sportify.gilt.com/schedule/rsvp?game_id=" + game.game_id + "&user_id=" + userId + "&status=in' style='text-decoration: none'><b>IN</b></a> or " +

@@ -14,18 +14,18 @@ object Schedule extends Controller {
           "status" -> text)
   )
 
-  def rsvp(game_id: Int, user_id: Int, status: String) = Action {
+  def rsvp(game_id: Int, user_id: String, status: String) = Action {
     val game = Game.findByGameId(game_id)
 
     if (status == "in") {
-      game.get.playersIn += user_id.toString
-      game.get.playersOut -= user_id.toString
+      game.get.playersIn += user_id
+      game.get.playersOut -= user_id
       Game.update(game.get)
     }
 
     if (status == "out") {
-      game.get.playersIn -= user_id.toString
-      game.get.playersOut += user_id.toString
+      game.get.playersIn -= user_id
+      game.get.playersOut += user_id
       Game.update(game.get)
     }
 

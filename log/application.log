@@ -103,3 +103,144 @@ checking for next game to create email messages...
 2013-11-03 00:34:56,796 - [INFO] - from play in play-akka.actor.default-dispatcher-8 
 Application started (Dev)
 
+2013-11-03 00:40:37,934 - [INFO] - from application in pool-12-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:40:37,938 - [INFO] - from play in play-akka.actor.default-dispatcher-3 
+Application started (Dev)
+
+2013-11-03 00:41:47,718 - [INFO] - from application in pool-13-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:41:47,720 - [INFO] - from play in play-akka.actor.default-dispatcher-2 
+Application started (Dev)
+
+2013-11-03 00:42:47,718 - [INFO] - from application in pool-13-thread-2 
+checking for new emails to send...
+
+2013-11-03 00:45:55,651 - [INFO] - from application in pool-29-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:45:55,652 - [INFO] - from play in play-akka.actor.default-dispatcher-5 
+Application started (Dev)
+
+2013-11-03 00:45:56,480 - [INFO] - from application in pool-29-thread-1 
+creating email message EmailMessage(1176064196,30,1383502500000,None,0,***REMOVED***,unsent)
+
+2013-11-03 00:45:56,561 - [INFO] - from application in pool-29-thread-1 
+creating email message EmailMessage(2197f767-48c0-46bd-bb42-c64b1d584160,30,1383502500000,None,0,sbhargava@gilt.com,unsent)
+
+2013-11-03 00:45:56,614 - [INFO] - from application in pool-29-thread-1 
+creating email message EmailMessage(583fbaaf-ae76-4721-9336-eba1895f9985,30,1383502500000,None,0,jenglert@gilt.com,unsent)
+
+2013-11-03 00:45:56,710 - [INFO] - from application in pool-29-thread-1 
+creating email message EmailMessage(852d5606-170c-476f-9594-520fae7fbf15,30,1383502500000,None,0,mschupak@gilt.com,unsent)
+
+2013-11-03 00:45:56,764 - [INFO] - from application in pool-29-thread-1 
+creating email message EmailMessage(8b01848b-7240-4289-9fdc-8ab9d1baaa5e,30,1383502500000,None,0,khyland@gilt.com,unsent)
+
+2013-11-03 00:45:56,818 - [INFO] - from application in pool-29-thread-1 
+creating email message EmailMessage(9d003779-ab7e-4b31-a27b-b154c11f3a66,30,1383502500000,None,0,jriservato@gilt.com,unsent)
+
+2013-11-03 00:45:56,864 - [INFO] - from application in pool-29-thread-1 
+creating email message EmailMessage(a679de07-993d-446e-a345-3178fc28e0dd,30,1383502500000,None,0,bthomas@gilt.com,unsent)
+
+2013-11-03 00:45:56,931 - [INFO] - from application in pool-29-thread-1 
+creating email message EmailMessage(b4aa904b-9fa3-4153-848d-4e8bf1ce6f66,30,1383502500000,None,0,mporter@gilt.com,unsent)
+
+2013-11-03 00:45:57,022 - [INFO] - from application in pool-29-thread-1 
+creating email message EmailMessage(de047939-bfe9-4e91-a781-8d9d39d40ea0,30,1383502500000,None,0,tfisher@gilt.com,unsent)
+
+2013-11-03 00:45:57,063 - [INFO] - from application in pool-29-thread-1 
+creating email message EmailMessage(f6e43981-d740-4f42-9cf2-b4239c6e22a4,30,1383502500000,None,0,Kvanasse@gilt.com,unsent)
+
+2013-11-03 00:45:57,119 - [INFO] - from application in pool-29-thread-1 
+creating email message EmailMessage(ff5ee25d-325e-4b47-9c37-97d492a52e50,30,1383502500000,None,0,mherrero@gilt.com,unsent)
+
+2013-11-03 00:46:55,652 - [INFO] - from application in pool-29-thread-1 
+checking for new emails to send...
+
+2013-11-03 00:47:12,016 - [INFO] - from application in pool-45-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:47:12,016 - [INFO] - from play in play-akka.actor.default-dispatcher-6 
+Application started (Dev)
+
+2013-11-03 00:47:12,784 - [INFO] - from application in pool-45-thread-1 
+creating email message EmailMessage(1176064196,30,1383454032613,None,0,***REMOVED***,unsent)
+
+2013-11-03 00:47:12,846 - [INFO] - from application in pool-45-thread-1 
+creating email message EmailMessage(2197f767-48c0-46bd-bb42-c64b1d584160,30,1383454032820,None,0,sbhargava@gilt.com,unsent)
+
+2013-11-03 00:47:12,923 - [INFO] - from application in pool-45-thread-1 
+creating email message EmailMessage(583fbaaf-ae76-4721-9336-eba1895f9985,30,1383454032889,None,0,jenglert@gilt.com,unsent)
+
+2013-11-03 00:47:12,987 - [INFO] - from application in pool-45-thread-1 
+creating email message EmailMessage(852d5606-170c-476f-9594-520fae7fbf15,30,1383454032965,None,0,mschupak@gilt.com,unsent)
+
+2013-11-03 00:47:13,033 - [INFO] - from application in pool-45-thread-1 
+creating email message EmailMessage(8b01848b-7240-4289-9fdc-8ab9d1baaa5e,30,1383454033014,None,0,khyland@gilt.com,unsent)
+
+2013-11-03 00:47:13,091 - [INFO] - from application in pool-45-thread-1 
+creating email message EmailMessage(9d003779-ab7e-4b31-a27b-b154c11f3a66,30,1383454033060,None,0,jriservato@gilt.com,unsent)
+
+2013-11-03 00:47:13,143 - [INFO] - from application in pool-45-thread-1 
+creating email message EmailMessage(a679de07-993d-446e-a345-3178fc28e0dd,30,1383454033119,None,0,bthomas@gilt.com,unsent)
+
+2013-11-03 00:47:13,194 - [INFO] - from application in pool-45-thread-1 
+creating email message EmailMessage(b4aa904b-9fa3-4153-848d-4e8bf1ce6f66,30,1383454033172,None,0,mporter@gilt.com,unsent)
+
+2013-11-03 00:47:13,246 - [INFO] - from application in pool-45-thread-1 
+creating email message EmailMessage(de047939-bfe9-4e91-a781-8d9d39d40ea0,30,1383454033222,None,0,tfisher@gilt.com,unsent)
+
+2013-11-03 00:47:13,538 - [INFO] - from application in pool-45-thread-1 
+creating email message EmailMessage(f6e43981-d740-4f42-9cf2-b4239c6e22a4,30,1383454033285,None,0,Kvanasse@gilt.com,unsent)
+
+2013-11-03 00:47:13,582 - [INFO] - from application in pool-45-thread-1 
+creating email message EmailMessage(ff5ee25d-325e-4b47-9c37-97d492a52e50,30,1383454033561,None,0,mherrero@gilt.com,unsent)
+
+2013-11-03 00:48:12,017 - [INFO] - from application in pool-45-thread-1 
+checking for new emails to send...
+
+2013-11-03 00:48:12,315 - [INFO] - from application in pool-45-thread-1 
+Sending an email to ***REMOVED*** for game id 30
+
+2013-11-03 00:48:13,297 - [INFO] - from application in pool-45-thread-1 
+Sending an email to sbhargava@gilt.com for game id 30
+
+2013-11-03 00:48:14,096 - [INFO] - from application in pool-45-thread-1 
+Sending an email to jenglert@gilt.com for game id 30
+
+2013-11-03 00:48:15,009 - [INFO] - from application in pool-45-thread-1 
+Sending an email to mschupak@gilt.com for game id 30
+
+2013-11-03 00:48:16,042 - [INFO] - from application in pool-45-thread-1 
+Sending an email to khyland@gilt.com for game id 30
+
+2013-11-03 00:48:16,872 - [INFO] - from application in pool-45-thread-1 
+Sending an email to jriservato@gilt.com for game id 30
+
+2013-11-03 00:48:17,779 - [INFO] - from application in pool-45-thread-1 
+Sending an email to bthomas@gilt.com for game id 30
+
+2013-11-03 00:48:18,804 - [INFO] - from application in pool-45-thread-1 
+Sending an email to mporter@gilt.com for game id 30
+
+2013-11-03 00:48:19,706 - [INFO] - from application in pool-45-thread-1 
+Sending an email to tfisher@gilt.com for game id 30
+
+2013-11-03 00:48:20,603 - [INFO] - from application in pool-45-thread-1 
+Sending an email to Kvanasse@gilt.com for game id 30
+
+2013-11-03 00:48:21,581 - [INFO] - from application in pool-45-thread-1 
+Sending an email to mherrero@gilt.com for game id 30
+
+2013-11-03 00:51:25,417 - [INFO] - from application in pool-61-thread-1 
+checking for next game to create email messages...
+
+2013-11-03 00:51:25,417 - [INFO] - from play in play-akka.actor.default-dispatcher-7 
+Application started (Dev)
+
+2013-11-03 00:52:25,418 - [INFO] - from application in pool-61-thread-1 
+checking for new emails to send...
+
