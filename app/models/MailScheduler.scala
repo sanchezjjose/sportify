@@ -31,7 +31,7 @@ class MailScheduler extends Loggable {
           val sendAt = format.parseDateTime(game.startTime).minusHours(20).getMillis
           User.findAll.filter(_.email != "").foreach { user =>
 
-            val newMessage = EmailMessage(user._id, game.game_id, DateTime.now().getMillis, None, 0, user.email)
+            val newMessage = EmailMessage(user._id, game.game_id, sendAt, None, 0, user.email)
 
             //TODO: remove this hack, the insert appears to actually be updating the record for some reason
             EmailMessage.findByGameId(game.game_id).map { message =>
@@ -117,7 +117,7 @@ class MailSender extends Loggable {
       message.setContent(multipart)
       message.setFrom(new InternetAddress("sportify@email.heroku.com"))
       message.setSubject("You have a basketball game on " + game.startTime)
-      message.addRecipient(Message.RecipientType.TO, new InternetAddress("***REMOVED***"))
+      message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailMessage.recipient))
 
       log.info("Sending an email to " + recipient + " for game id " + game.game_id)
 
