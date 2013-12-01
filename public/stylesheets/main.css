@@ -92,6 +92,9 @@ body {
 }
 
 .schedule .btn {
+    float: left;
+    margin: 10px;
+    padding: 15px;
     width: 65px;
 }
 
@@ -109,5 +112,47 @@ body {
 
 .navbar .container {
   width: 1045px;
+}
+
+@media screen and (max-width: 640px) { 
+  
+  /* iPhone */
+  
+  .container {
+    width: 600px;
+  }
+
+  .navbar .container {
+    width: 600px;
+  }
+
+  .login input {
+    width: 300px;
+    height: 50px;
+  }
+
+  .login .actions {
+    margin-top: 30px;
+  }
+
+  .login .btn {
+    width: 100px;
+    height: 40px;
+  }
+
+  .login .btn-default {
+    padding: 10px;
+    margin: 10px;
+  }
+
+  .login label {
+    font-size: 100%;
+  }
+
+
+  .schedule .btn { 
+    width: 100px;
+    height: 50px;
+  }
 }
 
