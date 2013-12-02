@@ -27,6 +27,15 @@
     text-align: center;
   }
 
+  .container img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .container h1 {
+    padding-bottom: 10px;
+  }
+
   .login {
     margin: 30px;
   }
