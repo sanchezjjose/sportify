@@ -47,6 +47,10 @@ body {
     border-left: 1px solid #eee;
 }
 
+.container .content .main {
+    padding: 0 15px 10px;
+}
+
 @media screen and (max-width: 320px) { 
   
   /* iPhone */

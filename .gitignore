@@ -1,5 +1,6 @@
 log
 log/application.log
+log/*
 *.class
 logs
 project/project
