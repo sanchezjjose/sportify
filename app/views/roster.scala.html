@@ -5,29 +5,34 @@
 
 @main(Html("Roster."), nav = "roster") {
     
-    <h2>@header</h2>
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/roster.css")">
 
-    <div class="container">
-	    <table class="table table-striped table-hover">
-		    <tbody>
-			    <header>
-			        <tr>
-			          Team Roster
-			        </tr>
-			        <tr>
-			          <td>No.</td>
-			          <td>Name</td>
-			          <td>Position</td>
-			        </tr>
-			    </header>
-			    @for(player <- User.findAll) {
-			      <tr>
-			         <td>@player.number</td>
-			         <td>@player.firstName @player.lastName</td>
-			         <td>@player.position</td>
-			      </tr>
-			    }
-			  </tbody>
-	    </table>
+    <div class="main">
+
+    	<h2>@header</h2>
+
+    	<div class="roster">
+		    <table class="table table-striped table-hover">
+			    <tbody>
+				    <header>
+				        <tr>
+				          Team Roster
+				        </tr>
+				        <tr>
+				          <td>No.</td>
+				          <td>Name</td>
+				          <td>Position</td>
+				        </tr>
+				    </header>
+				    @for(player <- User.findAll) {
+				      <tr>
+				         <td>@player.number</td>
+				         <td>@player.firstName @player.lastName</td>
+				         <td>@player.position</td>
+				      </tr>
+				    }
+				  </tbody>
+		    </table>
+	    </div>
     </div>
 }

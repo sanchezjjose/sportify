@@ -1,0 +1,30 @@
+.container {
+  width: 550px;
+}
+
+.container h1 {
+	text-align: center;
+}
+
+fieldset legend {
+	text-align: center;
+	font-style: none;
+}
+
+fieldset .clearfix {
+	margin-bottom: 10px;
+	margin-left: 10px;
+}
+
+.signup input {
+	width: 250px;
+}
+
+.signup .actions {
+	margin: 15px;
+}
+
+.signup .actions .btn {
+	width: 78px;
+	margin-right: 10px;
+}

@@ -4,6 +4,8 @@
 
 @main(Html("Your Account Information.")) {
 
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/account.css")">
+
     @if(flash.get("success").isDefined) {
         <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert">×</button>

@@ -6,10 +6,11 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <meta name="viewport" content="width=device-width, user-scalable=0, initial-scale=1.0">
         <title>Gilt Unit</title>
-        <!-- <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.css")"> -->
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/signup.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
         <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
     </head>
@@ -20,7 +21,7 @@
         <div class="content">
             
             <div class="page-header">
-                <h1>Join The Team!</h1>
+                <h2><i>Signup to Sportify</i></h2>
             </div>
 
             @helper.form(action = routes.SignUp.submit) {
@@ -28,50 +29,53 @@
                 <div class="row">
                     <div class="span14">
 
-                        <fieldset>
-                            <legend>Account Information</legend>
+                        <div class="signup">
+                            <fieldset>
+                                <legend>Account Information</legend>
 
-                            @inputText(
-                                signupForm("email"),
-                                '_label -> "Email",
-                                '_help -> "Please enter your email address.",
-                                '_error -> signupForm.globalError
-                            )
+                                @inputText(
+                                    signupForm("email"),
+                                    '_label -> "Email",
+                                    '_help -> "",
+                                    '_error -> signupForm.globalError
+                                )
 
-                            @inputText(
-                                signupForm("firstname"),
-                                '_label -> "First Name",
-                                '_help -> "Please enter your first name.",
-                                '_error -> signupForm.globalError
-                            )
+                                @inputText(
+                                    signupForm("firstname"),
+                                    '_label -> "First Name",
+                                    '_help -> "",
+                                    '_error -> signupForm.globalError
+                                )
 
-                            @inputText(
-                                signupForm("lastname"),
-                                '_label -> "Last Name",
-                                '_help -> "Please enter your last name.",
-                                '_error -> signupForm.globalError
-                            )
+                                @inputText(
+                                    signupForm("lastname"),
+                                    '_label -> "Last Name",
+                                    '_help -> "",
+                                    '_error -> signupForm.globalError
+                                )
 
-                            @inputText(
-                                signupForm("number"),
-                                '_label -> "Jersey Number",
-                                '_help -> "Please enter a valid number.",
-                                '_error -> signupForm.globalError
-                            )
+                                @inputText(
+                                    signupForm("number"),
+                                    '_label -> "Jersey Number",
+                                    '_help -> "",
+                                    '_error -> signupForm.globalError
+                                )
 
-                            @select(
-                                field = signupForm("position"),
-                                options = options(List("PG", "SG", "SF", "F", "C")),
-                                '_default -> "-------- Choose a Position --------",
-                                '_label -> "Position",
-                                '_error -> "Please select a player position.",
-                                '_showConstraints -> false
-                            )
-                        </fieldset>
+                                @select(
+                                    field = signupForm("position"),
+                                    options = options(List("PG", "SG", "SF", "F", "C")),
+                                    '_default -> "-------- Choose a Position --------",
+                                    '_label -> "Position",
+                                    '_error -> "",
+                                    '_showConstraints -> false
+                                )
 
-                        <div class="actions">
-                            <input type="submit" class="btn btn-primary" value="Sign Up">
-                            <a href="@routes.Application.index" class="btn btn-default">Cancel</a>
+                            </fieldset>
+
+                            <div class="actions">
+                                <input type="submit" class="btn btn-primary" value="Sign Up">
+                                <a href="@routes.Application.index" class="btn btn-default">Cancel</a>
+                            </div>
                         </div>
                     </div>
                 </div>

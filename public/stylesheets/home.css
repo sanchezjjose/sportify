@@ -1,0 +1,10 @@
+#map-canvas {
+  width: auto;
+  height: 380px;
+}
+
+.next-game .alert, .game-status-msg {
+  margin-top: -20px;
+  margin-left: -5px;
+  margin-right: -5px;
+}

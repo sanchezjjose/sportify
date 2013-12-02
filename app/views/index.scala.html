@@ -4,155 +4,159 @@
 
 @main(Html("Next Game."), nav = "home") {
 
-@gameOpt.map { game =>
+  <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/home.css")">
 
-<div class="next-game">
+  <div class="main">
 
-  <div class="span10">
-    @if(game.playersIn.size < 5) {
-      <div class="alert alert-danger">
-        <strong><center>@(5-game.playersIn.size) more player(s) needed for this weeks game!</center></strong>
-      </div>
-    } else {
-      @if(game.is_playoff_game == true) {
+    @gameOpt.map { game =>
+
+    <div class="next-game">
+
+      <div class="span10">
+        @if(game.playersIn.size < 5) {
           <div class="alert alert-danger">
-              <strong><center>PLAYOFFS!!!!! Who's ready??? Bring your shirts and lets get ready for battle. </center></strong>
+            <strong><center>@(5-game.playersIn.size) more player(s) needed for this weeks game!</center></strong>
           </div>
-      } else {
-          <div class="alert alert-info">
-              <strong><center>@Application.msg</center></strong>
-          </div>
-      }
-    }
-  </div>
-
-  @if(flash.get("success").isDefined) {
-    <div class="alert alert-info">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        <center>@flash.get("success")</center>
-    </div>
-  }
-
-  <div class="span12">
-
-    <!--<a href="/send-email" class="btn btn-warn" id="send-reminder-email" >Send Email</a>-->
-
-    <h3>Game @game.game_seq</h3> <br>
-
-    <h4>Gilt Unit vs. @game.opponent</h4>
-    @game.startTime <br><br>
-
-    @game.address <br>
-
-    @if(!game.locationDetails.isEmpty()){
-      <b><font color="red">*&nbsp;</font></b>@game.locationDetails
-    }
-
-    @if(User.loggedInUser.facebookUser.isDefined) {
-      <br><br>
-      <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a>
-    }
-
-    <br><br>
-
-    <div class="span3 offset1">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>@game.playersIn.size Confirmed</th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>
-          @for(playerId <- game.playersIn){
-            @if(User.findById(playerId).isDefined){
-              &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName <br>
-            }
+        } else {
+          @if(game.is_playoff_game == true) {
+              <div class="alert alert-danger">
+                  <strong><center>PLAYOFFS!!!!! Who's ready??? Bring your shirts and lets get ready for battle. </center></strong>
+              </div>
+          } else {
+              <div class="alert alert-info">
+                  <strong><center>@Application.msg</center></strong>
+              </div>
           }
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="span3 offset1">
-      <table class="table">
-        <thead>
-        <tr>
-          <th>@game.playersOut.size Declined</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>
-            @for(playerId <- game.playersOut){
-              @if(User.findById(playerId).isDefined){
-                &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName <br>
-              }
-            }
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <br><br>
-
-    <script type="text/javascript">
-        $("#create-fb-event").on('click', function() {
-          var href = "/home/facebook/event/" + @game.game_id;
-
-          console.log(href);
-           
-          window.location = href;
-        });
-    </script>
-
-    <div id="map-canvas"></div>
-
-    <script type="text/javascript">
-
-      function initialize() {
-        var directionsDisplay;
-        var map;
-        var directionsService = new google.maps.DirectionsService();
-        var manhattan = new google.maps.LatLng(40.7711329, -73.9741874);
-
-        directionsDisplay = new google.maps.DirectionsRenderer();
-        var mapOptions = {
-          zoom: 14,
-          center: manhattan,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
         }
-        map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-        directionsDisplay.setMap(map);
+      </div>
 
-        var request = {
-          origin: '2 Park Ave, New York',
-          destination: '@game.address, New York',
-          travelMode: google.maps.DirectionsTravelMode.TRANSIT
-        };
+      @if(flash.get("success").isDefined) {
+        <div class="alert alert-info">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <center>@flash.get("success")</center>
+        </div>
+      }
 
-        directionsService.route(request, function(response, status) {
-          if (status == google.maps.DirectionsStatus.OK) {
-            directionsDisplay.setDirections(response);
+      <div class="span12">
+
+        <h3>Game @game.game_seq</h3> <br>
+
+        <h4>Gilt Unit vs. @game.opponent</h4>
+        @game.startTime <br><br>
+
+        @game.address <br>
+
+        @if(!game.locationDetails.isEmpty()){
+          <b><font color="red">*&nbsp;</font></b>@game.locationDetails
+        }
+
+        @if(User.loggedInUser.facebookUser.isDefined) {
+          <br><br>
+          <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a>
+        }
+
+        <br><br>
+
+        <div class="span3 offset1">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>@game.playersIn.size Confirmed</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>
+              @for(playerId <- game.playersIn){
+                @if(User.findById(playerId).isDefined){
+                  &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName <br>
+                }
+              }
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="span3 offset1">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>@game.playersOut.size Declined</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>
+                @for(playerId <- game.playersOut){
+                  @if(User.findById(playerId).isDefined){
+                    &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName <br>
+                  }
+                }
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <br><br>
+
+        <script type="text/javascript">
+            $("#create-fb-event").on('click', function() {
+              var href = "/home/facebook/event/" + @game.game_id;
+
+              console.log(href);
+               
+              window.location = href;
+            });
+        </script>
+
+        <div id="map-canvas"></div>
+
+        <script type="text/javascript">
+
+          function initialize() {
+            var directionsDisplay;
+            var map;
+            var directionsService = new google.maps.DirectionsService();
+            var manhattan = new google.maps.LatLng(40.7711329, -73.9741874);
+
+            directionsDisplay = new google.maps.DirectionsRenderer();
+            var mapOptions = {
+              zoom: 14,
+              center: manhattan,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+            map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+            directionsDisplay.setMap(map);
+
+            var request = {
+              origin: '2 Park Ave, New York',
+              destination: '@game.address, New York',
+              travelMode: google.maps.DirectionsTravelMode.TRANSIT
+            };
+
+            directionsService.route(request, function(response, status) {
+              if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+              }
+            });
           }
-        });
-      }
 
-      function loadScript() {
-        var script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
-        document.body.appendChild(script);
-      }
+          function loadScript() {
+            var script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
+            document.body.appendChild(script);
+          }
 
-      window.onload = loadScript;
-    </script>
+          window.onload = loadScript;
+        </script>
+
+      </div>
+    </div>
+
+    }.getOrElse{ NO SCHEDULED GAMES. }
 
   </div>
-</div>
-
-}.getOrElse{ NO SCHEDULED GAMES. }
 }
