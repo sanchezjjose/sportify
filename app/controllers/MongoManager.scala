@@ -10,7 +10,7 @@ import com.mongodb.casbah.Imports._
 
 
 object MongoManager {
-  val mongoConn = MongoClient(new MongoClientURI("mongodb://***REMOVED***:***REMOVED***@***REMOVED***:***REMOVED***/***REMOVED***"))
+  val mongoConn = MongoClient(new MongoClientURI(System.getenv("MONGOHQ_URL")))
   val usersColl = mongoConn("***REMOVED***")("users")
   val gamesColl = mongoConn("***REMOVED***")("games")
   val facebookAuthColl = mongoConn("***REMOVED***")("facebook_autherizations")

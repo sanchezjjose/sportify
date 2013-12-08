@@ -71,12 +71,16 @@ class MailScheduler extends Loggable {
  */
 class MailSender extends Loggable {
 
+  private val SMTP_HOST_NAME = "smtp.sendgrid.net";
+  private val SMTP_AUTH_USER = System.getenv("SENDGRID_USERNAME");
+  private val SMTP_AUTH_PWD  = System.getenv("SENDGRID_PASSWORD");
+
   def sendNextGameReminderEmail(emailMessage: EmailMessage, game: Game) {
 
     try {
       val props = new Properties()
       props.put("mail.transport.protocol", "smtp")
-      props.put("mail.smtp.host", "smtp.sendgrid.net")
+      props.put("mail.smtp.host", SMTP_HOST_NAME)
       props.put("mail.smtp.port", "587")
       props.put("mail.smtp.auth", "true")
 
@@ -142,9 +146,8 @@ class MailSender extends Loggable {
   class SMTPAuthenticator extends javax.mail.Authenticator {
     override def getPasswordAuthentication(): PasswordAuthentication = {
 
-      //TODO: should be coming from SYSCONFIG
-      val username = "***REMOVED***"
-      val password = "***REMOVED***"
+      val username = SMTP_AUTH_USER
+      val password = SMTP_AUTH_PWD
 
       new PasswordAuthentication(username, password)
     }
