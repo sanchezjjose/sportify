@@ -2,8 +2,9 @@
   width: 550px;
 }
 
-.container h1 {
+.container h2 {
 	text-align: center;
+	padding-bottom: 10px;
 }
 
 fieldset legend {
@@ -27,4 +28,22 @@ fieldset .clearfix {
 .signup .actions .btn {
 	width: 78px;
 	margin-right: 10px;
+}
+
+@media screen and (max-width: 320px) { 
+  
+  /* iPhone */
+  
+  .container {
+    width: 280px;
+  }
+
+  .container h2 {
+  	font-size: 2em;
+  }
+
+  .login {
+    margin: 30px;
+  }
+
 }
