@@ -12,6 +12,7 @@ import com.mongodb.casbah.Imports._
 import controllers.{Loggable, MongoManager}
 import com.mongodb.casbah.commons.MongoDBObject
 import org.joda.time.format.DateTimeFormat
+import controllers.{Config, Environment}
 
 /**
  * Handles scheduling of the emails.
@@ -69,7 +70,7 @@ class MailScheduler extends Loggable {
 /**
  * Handles sending of the emails.
  */
-class MailSender extends Loggable {
+class MailSender extends Loggable with Config {
 
   private val SMTP_HOST_NAME = "smtp.sendgrid.net";
   private val SMTP_AUTH_USER = System.getenv("SENDGRID_USERNAME");
@@ -97,39 +98,44 @@ class MailSender extends Loggable {
       val userId = emailMessage._id
       val recipient = emailMessage.recipient
 
-      val playersIn = game.playersIn.map { id =>
-        "- " + User.findById(id).get.firstName
+      // Only send emails to me if in development
+      if (Config.environment == Environment.DEVELOPMENT && recipient == "***REMOVED***" ||
+          Config.environment == Environment.PRODUCTION) {
+
+        val playersIn = game.playersIn.map { id =>
+          "- " + User.findById(id).get.firstName
+        }
+
+        val html =
+          "You have an upcoming game against '" + game.opponent + "' on " + game.startTime + " <br><br> " +
+            "The address is " + game.address.replace(".","") + ", New York, New York <br> " +
+            "<u>Note</u>: <i> " + game.locationDetails + " </i> <br><br> " +
+            "Let us know if you are " +
+            "<a href='http://sportify.gilt.com/schedule/rsvp?game_id=" + game.game_id + "&user_id=" + userId + "&status=in' style='text-decoration: none'><b>IN</b></a> or " +
+            "<a href='http://sportify.gilt.com/schedule/rsvp?game_id=" + game.game_id + "&user_id=" + userId + "&status=out' style='text-decoration: none'><b>OUT</b></a> <br><br>" +
+            "So far, we have " + playersIn.size +  "  players confirmed: <br> " +
+            playersIn.mkString("<br>") + "  <br><br>" +
+            "<b>Remember to bring your game shirts, and lets get this W!</b> <br><br>" +
+            "<i>Sportify.</i>"
+
+        val part = new MimeBodyPart()
+        part.setContent(html, "text/html")
+
+        multipart.addBodyPart(part)
+
+        message.setContent(multipart)
+        message.setFrom(new InternetAddress("sportify@email.heroku.com"))
+        message.setSubject("You have a basketball game on " + game.startTime)
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient))
+
+        log.info("Sending an email to " + recipient + " for game id " + game.game_id)
+
+        transport.connect()
+        transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO))
+        transport.close()
+
+        EmailMessage.markAsSent(emailMessage)
       }
-
-      val html =
-        "You have an upcoming game against '" + game.opponent + "' on " + game.startTime + " <br><br> " +
-          "The address is " + game.address.replace(".","") + ", New York, New York <br> " +
-          "<u>Note</u>: <i> " + game.locationDetails + " </i> <br><br> " +
-          "Let us know if you are " +
-          "<a href='http://sportify.gilt.com/schedule/rsvp?game_id=" + game.game_id + "&user_id=" + userId + "&status=in' style='text-decoration: none'><b>IN</b></a> or " +
-          "<a href='http://sportify.gilt.com/schedule/rsvp?game_id=" + game.game_id + "&user_id=" + userId + "&status=out' style='text-decoration: none'><b>OUT</b></a> <br><br>" +
-          "So far, we have " + playersIn.size +  "  players confirmed: <br> " +
-          playersIn.mkString("<br>") + "  <br><br>" +
-          "<b>Remember to bring your game shirts, and lets get this W!</b> <br><br>" +
-          "<i>Sportify.</i>"
-
-      val part = new MimeBodyPart()
-      part.setContent(html, "text/html")
-
-      multipart.addBodyPart(part)
-
-      message.setContent(multipart)
-      message.setFrom(new InternetAddress("sportify@email.heroku.com"))
-      message.setSubject("You have a basketball game on " + game.startTime)
-      message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailMessage.recipient))
-
-      log.info("Sending an email to " + recipient + " for game id " + game.game_id)
-
-      transport.connect()
-      transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO))
-      transport.close()
-
-      EmailMessage.markAsSent(emailMessage)
 
     } catch {
       case e: Exception => {

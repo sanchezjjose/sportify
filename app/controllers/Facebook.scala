@@ -9,14 +9,6 @@ import org.joda.time.DateTimeZone
 
 object Facebook extends Controller with Secured with Loggable {
 
-  // Development
-  private val appId = "***REMOVED***"
-  private val appSecret = "***REMOVED***"
-
-    // Production
-//  private val appId = "584728524918442"
-//  private val appSecret = "c2e02f8fbd8a68684ce31e0f091677f7"
-
   val graphApiBaseUrl = "https://graph.facebook.com/"
   val graphApiCreateEventBaseUrl = graphApiBaseUrl + "me/events?access_token="
 

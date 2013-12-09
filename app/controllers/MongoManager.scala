@@ -9,8 +9,8 @@ import com.mongodb.casbah.commons.MongoDBObject
 import com.mongodb.casbah.Imports._
 
 
-object MongoManager {
-  val mongoConn = MongoClient(new MongoClientURI(System.getenv("MONGOHQ_URL")))
+object MongoManager extends Config {
+  val mongoConn = MongoClient(new MongoClientURI(Config.mongoUrl))
   val usersColl = mongoConn("***REMOVED***")("users")
   val gamesColl = mongoConn("***REMOVED***")("games")
   val facebookAuthColl = mongoConn("***REMOVED***")("facebook_autherizations")

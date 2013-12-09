@@ -7,7 +7,7 @@ import play.api.data.Forms._
 import views._
 import models._
 
-object Login extends Controller with Loggable {
+object Login extends Controller with Loggable with Config {
 
   val loginForm = Form(
     tuple(

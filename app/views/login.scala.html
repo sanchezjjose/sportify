@@ -20,7 +20,7 @@
             window.fbAsyncInit = function() {
 
                 FB.init({
-                    appId      : '***REMOVED***', // App ID
+                    appId      : @Config.fbAppId, // App ID
                     channelUrl : '//@routes.Assets.at("javascripts/channel.html")', // Channel File
                     status     : true, // check login status
                     cookie     : true, // enable cookies to allow the server to access the session
@@ -104,7 +104,7 @@
         <div class="container">
 
             <h1 class="text-warning">
-                Sportify 
+                Sportify
                 <img src="@routes.Assets.at("images/basketball-icon.png")" width="120" height="120" /> 
             </h1>
 

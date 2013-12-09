@@ -1,5 +1,7 @@
 @(title: Html, nav: String = "")(content: Html)
 
+@import controllers._
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -19,7 +21,7 @@
         window.fbAsyncInit = function() {
 
           FB.init({
-              appId      : '***REMOVED***', // App ID
+              appId      : @Config.fbAppId, // App ID
               channelUrl : '//@routes.Assets.at("javascripts/channel.html")', // Channel File
               status     : true, // check login status
               cookie     : true, // enable cookies to allow the server to access the session
