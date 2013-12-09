@@ -41,7 +41,7 @@ object Game {
    * Retrieve all games.
    */
   def findAll: Iterator[Game] = {
-    val dbObjects = MongoManager.gamesColl.find(MongoDBObject("season" -> "Fall 2013")).sort(MongoDBObject("game_id" -> 1))
+    val dbObjects = MongoManager.gamesColl.find(MongoDBObject("season" -> "Winter 2014")).sort(MongoDBObject("game_id" -> 1))
     for (x <- dbObjects) yield grater[Game].asObject(x)
   }
 
