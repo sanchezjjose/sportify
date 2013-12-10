@@ -36,12 +36,12 @@ class MailScheduler extends Loggable {
           // Ensure email message does not already exist for this game
           // if (EmailMessage.findByGameId(game.game_id) != None) {
 
-            val sendAt = format.parseDateTime(game.startTime).minusHours(20).getMillis
-            User.findAll.filter(_.email != "").foreach { user =>
+            // val sendAt = format.parseDateTime(game.startTime).minusHours(20).getMillis
+            // User.findAll.filter(_.email != "").foreach { user =>
 
-              val newMessage = EmailMessage(user._id, game.game_id, sendAt, None, 0, user.email)
-              EmailMessage.insert(newMessage)
-            }
+            //   val newMessage = EmailMessage(user._id, game.game_id, sendAt, None, 0, user.email)
+            //   EmailMessage.insert(newMessage)
+            // }
             
           // } else {
           //   log.info("Not creating new email messages")
