@@ -29,21 +29,14 @@ class MailScheduler extends Loggable {
         log.info("checking for next game to create email messages...")
 
         Game.findNextGame.foreach { game =>
-          val sendAt = format.parseDateTime(game.startTime).minusHours(20).getMillis
-          User.findAll.filter(_.email != "").foreach { user =>
 
-            val newMessage = EmailMessage(user._id, game.game_id, sendAt, None, 0, user.email)
+          // Ensure email message does not already exist for this game
+          if (!EmailMessage.findByGameId(game.game_id).isDefined) {
 
-            //TODO: remove this hack, the insert appears to actually be updating the record for some reason
-            EmailMessage.findByGameId(game.game_id).map { message =>
-              if (message.sent_at == None) {
-                log.info("updating email message " + newMessage)
-
-                EmailMessage.insert(newMessage)
-              }
-            }.getOrElse {
-              log.info("creating new email message " + newMessage)
-
+            val sendAt = format.parseDateTime(game.startTime).minusHours(20).getMillis
+            User.findAll.filter(_.email != "").foreach { user =>
+              
+              val newMessage = EmailMessage(user._id, game.game_id, sendAt, None, 0, user.email)
               EmailMessage.insert(newMessage)
             }
           }
