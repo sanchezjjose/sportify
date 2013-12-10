@@ -29,23 +29,16 @@ class MailScheduler extends Loggable {
         log.info("checking for next game to create email messages...")
 
         Game.findNextGame.map { game =>
+          val sendAt = format.parseDateTime(game.startTime).minusHours(20).getMillis
 
-          log.info("Next game is " + game.game_id)
-          log.info("***** " + EmailMessage.findByGameId(game.game_id))
+          User.findAll.filter(_.email != "").foreach { user =>
 
-          // Ensure email message does not already exist for this game
-          // if (EmailMessage.findByGameId(game.game_id) != None) {
-
-            // val sendAt = format.parseDateTime(game.startTime).minusHours(20).getMillis
-            // User.findAll.filter(_.email != "").foreach { user =>
-
-            //   val newMessage = EmailMessage(user._id, game.game_id, sendAt, None, 0, user.email)
-            //   EmailMessage.insert(newMessage)
-            // }
-            
-          // } else {
-          //   log.info("Not creating new email messages")
-          // }
+            // This is pretty bad. Look into how to use unique index on game id and recipient instead.
+            if (!EmailMessage.findByGameIdAndRecipient(game.game_id, user.email).isDefined) {
+              val newMessage = EmailMessage(user._id, game.game_id, sendAt, None, 0, user.email)
+              EmailMessage.insert(newMessage)
+            }
+          }
         }
       }
     }, 0, 12, TimeUnit.HOURS)
@@ -57,7 +50,7 @@ class MailScheduler extends Loggable {
         log.info("checking for new emails to send...")
 
         Game.findNextGame.map { game =>
-          EmailMessage.findAll(game.game_id).foreach { message =>
+          EmailMessage.findUnsent(game.game_id).foreach { message =>
             new MailSender().sendNextGameReminderEmail(message, game)
           }
         }
@@ -97,7 +90,11 @@ class MailSender extends Loggable with Config {
       val userId = emailMessage._id
       val recipient = emailMessage.recipient
 
-      val shouldSendEmail = ((Config.environment == Environment.DEVELOPMENT && recipient == "***REMOVED***") || Config.environment == Environment.PRODUCTION)
+      val shouldSendEmail = {
+        (Config.environment == Environment.DEVELOPMENT && recipient == "***REMOVED***") ||
+          Config.environment == Environment.PRODUCTION
+      }
+
       log.info("Should send email to %s? %s".format(recipient, shouldSendEmail))
 
       // Only send emails to me if in development
@@ -181,12 +178,17 @@ object EmailMessage {
     dbObject.map(o => grater[EmailMessage].asObject(o))
   }
 
-  def findAll(game_id: Int): Iterator[EmailMessage] = {
+  def findByGameIdAndRecipient(game_id: Int, recipient: String): Option[EmailMessage] = {
+    val dbObject = MongoManager.emailMessagesColl.findOne(MongoDBObject("game_id" -> game_id, "recipient" -> recipient))
+    dbObject.map(o => grater[EmailMessage].asObject(o))
+  }
+
+  def findUnsent(game_id: Int): Iterator[EmailMessage] = {
     val dbObjects = MongoManager.emailMessagesColl.find(
       MongoDBObject("game_id" -> game_id,
-      "status" -> "unsent",
-      "send_at" -> MongoDBObject("$lt" -> DateTime.now().getMillis),
-      "num_attempts" -> MongoDBObject("$lt" -> 5))
+        "status" -> "unsent",
+        "send_at" -> MongoDBObject("$lt" -> DateTime.now().getMillis),
+        "num_attempts" -> MongoDBObject("$lt" -> 5))
     )
     for (x <- dbObjects) yield grater[EmailMessage].asObject(x)
   }
@@ -194,7 +196,7 @@ object EmailMessage {
   def markAsSent(message: EmailMessage) = {
     MongoManager.emailMessagesColl.update(MongoDBObject("_id" -> message._id),
       $set("sent_at" -> Some(DateTime.now().getMillis),
-           "status" -> "sent"
+        "status" -> "sent"
       )
     )
   }

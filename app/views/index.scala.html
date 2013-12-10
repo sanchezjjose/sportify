@@ -6,38 +6,39 @@
 
   <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/home.css")">
 
-  <div class="main">
+  @gameOpt.map { game =>
 
-    @gameOpt.map { game =>
-
-    <div class="next-game">
-
-      <div class="span10">
-        @if(game.playersIn.size < 5) {
-          <div class="alert alert-danger">
-            <strong><center>@(5-game.playersIn.size) more player(s) needed for this weeks game!</center></strong>
-          </div>
-        } else {
-          @if(game.is_playoff_game == true) {
-              <div class="alert alert-danger">
-                  <strong><center>PLAYOFFS!!!!! Who's ready??? Bring your shirts and lets get ready for battle. </center></strong>
-              </div>
-          } else {
-              <div class="alert alert-info">
-                  <strong><center>@Config.msg</center></strong>
-              </div>
-          }
-        }
+  <div class="message">
+    @if(game.playersIn.size < 5) {
+      <div class="alert alert-danger">
+        <strong><center>@(5-game.playersIn.size) more player(s) needed for this weeks game!</center></strong>
       </div>
+    } else {
+      @if(game.is_playoff_game == true) {
+          <div class="alert alert-danger">
+              <strong><center>PLAYOFFS!!!!! Who's ready??? Bring your shirts and lets get ready for battle. </center></strong>
+          </div>
+      } else {
+          <div class="alert alert-info">
+              <strong><center>@Config.msg</center></strong>
+          </div>
+      }
+    }
 
-      @if(flash.get("success").isDefined) {
+  </div>
+
+  @if(flash.get("success").isDefined) {
+      <div class="message">
         <div class="alert alert-info">
             <button type="button" class="close" data-dismiss="alert">×</button>
             <center>@flash.get("success")</center>
         </div>
-      }
+      </div>
+    }
 
-      <div class="span12">
+  <div class="main">
+
+    <div class="next-game">
 
         <h3>Game @game.game_seq</h3> <br>
 
@@ -153,7 +154,6 @@
           window.onload = loadScript;
         </script>
 
-      </div>
     </div>
 
     }.getOrElse{ NO SCHEDULED GAMES. }

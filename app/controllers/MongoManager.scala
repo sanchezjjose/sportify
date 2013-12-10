@@ -15,4 +15,10 @@ object MongoManager extends Config {
   val gamesColl = mongoConn("***REMOVED***")("games")
   val facebookAuthColl = mongoConn("***REMOVED***")("facebook_autherizations")
   val emailMessagesColl = mongoConn("***REMOVED***")("email_messages")
+
+  try {
+    emailMessagesColl.ensureIndex(MongoDBObject("game_id" -> 1, "recipient" -> 1), "game_id_", true)
+  } catch {
+    case e => println(e)
+  }
 }

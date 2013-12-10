@@ -8,3 +8,8 @@
   margin-left: -5px;
   margin-right: -5px;
 }
+
+.message {
+  width: auto;
+  margin: -20px -5px 0;
+}
