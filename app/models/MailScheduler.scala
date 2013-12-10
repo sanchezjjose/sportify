@@ -28,18 +28,24 @@ class MailScheduler extends Loggable {
       def run {
         log.info("checking for next game to create email messages...")
 
-        Game.findNextGame.foreach { game =>
+        Game.findNextGame.map { game =>
+
+          log.info("Next game is " + game.game_id)
+          log.info("***** " + EmailMessage.findByGameId(game.game_id))
 
           // Ensure email message does not already exist for this game
-          if (!EmailMessage.findByGameId(game.game_id).isDefined) {
+          // if (EmailMessage.findByGameId(game.game_id) != None) {
 
             val sendAt = format.parseDateTime(game.startTime).minusHours(20).getMillis
             User.findAll.filter(_.email != "").foreach { user =>
-              
+
               val newMessage = EmailMessage(user._id, game.game_id, sendAt, None, 0, user.email)
               EmailMessage.insert(newMessage)
             }
-          }
+            
+          // } else {
+          //   log.info("Not creating new email messages")
+          // }
         }
       }
     }, 0, 12, TimeUnit.HOURS)
@@ -91,9 +97,11 @@ class MailSender extends Loggable with Config {
       val userId = emailMessage._id
       val recipient = emailMessage.recipient
 
+      val shouldSendEmail = ((Config.environment == Environment.DEVELOPMENT && recipient == "***REMOVED***") || Config.environment == Environment.PRODUCTION)
+      log.info("Should send email to %s? %s".format(recipient, shouldSendEmail))
+
       // Only send emails to me if in development
-      if (Config.environment == Environment.DEVELOPMENT && recipient == "***REMOVED***" ||
-          Config.environment == Environment.PRODUCTION) {
+      if (shouldSendEmail) {
 
         val playersIn = game.playersIn.map { id =>
           "- " + User.findById(id).get.firstName
