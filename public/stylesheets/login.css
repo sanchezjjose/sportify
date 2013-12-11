@@ -19,6 +19,11 @@
   margin-bottom: 10px;
 }
 
+.button-facebook {
+  border-color: #428bca;
+  color: #428bca;
+}
+
 @media screen and (max-width: 320px) { 
   
   /* iPhone */
