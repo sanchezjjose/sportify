@@ -1,35 +1,36 @@
 .container {
-  width: 550px;
+  width: 35%;
   text-align: center;
 }
 
 .login {
-  margin: 30px;
+  margin: 30px auto;
 }
 
 .login input {
-  width: 300px;
+  width: 54.545454545455%; /* 300/550 */
   height: 40px;
   margin-bottom: 10px;
 }
 
 .login .btn {
-  width: 300px;
-  height: 34px;
+  width: 54.545454545455%;
+  height: auto;
   margin-bottom: 10px;
 }
 
 .button-facebook {
   border-color: #428bca;
   color: #428bca;
+  white-space: normal;
 }
 
-@media screen and (max-width: 320px) { 
+@media screen and (max-width: 640px) { 
   
   /* iPhone */
   
   .container {
-    width: 280px;
+    width: 90%;
     text-align: center;
   }
 
@@ -42,20 +43,14 @@
     padding-bottom: 10px;
   }
 
-  .login {
-    margin: 30px;
-  }
-
   .login input {
-    width: 200px;
+    width: 68.965517241379%;
     height: 40px;
-    margin-bottom: 10px;
   }
 
   .login .btn {
-    width: 200px;
+    width: 68.965517241379%;
     height: 34px;
-    margin-bottom: 10px;
   }
 }
 

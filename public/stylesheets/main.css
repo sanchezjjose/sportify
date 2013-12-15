@@ -51,25 +51,25 @@ body {
     padding: 0 15px 10px;
 }
 
-@media screen and (max-width: 320px) { 
+@media screen and (max-width: 640px) { 
   
   /* iPhone */
   
   .navbar .container {
-    width: 320px;
+    width: 90%;
   }
 
   .container { 
-    width: 280px;
+    width: 87.5%;
   }
 
   .container .content .page-header img {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
   }
 
   .container .content .page-header h1 {
-    font-size: 18px;
+    font-size: 100%;
   }
 
   .container .content .main {
