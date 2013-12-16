@@ -51,54 +51,56 @@
           <b><font color="red">*&nbsp;</font></b>@game.locationDetails
         }
 
+        <br><br>
+
+        <div class="rsvp">
+          <div class="playersIn">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>@game.playersIn.size Confirmed</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="playerName">
+                @for(playerId <- game.playersIn){
+                  @if(User.findById(playerId).isDefined){
+                    &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName.charAt(0). <br>
+                  }
+                }
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="playersOut">
+            <table class="table">
+              <thead>
+              <tr>
+                <th>@game.playersOut.size Declined</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="playerName">
+                  @for(playerId <- game.playersOut){
+                    @if(User.findById(playerId).isDefined){
+                      &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName.charAt(0). <br>
+                    }
+                  }
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         @if(User.loggedInUser.facebookUser.isDefined) {
           <br><br>
           <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a>
         }
-
-        <br><br>
-
-        <div class="span3 offset1">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>@game.playersIn.size Confirmed</th>
-              </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>
-              @for(playerId <- game.playersIn){
-                @if(User.findById(playerId).isDefined){
-                  &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName <br>
-                }
-              }
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="span3 offset1">
-          <table class="table">
-            <thead>
-            <tr>
-              <th>@game.playersOut.size Declined</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>
-                @for(playerId <- game.playersOut){
-                  @if(User.findById(playerId).isDefined){
-                    &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName <br>
-                  }
-                }
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
 
         <br><br>
 

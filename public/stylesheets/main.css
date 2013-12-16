@@ -40,15 +40,32 @@ body {
     margin: -20px -20px 20px;
 }
 
-/* Give a quick and non-cross-browser friendly divider */
-.content .span4 {
-    padding-left: 9px;
-    margin-left: 10px;
-    border-left: 1px solid #eee;
-}
-
 .container .content .main {
     padding: 0 15px 10px;
+}
+
+@media screen and (max-width: 767px) { 
+
+  .navbar .container {
+    width: 90%;
+  }
+
+  .container { 
+    width: 87.5%;
+  }
+
+  .container .content .page-header img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .container .content .page-header h1 {
+    font-size: 200%;
+  }
+
+  .container .content .main {
+    padding: 0 5px 10px;
+  }
 }
 
 @media screen and (max-width: 640px) { 
@@ -68,12 +85,14 @@ body {
     height: 60px;
   }
 
-  .container .content .page-header h1 {
-    font-size: 100%;
-  }
-
   .container .content .main {
     padding: 0 5px 10px;
   }
 }
 
+@media screen and (max-width: 320px) { 
+
+  .container .content .page-header h1 {
+    font-size: 100%;
+  }
+}

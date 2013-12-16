@@ -1,3 +1,28 @@
+.rsvp {
+  width: 70%;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rsvp th {
+  text-align: center;
+}
+
+.rsvp .playersIn {
+  width: 45%;
+  float: left;
+}
+
+.rsvp .playersOut {
+  width: 45%;
+  float: right;
+}
+
+.rsvp .playerName {
+  text-align: center;
+}
+
 #map-canvas {
   width: auto;
   height: 380px;
@@ -12,4 +37,21 @@
 .message {
   width: auto;
   margin: -20px -5px 0;
+}
+
+@media screen and (max-width: 640px) { 
+
+  .rsvp {
+    width: 100%;
+  }
+
+  .rsvp .playersIn {
+    width: 45%;
+    float: left;
+  }
+
+  .rsvp .playersOut {
+    width: 45%;
+    float: right;
+  }
 }
