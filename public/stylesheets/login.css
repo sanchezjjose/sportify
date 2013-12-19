@@ -1,5 +1,6 @@
 .container {
   width: 35%;
+  max-width: 500px;
   text-align: center;
 }
 
