@@ -42,6 +42,12 @@
 
         <h3>Game @game.game_seq</h3> <br>
 
+        <div class="facebook-event">
+          @if(User.loggedInUser.facebookUser.isDefined) {
+            <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a> <br><br>
+          }
+        </div>
+
         <h4>Gilt Unit vs. @game.opponent</h4>
         @game.startTime <br><br>
 
@@ -51,7 +57,7 @@
           <b><font color="red">*&nbsp;</font></b>@game.locationDetails
         }
 
-        <br><br>
+        <br><br><br>
 
         <div class="rsvp">
           <div class="playersIn">
@@ -97,12 +103,7 @@
           </div>
         </div>
 
-        @if(User.loggedInUser.facebookUser.isDefined) {
-          <br><br>
-          <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a>
-        }
-
-        <br><br>
+        <br><br><br>
 
         <script type="text/javascript">
             $("#create-fb-event").on('click', function() {
