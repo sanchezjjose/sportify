@@ -1,5 +1,10 @@
-
+#position {
+  width: 30%;
+}
 
 @media screen and (max-width: 640px) { 
 
+  #position {
+    width: 60%;
+  }
 }

@@ -6,24 +6,17 @@ body {
     padding-bottom: 20px;
 }
 
-.navbar .container {
-  width: 100%;
-}
-
-.container > footer p {
-    text-align: center;
-}
-
 .container {
-    width: 60%;
-    max-width: 840px; 
-}
+    width: 35%;
+    max-width: 500px;
+    text-align: center;
+ }
 
 /* The white background content wrapper */
 .content {
     background-color: #fff;
     padding: 10px 0px;
-    margin: 0 -20px;
+    margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
     -webkit-border-radius: 0 0 6px 6px;
        -moz-border-radius: 0 0 6px 6px;
             border-radius: 0 0 6px 6px;
@@ -44,47 +37,42 @@ body {
     padding: 0px 15px 10px;
 }
 
-@media screen and (max-width: 768px) { 
+.logo {
+  padding-bottom: 10px;
+}
 
-  .navbar .container {
-    width: 90%;
-  }
+@media screen and (max-width: 768px) { 
 
   .container { 
     width: 87.5%;
   }
 
-  .page-header img {
+  .logo img {
     width: 70px;
     height: 70px;
   }
 
-  .page-header h1 {
-    overflow: hidden;
-    font-size: auto;
-    white-space:nowrap;
+  .content .main {
+    padding: 0 5px 10px;
   }
 }
 
 @media screen and (max-width: 640px) { 
 
-  .navbar .container {
-    width: 90%;
-  }
-
   .container { 
     width: 87.5%;
   }
 
-  .page-header img {
+  .logo img {
     width: 60px;
     height: 60px;
+  }
+
+  .content .main {
+    padding: 0 5px 10px;
   }
 }
 
 @media screen and (max-width: 320px) { 
 
-  .page-header h1 {
-    font-size: 100%;
-  }
 }

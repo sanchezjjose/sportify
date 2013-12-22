@@ -8,9 +8,7 @@
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/schedule.css")">
 
     <div class="main">
-
       <div class="season">
-
         <h2 class="header">Regular Season</h2>
 
   	    <table class="table table-striped table-hover">
@@ -21,42 +19,41 @@
   			          <td>Status</td>
   			        </tr>
   		    	</thead>
-  		        @for(game <- games.filter(g => g.is_playoff_game == false)){
-                  @if(nextGame.isDefined && nextGame.get.game_id == game.game_id){
-                      <tr id="@game.game_id" class="success">
-                  }else{
-                      <tr id="@game.game_id">
-                  }
-                          <td class="game-details">
-                              <b>Game @game.game_seq</b> <br>
-                              @game.startTime <br>
-                              @game.address <br>
-                              vs. @game.opponent <br>
-                              <b>
-                                  @if(game.result.contains("W")){
-                                  <font color="green">@game.result</font>
-                                  }else{
-                                  <font color="red">@game.result</font>
-                                  }
-                              </b>
-                          </td>
-                          <td>
-                              <div class="schedule form">
-                                  <a href="/schedule/submit?status=in?game_id=@game.game_id" class="btn btn-primary">In</a>
-                                  <!-- replace this with css -->
-                                  <a href="/schedule/submit?status=out?game_id=@game.game_id" class="btn btn-default">Out</a>
-                              </div>
-                          </td>
-                      </tr>
-  		        }
+		        @for(game <- games.filter(g => g.is_playoff_game == false)) {
+              @if(nextGame.isDefined && nextGame.get.game_id == game.game_id) {
+                <tr id="@game.game_id" class="success">
+              } else{
+                <tr id="@game.game_id">
+              }
+                  <td class="game-details">
+                    <div>
+                      <b>Game @game.game_seq</b> <br>
+                      @game.startTime <br>
+                      @game.address <br>
+                      vs. @game.opponent <br>
+                      <b>
+                          @if(game.result.contains("W")){
+                            <font color="green">@game.result</font>
+                          }else{
+                            <font color="red">@game.result</font>
+                          }
+                      </b>
+                    </div>
+                  </td>
+                  <td>
+                      <div class="schedule form">
+                          <a href="/schedule/submit?status=in?game_id=@game.game_id" class="btn btn-primary">In</a>
+                          <a href="/schedule/submit?status=out?game_id=@game.game_id" class="btn btn-default">Out</a>
+                      </div>
+                  </td>
+                </tr>
+		        }
   			   </tbody>
   	    </table>
       </div>
 
       <div class="season playoffs">
-
         <h2 class="header">Playoffs</h2>
-
         <table class="table table-striped table-hover">
             <tbody>
             <thead>
@@ -66,7 +63,7 @@
             </tr>
             </thead>
 
-            @for(game <- games.filter(g => g.is_playoff_game == true)){
+            @for(game <- games.filter(g => g.is_playoff_game == true)) {
               <tr id="@game.game_id">
                   <td class="game-details">
                       <b>Game @game.game_seq</b> <br>
@@ -74,27 +71,24 @@
                       @game.address <br>
                       vs. @game.opponent <br>
                       <b>
-                          @if(game.result.contains("W")){
-                          <font color="green">@game.result</font>
-                          }else{
-                          <font color="red">@game.result</font>
+                          @if(game.result.contains("W")) {
+                            <font color="green">@game.result</font>
+                          }else {
+                            <font color="red">@game.result</font>
                           }
                       </b>
                   </td>
-                  <td>
+                  <td class="game-rsvp">
                       <div class="schedule form">
                           <a href="/schedule/submit?status=in?game_id=@game.game_id" class="btn btn-danger">In</a>
-                           <!-- replace this with css -->
                           <a href="/schedule/submit?status=out?game_id=@game.game_id" class="btn btn-default">Out</a>
                       </div>
                   </td>
               </tr>
             }
-
             </tbody>
         </table>
       </div>
-
     </div>
 
     <script type="text/javascript">

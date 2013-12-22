@@ -14,48 +14,52 @@
     }
 
     <div class="main">
-
         @helper.form(action = routes.Account.submit) {
-        
+
             <fieldset>
                 <legend>Account Information</legend>
 
                 @inputText(
-                accountForm("email"),
+                    accountForm("email"),
                     '_label -> "Email",
                     '_help -> "",
                     '_error -> accountForm.globalError
                 )
 
                 @inputText(
-                accountForm("firstname"),
+                    accountForm("firstname"),
                     '_label -> "First Name",
                     '_help -> "",
                     '_error -> accountForm.globalError
                 )
 
                 @inputText(
-                accountForm("lastname"),
+                    accountForm("lastname"),
                     '_label -> "Last Name",
                     '_help -> "",
                     '_error -> accountForm.globalError
                 )
 
                 @inputText(
-                accountForm("number"),
+                    accountForm("number"),
                     '_label -> "Jersey Number",
                     '_help -> "",
                     '_error -> accountForm.globalError
                 )
 
-                @select(
-                    field = accountForm("position"),
-                    options = options(List("PG", "SG", "SF", "F", "C")),
-                    '_default -> "-------- Choose a Position --------",
-                    '_label -> "Position",
-                    '_error -> "Please select a player position.",
-                    '_showConstraints -> false
-                )
+                <dl id="position_field">
+                    <dt><label for="position">Position</label></dt>
+                    <dd>
+                    <select class="form-control" id="position" name="position">
+                            <option class="blank" value="">-------- Choose a Position --------</option>
+                            <option value="PG">PG</option>
+                            <option value="SG" selected="">SG</option>
+                            <option value="SF">SF</option>
+                            <option value="F">F</option>
+                            <option value="C">C</option>
+                    </select>
+                    </dd>
+                </dl>
 
             </fieldset>
 
@@ -64,9 +68,5 @@
                 <a href="@routes.Account.delete" class="btn btn-danger">Delete</a>
             </div>
         }
-
-        <!--REMOVE THESE BREAKS AND USE CSS INSTEAD-->
-        <br>
     </div>
-
 }

@@ -1,30 +1,20 @@
 
-.schedule {
-  float: left;
-  padding: 15px;
-  margin-left: -20px;
+.game-details {
+  width: 70%;
+}
+
+.game-rsvp {
+  width: 30%;
 }
 
 .schedule .btn {
   float: left;
   margin: 10px;
   padding: 10px;
-  width: 65px;
-}
-
-.game-details {
-  width: 600px;
+  width: 40%;
+  min-width: 65px;
 }
 
 @media screen and (max-width: 640px) { 
   
-  /* iPhone */
-  
-  .game-details {
-    width: 300px;
-  }
-
-  .schedule .btn { 
-    width: 80px;
-  }
 }

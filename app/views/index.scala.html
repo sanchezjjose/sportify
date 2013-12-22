@@ -8,26 +8,25 @@
 
   @gameOpt.map { game =>
 
-  <div class="message">
-    @if(game.playersIn.size < 5) {
-      <div class="alert alert-danger">
-        <strong><center>@(5-game.playersIn.size) more player(s) needed for this weeks game!</center></strong>
-      </div>
-    } else {
-      @if(game.is_playoff_game == true) {
-          <div class="alert alert-danger">
-              <strong><center>PLAYOFFS!!!!! Who's ready??? Bring your shirts and lets get ready for battle. </center></strong>
-          </div>
+    <div class="message">
+      @if(game.playersIn.size < 5) {
+        <div class="alert alert-danger">
+          <strong><center>@(5-game.playersIn.size) more player(s) needed for this weeks game!</center></strong>
+        </div>
       } else {
-          <div class="alert alert-info">
-              <strong><center>@Config.msg</center></strong>
-          </div>
+        @if(game.is_playoff_game == true) {
+            <div class="alert alert-danger">
+                <strong><center>PLAYOFFS!! Who's ready??? Bring your shirts and lets get ready for battle. </center></strong>
+            </div>
+        } else {
+            <div class="alert alert-info">
+                <strong><center>@Config.msg</center></strong>
+            </div>
+        }
       }
-    }
+    </div>
 
-  </div>
-
-  @if(flash.get("success").isDefined) {
+    @if(flash.get("success").isDefined) {
       <div class="message">
         <div class="alert alert-info">
             <button type="button" class="close" data-dismiss="alert">×</button>
@@ -36,130 +35,129 @@
       </div>
     }
 
-  <div class="main">
+    <div class="main">
+      <div class="next-game">
 
-    <div class="next-game">
+          <h3>Game @game.game_seq</h3> <br>
 
-        <h3>Game @game.game_seq</h3> <br>
-
-        <div class="facebook-event">
-          @if(User.loggedInUser.facebookUser.isDefined) {
-            <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a> <br><br>
-          }
-        </div>
-
-        <h4>Gilt Unit vs. @game.opponent</h4>
-        @game.startTime <br><br>
-
-        @game.address <br>
-
-        @if(!game.locationDetails.isEmpty()){
-          <b><font color="red">*&nbsp;</font></b>@game.locationDetails
-        }
-
-        <br><br><br>
-
-        <div class="rsvp">
-          <div class="playersIn">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>@game.playersIn.size Confirmed</th>
-                </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td class="playerName">
-                @for(playerId <- game.playersIn){
-                  @if(User.findById(playerId).isDefined){
-                    &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName.charAt(0). <br>
-                  }
-                }
-                </td>
-              </tr>
-              </tbody>
-            </table>
+          <div class="facebook-event">
+            @if(User.loggedInUser.facebookUser.isDefined) {
+              <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a> <br><br>
+            }
           </div>
 
-          <div class="playersOut">
-            <table class="table">
-              <thead>
-              <tr>
-                <th>@game.playersOut.size Declined</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td class="playerName">
-                  @for(playerId <- game.playersOut){
+          <h4>Gilt Unit vs. @game.opponent</h4>
+          @game.startTime <br><br>
+
+          @game.address <br>
+
+          @if(!game.locationDetails.isEmpty()){
+            <b><font color="red">*&nbsp;</font></b>@game.locationDetails
+          }
+
+          <br><br><br>
+
+          <div class="rsvp">
+            <div class="playersIn">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>@game.playersIn.size Confirmed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td class="playerName">
+                  @for(playerId <- game.playersIn){
                     @if(User.findById(playerId).isDefined){
                       &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName.charAt(0). <br>
                     }
                   }
-                </td>
-              </tr>
-              </tbody>
-            </table>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="playersOut">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>@game.playersOut.size Declined</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td class="playerName">
+                    @for(playerId <- game.playersOut){
+                      @if(User.findById(playerId).isDefined){
+                        &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName.charAt(0). <br>
+                      }
+                    }
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
 
-        <br><br><br>
+          <br><br><br>
 
-        <script type="text/javascript">
-            $("#create-fb-event").on('click', function() {
-              var href = "/home/facebook/event/" + @game.game_id;
+          <script type="text/javascript">
+              $("#create-fb-event").on('click', function() {
+                var href = "/home/facebook/event/" + @game.game_id;
 
-              console.log(href);
-               
-              window.location = href;
-            });
-        </script>
+                console.log(href);
+                 
+                window.location = href;
+              });
+          </script>
 
-        <div id="map-canvas"></div>
+          <div id="map-canvas"></div>
 
-        <script type="text/javascript">
+          <script type="text/javascript">
+            function initialize() {
+              var directionsDisplay;
+              var map;
+              var directionsService = new google.maps.DirectionsService();
+              var manhattan = new google.maps.LatLng(40.7711329, -73.9741874);
 
-          function initialize() {
-            var directionsDisplay;
-            var map;
-            var directionsService = new google.maps.DirectionsService();
-            var manhattan = new google.maps.LatLng(40.7711329, -73.9741874);
-
-            directionsDisplay = new google.maps.DirectionsRenderer();
-            var mapOptions = {
-              zoom: 14,
-              center: manhattan,
-              mapTypeId: google.maps.MapTypeId.ROADMAP
-            }
-            map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-            directionsDisplay.setMap(map);
-
-            var request = {
-              origin: '2 Park Ave, New York',
-              destination: '@game.address, New York',
-              travelMode: google.maps.DirectionsTravelMode.TRANSIT
-            };
-
-            directionsService.route(request, function(response, status) {
-              if (status == google.maps.DirectionsStatus.OK) {
-                directionsDisplay.setDirections(response);
+              directionsDisplay = new google.maps.DirectionsRenderer();
+              var mapOptions = {
+                zoom: 14,
+                center: manhattan,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
               }
-            });
-          }
+              map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+              directionsDisplay.setMap(map);
 
-          function loadScript() {
-            var script = document.createElement("script");
-            script.type = "text/javascript";
-            script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
-            document.body.appendChild(script);
-          }
+              var request = {
+                origin: '2 Park Ave, New York',
+                destination: '@game.address, New York',
+                travelMode: google.maps.DirectionsTravelMode.TRANSIT
+              };
 
-          window.onload = loadScript;
-        </script>
+              directionsService.route(request, function(response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                  directionsDisplay.setDirections(response);
+                }
+              });
+            }
 
+            function loadScript() {
+              var script = document.createElement("script");
+              script.type = "text/javascript";
+              script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
+              document.body.appendChild(script);
+            }
+
+            window.onload = loadScript;
+          </script>
+
+      </div>
     </div>
 
-    }.getOrElse{ NO SCHEDULED GAMES. }
-
-  </div>
+  }.getOrElse { 
+      NO SCHEDULED GAMES. 
+  }
 }
