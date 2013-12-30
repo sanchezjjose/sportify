@@ -1,0 +1,41 @@
+@(gameForm: Form[GameForm])
+
+@import helper._
+
+<!-- ADD NEW GAME FORM -->
+
+<div id="newGame" class="modalDialog">
+  <div>
+    <a href="#close" title="Close" class="close">X</a>
+    <h3>Add a regular season game.</h3> <br>
+
+    @helper.form(action = routes.Schedule.save) {
+      <div>
+        <label for="start_time">Start Time:</label>
+        <input type="text" id="start_time" name="start_time" required />
+        <span class="help-inline">Example ('Tue 01/07/2014, 7:00 PM')</span>
+      </div>
+      <div>
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required />
+        <span class="help-inline">Example ('2 Park Avenue')</span>
+      </div>
+      <div>
+        <label for="gym">Gym:</label>
+        <input type="text" id="gym" name="gym" required />
+      </div>
+      <div>
+        <label for="location_details">Location Details:</label>
+        <input type="text" id="location_details" name="location_details" />
+      </div>
+      <div>
+        <label for="opponent">Opponent:</label>
+        <input type="text" id="opponent" name="opponent" required />
+      </div>
+
+      <div class="update button">
+        <button type="submit">Save</button>
+      </div>
+    }
+  </div>
+</div>

@@ -13,7 +13,8 @@ case class User(_id: String,
                 lastName: String,
                 number: Int,
                 position: String,
-                facebookUser: Option[FacebookUser] = None)
+                facebookUser: Option[FacebookUser] = None,
+                isAdmin: Boolean = false)
 
 object User {
 

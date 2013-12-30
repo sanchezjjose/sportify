@@ -11,6 +11,52 @@ import play.api.libs.json._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTime
 
+
+case class GameForm(startTime: String,
+                    address: String,
+                    gym: String,
+                    locationDetails: String,
+                    opponent: String,
+                    result: Option[String]) {
+
+  def toGame: Game = {
+
+    // Determine next game id and sequence
+    val nextGame = Game.findLastGame.get
+    val nextGameId = nextGame.game_id + 1
+    val nextGameSeq = nextGame.game_seq + 1
+
+    Game(nextGameId,
+         nextGameSeq,
+         startTime,
+         address,
+         gym,
+         locationDetails,
+         opponent,
+         result = result.getOrElse(""),
+         playersIn = Set.empty[String],
+         playersOut = Set.empty[String],
+         is_playoff_game = false,
+         season = "Winter 2014")
+  }
+
+  def toGame(gameId: Int, gameSeq: Int): Game = {
+
+    Game(gameId,
+      gameSeq,
+      startTime,
+      address,
+      gym,
+      locationDetails,
+      opponent,
+      result = result.getOrElse(""),
+      playersIn = Set.empty[String],
+      playersOut = Set.empty[String],
+      is_playoff_game = false,
+      season = "Winter 2014")
+  }
+}
+
 case class Game(game_id: Int,
                 game_seq: Int,
                 startTime: String,
@@ -32,14 +78,15 @@ object Game {
     findAll.filter(g => DateTime.now().getMillis < format.parseDateTime(g.startTime).plusDays(1).getMillis).toList.headOption
   }
 
+  def findLastGame: Option[Game] = {
+    findAll.toIterable.lastOption
+  }
+
   def findByGameId(game_id: Long): Option[Game] = {
     val dbObject = MongoManager.gamesColl.findOne(MongoDBObject("game_id" -> game_id))
     dbObject.map(o => grater[Game].asObject(o))
   }
 
-  /**
-   * Retrieve all games.
-   */
   def findAll: Iterator[Game] = {
     val dbObjects = MongoManager.gamesColl.find(MongoDBObject("season" -> "Winter 2014")).sort(MongoDBObject("game_id" -> 1))
     for (x <- dbObjects) yield grater[Game].asObject(x)
@@ -61,6 +108,12 @@ object Game {
 
       val resultUpdated = $set("result" -> "%s %s".format(result, score))
       MongoManager.gamesColl.update(MongoDBObject("game_id" -> game.game_id), resultUpdated)
+    }
+  }
+
+  def removeGame(game_id: Long) {
+    findByGameId(game_id).map { game =>
+      MongoManager.gamesColl.remove(MongoDBObject("game_id" -> game_id))
     }
   }
 

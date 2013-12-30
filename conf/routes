@@ -15,9 +15,13 @@ GET     /home/facebook/event/:game_id                    controllers.Facebook.cr
 
 GET     /roster 				  	                     controllers.Application.roster
 
-GET     /schedule 				                         controllers.Application.schedule
+GET     /schedule 				                         controllers.Schedule.schedule
 GET     /schedule/rsvp                                   controllers.Schedule.rsvp(game_id: Int, user_id: String, status: String)
 GET     /schedule/submit                                 controllers.Schedule.submit
+POST    /schedule                                        controllers.Schedule.save
+GET     /schedule/update/:game_id/:game_seq              controllers.Schedule.update(game_id: Int, game_seq: Int)
+GET     /schedule/edit                                   controllers.Schedule.edit(game_id: Int)
+GET     /schedule/delete                                 controllers.Schedule.delete(game_id: Int)
 
 GET     /signup 				  	                     controllers.SignUp.signup
 POST    /signup/submit                                   controllers.SignUp.submit

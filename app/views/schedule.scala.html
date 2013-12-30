@@ -1,4 +1,4 @@
-@(season: String, nextGame: Option[Game], games: List[Game])(user: User)(implicit flash: Flash)
+@(gameForm: Form[GameForm], season: String, nextGame: Option[Game], games: List[Game])(user: User)(implicit flash: Flash)
 
 @import helper._
 @import controllers._
@@ -9,7 +9,25 @@
 
     <div class="main">
       <div class="season">
-        <h2 class="header">Regular Season</h2>
+
+        <div class="message">
+          @if(flash.get("failure").isDefined) {
+              <div class="alert alert-danger">
+                  <button type="button" class="close" data-dismiss="alert">×</button>
+                  @flash.get("failure")
+              </div>
+          }
+        </div>
+
+        <h2 class="header">Regular Season</h2> 
+
+        @if(user.isAdmin) {
+          <a href="#newGame">+ Add game</a>
+
+          @(new_game_modal(gameForm))
+
+          @(edit_game_modal())
+        }
 
   	    <table class="table table-striped table-hover">
   		    <tbody>
@@ -38,6 +56,15 @@
                             <font color="red">@game.result</font>
                           }
                       </b>
+
+                      @if(user.isAdmin) {
+                        <div>
+                          <br>
+                          <a href="@routes.Schedule.edit(game.game_id)" class="edit text-muted">Edit</a> &nbsp;
+                          <a href="@routes.Schedule.delete(game.game_id)" class="text-danger">Delete</a>
+                        </div>
+                      }
+
                     </div>
                   </td>
                   <td>
@@ -94,16 +121,19 @@
     <script type="text/javascript">
    	  $(document).ready(function () {
    	  	function init () {
-   	  		$('.btn').click(function (ev) {
+
+          // rsvp for a particular game
+   	  		$('.schedule > .btn').click(function (ev) {
    	  			ev.preventDefault();
    	  			$.ajax({
    	  				url: $(this).attr('href'),
    	  				success: function (data) {
+
    	  					$('.alert').remove();
    	  					if (data.status === 'in') {
-							$('.season:first-child').before('<div class="game-status-msg alert alert-info">'+data.msg+'</div>');
+							     $('.season:first-child').before('<div class="game-status-msg alert alert-info">'+data.msg+'</div>');
    	  					} else {
-							$('.season:first-child').before('<div class="game-status-msg alert alert-danger" >'+data.msg+'</div>');
+							     $('.season:first-child').before('<div class="game-status-msg alert alert-danger" >'+data.msg+'</div>');
    	  					}
    	  					window.scrollTo(0, 0);
    	  					setTimeout(function clearMsg () {
@@ -114,9 +144,31 @@
    	  				}
    	  			});
    	  		});
+
+          // open and set fields for the edit game modal
+          $('.edit').click(function (ev) {
+            ev.preventDefault();
+            $.ajax({
+              url: $(this).attr('href'),
+              success: function (data) {
+                $(".start_time input").val(data.start_time);
+                $(".address input").val(data.address);
+                $(".gym input").val(data.gym);
+                $(".location_details input").val(data.location_details);
+                $(".opponent input").val(data.opponent);
+                $(".result input").val(data.result);
+
+                $('#editGame form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + data.game_seq);
+
+                // open and fill form
+                window.location = "#editGame";
+              }
+            });
+          });
    	  	}
+
    	  	init();
    	  });
-   	 </script>
+   	</script>
 }
 

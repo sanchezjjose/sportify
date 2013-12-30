@@ -1,4 +1,4 @@
-@(accountForm: Form[User])(implicit flash: Flash)
+@(accountForm: Form[User], isAdmin: Boolean)(implicit flash: Flash)
 
 @import helper._
 
@@ -60,6 +60,14 @@
                     </select>
                     </dd>
                 </dl>
+
+                <label>Admin?</label>
+                @if(isAdmin) {
+                    <input name="is_admin" value="@isAdmin" type="checkbox" disabled checked>
+                } else {
+                    <input name="is_admin" value="@isAdmin" type="checkbox" disabled>   
+                }
+                
 
             </fieldset>
 

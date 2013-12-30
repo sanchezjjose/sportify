@@ -10,8 +10,6 @@ import models._
 object Account extends Controller with Secured {
 
 	val accountForm: Form[User] = Form(
-
-		// Define a mapping that will handle Player values
 		mapping(
       "_id" -> ignored(""),
       "email" -> email,
@@ -19,7 +17,8 @@ object Account extends Controller with Secured {
 			"lastname" -> text,
 			"number" -> number,
       "position" -> text,
-      "facebookUser" -> ignored[Option[FacebookUser]](None)
+      "facebookUser" -> ignored[Option[FacebookUser]](None),
+      "is_admin" -> boolean
 		)(User.apply)(User.unapply)
 	)
 
@@ -32,7 +31,7 @@ object Account extends Controller with Secured {
   def account = IsAuthenticated { user => implicit request =>
     val filledForm = accountForm.fill(User.loggedInUser)
 
-    Ok(views.html.account(filledForm))
+    Ok(views.html.account(filledForm, user.isAdmin))
   }
 
   def delete = IsAuthenticated { user => implicit request =>
@@ -43,13 +42,10 @@ object Account extends Controller with Secured {
     )
   }
 
-  /**
-  * Handle form submission.
-  */
   def submit = IsAuthenticated { user => implicit request =>
     accountForm.bindFromRequest.fold(
        // Form has errors, re-display it
-       errors => BadRequest(html.account(errors)),
+       errors => BadRequest(html.account(errors, user.isAdmin)),
 
        updatedUser => {
          User.updateAccountInformation(updatedUser)

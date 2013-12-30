@@ -21,7 +21,8 @@ object SignUp extends Controller {
 			"lastname" -> nonEmptyText,
 			"number" -> number,
       "position" -> nonEmptyText,
-      "facebookUser" -> ignored[Option[FacebookUser]](None)
+      "facebookUser" -> ignored[Option[FacebookUser]](None),
+      "isAdmin" -> ignored(false)
 		)(User.apply)(User.unapply)
 	)
 

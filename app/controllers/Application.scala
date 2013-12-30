@@ -17,10 +17,6 @@ object Application extends Controller with Config with Secured with Loggable {
     Ok(views.html.index("Next Game", Game.findNextGame))
   }
 
-  def schedule = IsAuthenticated { user => implicit request =>
-    Ok(views.html.schedule("Winter 2014", Game.findNextGame, Game.findAll.toList)(user))
-  }
-
   def roster = IsAuthenticated { user => _ =>
     Ok(views.html.roster("Gilt Unit"))
   }
@@ -31,7 +27,7 @@ object Application extends Controller with Config with Secured with Loggable {
 
   def updateScore(game_id: String, result: String, score: String) = Action {
     Game.updateScore(game_id, result, score)
-    Redirect(routes.Application.schedule)
+    Redirect(routes.Schedule.schedule)
   }
 }
 
