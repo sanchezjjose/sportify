@@ -21,7 +21,7 @@ GET     /schedule/submit                                              controller
 POST    /schedule/save/:is_playoff_game                               controllers.Schedule.save(is_playoff_game: String)
 POST    /schedule/update/:game_id/:game_seq/:is_playoff_game          controllers.Schedule.update(game_id: Int, game_seq: Int, is_playoff_game: String)
 GET     /schedule/edit                                                controllers.Schedule.edit(game_id: Int)
-GET     /schedule/delete                                              controllers.Schedule.delete(game_id: Int)
+GET     /schedule/delete/:game_id                                     controllers.Schedule.delete(game_id: Int)
 
 GET     /signup 				  	                                  controllers.SignUp.signup
 POST    /signup/submit                                                controllers.SignUp.submit
