@@ -8,7 +8,7 @@
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/schedule.css")">
 
     <div class="main">
-      <div class="season">
+      <div class="season regular">
 
         <div class="message">
           @if(flash.get("failure").isDefined) {
@@ -19,14 +19,15 @@
           }
         </div>
 
+        @if(user.isAdmin) {
+          @(newGameForm())
+          @(editGameForm())
+        }
+
         <h2 class="header">Regular Season</h2> 
 
         @if(user.isAdmin) {
-          <a href="#newGame">+ Add game</a>
-
-          @(new_game_modal(gameForm))
-
-          @(edit_game_modal())
+          <a href="#" class="add">+ Add game</a>
         }
 
   	    <table class="table table-striped table-hover">
@@ -81,6 +82,11 @@
 
       <div class="season playoffs">
         <h2 class="header">Playoffs</h2>
+
+        @if(user.isAdmin) {
+          <a href="#" class="add">+ Add game</a>
+        }
+
         <table class="table table-striped table-hover">
             <tbody>
             <thead>
@@ -104,6 +110,15 @@
                             <font color="red">@game.result</font>
                           }
                       </b>
+
+                      @if(user.isAdmin) {
+                        <div>
+                          <br>
+                          <a href="@routes.Schedule.edit(game.game_id)" class="edit text-muted">Edit</a> &nbsp;
+                          <a href="@routes.Schedule.delete(game.game_id)" class="text-danger">Delete</a>
+                        </div>
+                      }
+
                   </td>
                   <td class="game-rsvp">
                       <div class="schedule form">
@@ -145,8 +160,36 @@
    	  			});
    	  		});
 
+          // open add new game modal
+          $('.regular .add').click(function (ev) {
+            ev.preventDefault();
+
+            // clear inputs
+            $('form input').val("")
+
+            $('#new-game form').get(0).setAttribute('action', '/schedule/save/' + false);
+            $('#new-game form').get(0).setAttribute('method', 'post');
+
+            // open modal
+            window.location = "#new-game";
+          });
+
+          // open add new game modal
+          $('.playoffs .add').click(function (ev) {
+            ev.preventDefault();
+
+            // clear inputs
+            $('form input').val("")
+
+            $('#new-game form').get(0).setAttribute('action', '/schedule/save/' + true);
+            $('#new-game form').get(0).setAttribute('method', 'post');
+
+            // open modal
+            window.location = "#new-game";
+          });
+
           // open and set fields for the edit game modal
-          $('.edit').click(function (ev) {
+          $('.regular .edit').click(function (ev) {
             ev.preventDefault();
             $.ajax({
               url: $(this).attr('href'),
@@ -158,10 +201,33 @@
                 $(".opponent input").val(data.opponent);
                 $(".result input").val(data.result);
 
-                $('#editGame form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + data.game_seq);
+                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + data.game_seq + '/' + false);
+                $('#edit-game form').get(0).setAttribute('method', 'post');
 
                 // open and fill form
-                window.location = "#editGame";
+                window.location = "#edit-game";
+              }
+            });
+          });
+
+          // open and set fields for the edit game modal
+          $('.playoffs .edit').click(function (ev) {
+            ev.preventDefault();
+            $.ajax({
+              url: $(this).attr('href'),
+              success: function (data) {
+                $(".start_time input").val(data.start_time);
+                $(".address input").val(data.address);
+                $(".gym input").val(data.gym);
+                $(".location_details input").val(data.location_details);
+                $(".opponent input").val(data.opponent);
+                $(".result input").val(data.result);
+
+                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + data.game_seq + '/' + true);
+                $('#edit-game form').get(0).setAttribute('method', 'post');
+
+                // open and fill form
+                window.location = "#edit-game";
               }
             });
           });

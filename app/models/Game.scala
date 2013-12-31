@@ -19,7 +19,7 @@ case class GameForm(startTime: String,
                     opponent: String,
                     result: Option[String]) {
 
-  def toGame: Game = {
+  def toGame(isPlayoffGame: Boolean): Game = {
 
     // Determine next game id and sequence
     val nextGame = Game.findLastGame.get
@@ -36,11 +36,11 @@ case class GameForm(startTime: String,
          result = result.getOrElse(""),
          playersIn = Set.empty[String],
          playersOut = Set.empty[String],
-         is_playoff_game = false,
+         is_playoff_game = isPlayoffGame,
          season = "Winter 2014")
   }
 
-  def toGame(gameId: Int, gameSeq: Int): Game = {
+  def toGame(gameId: Int, gameSeq: Int, isPlayoffGame: Boolean): Game = {
 
     Game(gameId,
       gameSeq,
@@ -52,7 +52,7 @@ case class GameForm(startTime: String,
       result = result.getOrElse(""),
       playersIn = Set.empty[String],
       playersOut = Set.empty[String],
-      is_playoff_game = false,
+      is_playoff_game = isPlayoffGame,
       season = "Winter 2014")
   }
 }

@@ -3,37 +3,37 @@
 # ~~~~
 
 # Home page
-GET     /                                                controllers.Application.index
+GET     /                                                             controllers.Application.index
 
 # Other
-GET     /account                                         controllers.Account.account
-POST    /account/submit                                  controllers.Account.submit
-GET     /account/delete                                  controllers.Account.delete
+GET     /account                                                      controllers.Account.account
+POST    /account/submit                                               controllers.Account.submit
+GET     /account/delete                                               controllers.Account.delete
 
-GET     /home                                            controllers.Application.home
-GET     /home/facebook/event/:game_id                    controllers.Facebook.createEvent(game_id: Int)
+GET     /home                                                         controllers.Application.home
+GET     /home/facebook/event/:game_id                                 controllers.Facebook.createEvent(game_id: Int)
 
-GET     /roster 				  	                     controllers.Application.roster
+GET     /roster 				  	                                  controllers.Application.roster
 
-GET     /schedule 				                         controllers.Schedule.schedule
-GET     /schedule/rsvp                                   controllers.Schedule.rsvp(game_id: Int, user_id: String, status: String)
-GET     /schedule/submit                                 controllers.Schedule.submit
-POST    /schedule                                        controllers.Schedule.save
-GET     /schedule/update/:game_id/:game_seq              controllers.Schedule.update(game_id: Int, game_seq: Int)
-GET     /schedule/edit                                   controllers.Schedule.edit(game_id: Int)
-GET     /schedule/delete                                 controllers.Schedule.delete(game_id: Int)
+GET     /schedule 				                                      controllers.Schedule.schedule
+GET     /schedule/rsvp                                                controllers.Schedule.rsvp(game_id: Int, user_id: String, status: String)
+GET     /schedule/submit                                              controllers.Schedule.submit
+POST    /schedule/save/:is_playoff_game                               controllers.Schedule.save(is_playoff_game: String)
+POST    /schedule/update/:game_id/:game_seq/:is_playoff_game          controllers.Schedule.update(game_id: Int, game_seq: Int, is_playoff_game: String)
+GET     /schedule/edit                                                controllers.Schedule.edit(game_id: Int)
+GET     /schedule/delete                                              controllers.Schedule.delete(game_id: Int)
 
-GET     /signup 				  	                     controllers.SignUp.signup
-POST    /signup/submit                                   controllers.SignUp.submit
+GET     /signup 				  	                                  controllers.SignUp.signup
+POST    /signup/submit                                                controllers.SignUp.submit
 
-GET     /login                                           controllers.Login.login
-GET     /logout                                          controllers.Login.logout
-POST    /login/submit                                    controllers.Login.authenticate
-GET     /login/facebook/:access_token/:user_id           controllers.Facebook.authenticate(access_token, user_id)
+GET     /login                                                        controllers.Login.login
+GET     /logout                                                       controllers.Login.logout
+POST    /login/submit                                                 controllers.Login.authenticate
+GET     /login/facebook/:access_token/:user_id                        controllers.Facebook.authenticate(access_token, user_id)
 
-GET     /news                                            controllers.Application.news
+GET     /news                                                         controllers.Application.news
 
-GET     /game/update_score                               controllers.Application.updateScore(game_id, result, score)
+GET     /game/update_score                                            controllers.Application.updateScore(game_id, result, score)
 
 
 # Map static resources from the /public folder to the /assets URL path

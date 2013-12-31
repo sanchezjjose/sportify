@@ -10,7 +10,7 @@ import org.joda.time.DateTime
 
 object Schedule extends Controller with Loggable with Secured {
 
-  val newGameForm: Form[GameForm] = Form(
+  val gameForm: Form[GameForm] = Form(
     mapping(
       "start_time" -> text,
       "address" -> text,
@@ -26,7 +26,7 @@ object Schedule extends Controller with Loggable with Secured {
   )
 
   def schedule = IsAuthenticated { user => implicit request =>
-    Ok(views.html.schedule(newGameForm, "Winter 2014", Game.findNextGame, Game.findAll.toList)(user))
+    Ok(views.html.schedule(gameForm, "Winter 2014", Game.findNextGame, Game.findAll.toList)(user))
   }
 
   def rsvp(game_id: Int, user_id: String, status: String) = Action {
@@ -82,8 +82,8 @@ object Schedule extends Controller with Loggable with Secured {
     }
 	}
 
-  def save = Action { implicit request =>
-    newGameForm.bindFromRequest.fold(
+  def save(isPlayoffGame: String) = Action { implicit request =>
+    gameForm.bindFromRequest.fold(
       errors => {
         log.error(errors.toString)
 
@@ -97,7 +97,7 @@ object Schedule extends Controller with Loggable with Secured {
           // Ensure date format was correct
           DateTime.parse(gameForm.startTime, Game.format)
 
-          Game.insert(gameForm.toGame)
+          Game.insert(gameForm.toGame(isPlayoffGame.toBoolean))
           Redirect(routes.Schedule.schedule)
         } catch {
           case e: Exception => {
@@ -129,8 +129,8 @@ object Schedule extends Controller with Loggable with Secured {
     ))
   }
 
-  def update(gameId: Int, gameSeq: Int) = Action { implicit request =>
-    newGameForm.bindFromRequest.fold(
+  def update(gameId: Int, gameSeq: Int, isPlayoffGame: String) = Action { implicit request =>
+    gameForm.bindFromRequest.fold(
       errors => {
         log.error(errors.toString)
 
@@ -144,7 +144,7 @@ object Schedule extends Controller with Loggable with Secured {
           // Ensure date format was correct
           DateTime.parse(gameForm.startTime, Game.format)
 
-          Game.update(gameForm.toGame(gameId, gameSeq))
+          Game.update(gameForm.toGame(gameId, gameSeq, isPlayoffGame.toBoolean))
           Redirect(routes.Schedule.schedule)
         } catch {
           case e: Exception => {

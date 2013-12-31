@@ -1,22 +1,20 @@
 <!-- EDIT GAME FORM -->
 
-<div id="editGame" class="modalDialog">
+<div id="edit-game" class="game-modal-dialog">
   <div>
     <a href="#close" title="Close" class="close">X</a>
-    <h3>Add a regular season game.</h3> <br>
-
-    <!-- Setting the action via JavaScript -->
+    <h3>Edit Game.</h3> <hr>
     
     <form>
       <div class="start_time">
         <label for="start_time">Start Time:</label>
         <input type="text" id="start_time" name="start_time" required />
-        <span class="help-inline">Example ('Tue 01/07/2014, 7:00 PM')</span>
+        <span class="help-inline">Example: 'Tue 01/07/2014, 7:00 PM'</span>
       </div>
       <div class="address">
         <label for="address">Address:</label>
         <input type="text" id="address" name="address" required />
-        <span class="help-inline">Example ('2 Park Avenue')</span>
+        <span class="help-inline">Example: '2 Park Avenue'</span>
       </div>
       <div class="gym">
         <label for="gym">Gym:</label>
@@ -33,11 +31,11 @@
       <div class="result">
         <label for="result">Result:</label>
         <input type="text" id="result" name="result" />
-        <span class="help-inline">Example ('W 75-74')</span>
+        <span class="help-inline">Example: 'W 75-74'</span>
       </div>
 
-      <div class="button">
-        <button type="submit">Update</button>
+      <div class="update">
+        <button type="submit">Save</button>
       </div>
     </form>
   </div>
