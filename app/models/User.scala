@@ -7,6 +7,24 @@ import com.mongodb.casbah.Imports._
 import controllers.MongoManager
 import java.util.UUID
 
+/**
+ * This should eventually be linked to a player, and season.
+ * It will mean tracking historical data, per player and season.
+ * It will also lend itself to finally be able to view data per game,
+ * and eventually player profiles.
+ */
+case class PlayerStats(name: String,
+                       pointsPerGame: String,
+                       assistsPerGame: String,
+                       reboundsPerGame: String)
+
+object PlayerHelper {
+
+  def formatName(firstName: String, lastName: String): String = {
+    "%s %s.".format(firstName, lastName.charAt(0))
+  }
+}
+
 case class User(_id: String,
                 email: String,
                 firstName: String,

@@ -2,7 +2,6 @@
 import models.MailScheduler
 import play.api.{Application, GlobalSettings, Logger}
 
-
 object Global extends GlobalSettings {
   private val log = Logger(this.getClass)
 

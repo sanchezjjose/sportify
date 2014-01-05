@@ -10,7 +10,8 @@ object ApplicationBuild extends Build {
     val appDependencies = Seq(
       "com.novus" %% "salat" % "1.9.2",
       "javax.activation" % "activation" % "1.1",
-      "javax.mail" % "mail" % "1.4"
+      "javax.mail" % "mail" % "1.4",
+      "com.google.oauth-client" % "google-oauth-client" % "1.17.0-rc"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(

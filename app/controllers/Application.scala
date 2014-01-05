@@ -18,7 +18,9 @@ object Application extends Controller with Config with Secured with Loggable {
   }
 
   def roster = IsAuthenticated { user => _ =>
-    Ok(views.html.roster("Gilt Unit"))
+    val playerInfo = Roster.pullStats.toList.sortBy(s => s._1.firstName)
+
+    Ok(views.html.roster(playerInfo))
   }
 
   def news = IsAuthenticated { user => _ =>

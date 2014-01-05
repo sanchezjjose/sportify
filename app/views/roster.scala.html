@@ -1,4 +1,4 @@
-@(header: String)
+@(playerInfo: List[(User, PlayerStats)])
 
 @import helper._
 @import models._
@@ -8,7 +8,7 @@
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/roster.css")">
 
     <div class="main">
-    	<h2>@header</h2>
+    	<h2>Gilt Unit</h2>
 
     	<div class="roster">
 		    <table class="table table-striped table-hover">
@@ -21,13 +21,19 @@
 				          <td>No.</td>
 				          <td>Name</td>
 				          <td>Position</td>
+				          <td>PPG</td>
+				          <td>APG</td>
+				          <td>RPG</td>
 				        </tr>
 				    </header>
-				    @for(player <- User.findAll) {
+				    @for(player <- playerInfo) {
 				      <tr>
-				         <td>@player.number</td>
-				         <td>@player.firstName @player.lastName</td>
-				         <td>@player.position</td>
+				         <td>@player._1.number</td>
+				         <td>@player._1.firstName @player._1.lastName</td>
+				         <td>@player._1.position</td>
+				         <td>@player._2.pointsPerGame</td>
+				         <td>@player._2.assistsPerGame</td>
+				         <td>@player._2.reboundsPerGame</td>
 				      </tr>
 				    }
 				  </tbody>
