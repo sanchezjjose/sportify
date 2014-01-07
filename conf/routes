@@ -13,7 +13,7 @@ GET     /account/delete                                               controller
 GET     /home                                                         controllers.Application.home
 GET     /home/facebook/event/:game_id                                 controllers.Facebook.createEvent(game_id: Int)
 
-GET     /roster 				  	                                  controllers.Application.roster
+GET     /stats          				  	                                  controllers.Application.roster
 
 GET     /schedule 				                                      controllers.Schedule.schedule
 GET     /schedule/rsvp                                                controllers.Schedule.rsvp(game_id: Int, user_id: String, status: String)
