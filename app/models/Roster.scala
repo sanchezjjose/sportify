@@ -6,6 +6,7 @@ import com.google.gdata.client.spreadsheet._
 import com.google.gdata.data.spreadsheet._
 import java.net._
 import scala.collection.JavaConversions._
+import scala.math.BigDecimal.RoundingMode
 
 object Roster {
 
@@ -40,9 +41,21 @@ object Roster {
           val reboundsPerGame = cellFeed.getEntries.get(index + 3).getPlainTextContent
 
           // Prettify
-          val ppg = if (cellFeed.getEntries.get(index + 1).getPlainTextContent == "0") pointsPerGame else pointsPerGame.toDouble.toString
-          val apg = if (cellFeed.getEntries.get(index + 2).getPlainTextContent == "0") assistsPerGame else assistsPerGame.toDouble.toString
-          val rpg = if (cellFeed.getEntries.get(index + 3).getPlainTextContent == "0") reboundsPerGame else reboundsPerGame.toDouble.toString
+          val ppg = if (cellFeed.getEntries.get(index + 1).getPlainTextContent == "0") {
+            pointsPerGame
+          } else {
+            BigDecimal(pointsPerGame).setScale(2, RoundingMode.CEILING).toDouble.toString
+          }
+          val apg = if (cellFeed.getEntries.get(index + 2).getPlainTextContent == "0") {
+            assistsPerGame
+          } else {
+            BigDecimal(assistsPerGame).setScale(2, RoundingMode.CEILING).toDouble.toString
+          }
+          val rpg = if (cellFeed.getEntries.get(index + 3).getPlainTextContent == "0") {
+            reboundsPerGame
+          } else {
+            BigDecimal(reboundsPerGame).setScale(2, RoundingMode.CEILING).toDouble.toString
+          }
 
           (player, Some(PlayerStats(name, ppg, apg, rpg)))
         } else {

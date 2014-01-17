@@ -1,3 +1,7 @@
+.container {
+  margin: 50px auto;
+}
+
 fieldset legend {
 	text-align: center;
 	font-style: none;

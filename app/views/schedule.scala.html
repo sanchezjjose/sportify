@@ -149,6 +149,7 @@
 							     $('.season:first-child').before('<div class="game-status-msg alert alert-info">'+data.msg+'</div>');
    	  					} else {
 							     $('.season:first-child').before('<div class="game-status-msg alert alert-danger" >'+data.msg+'</div>');
+                   $('.game-status-msg').addClass('alert-danger');
    	  					}
    	  					window.scrollTo(0, 0);
    	  					setTimeout(function clearMsg () {

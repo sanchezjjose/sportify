@@ -1,12 +1,17 @@
-html, body {
-    background-color: #eee;
+html { 
+  background: url(/assets/images/nyc-court.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 body {
-    padding-bottom: 20px;
+    background: none;
 }
 
 .container {
+    margin: 120px auto;
     width: 35%;
     max-width: 500px;
     text-align: center;
@@ -14,7 +19,7 @@ body {
 
 /* The white background content wrapper */
 .content {
-    background-color: #fff;
+    background-color:rgba(255,255,255,0.95);
     padding: 10px 0px;
     margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
     -webkit-border-radius: 0 0 6px 6px;
@@ -28,9 +33,10 @@ body {
 
 /* Page header tweaks */
 .page-header {
-    background-color: #f5f5f5;
+    background-color:rgba(255,255,255,0.9);
     padding: 20px 20px 10px;
     margin: -20px -20px 0px;
+    color: black;
 }
 
 .content .main {
@@ -44,6 +50,7 @@ body {
 @media screen and (max-width: 768px) { 
 
   .container { 
+    margin: 50px auto;
     width: 87.5%;
   }
 
@@ -60,6 +67,7 @@ body {
 @media screen and (max-width: 640px) { 
 
   .container { 
+    margin: 50px auto;
     width: 87.5%;
   }
 
