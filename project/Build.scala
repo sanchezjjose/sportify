@@ -11,7 +11,8 @@ object ApplicationBuild extends Build {
       "com.novus" %% "salat" % "1.9.2",
       "javax.activation" % "activation" % "1.1",
       "javax.mail" % "mail" % "1.4",
-      "com.google.oauth-client" % "google-oauth-client" % "1.17.0-rc"
+      "com.google.oauth-client" % "google-oauth-client" % "1.17.0-rc",
+      "com.newrelic.agent.java" % "newrelic-agent" % "2.21.4"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
