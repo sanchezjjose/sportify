@@ -44,17 +44,17 @@ object Roster {
           val ppg = if (cellFeed.getEntries.get(index + 1).getPlainTextContent == "0") {
             pointsPerGame
           } else {
-            BigDecimal(pointsPerGame).setScale(2, RoundingMode.CEILING).toDouble.toString
+            BigDecimal(pointsPerGame).setScale(1, RoundingMode.CEILING).toDouble.toString
           }
           val apg = if (cellFeed.getEntries.get(index + 2).getPlainTextContent == "0") {
             assistsPerGame
           } else {
-            BigDecimal(assistsPerGame).setScale(2, RoundingMode.CEILING).toDouble.toString
+            BigDecimal(assistsPerGame).setScale(1, RoundingMode.CEILING).toDouble.toString
           }
           val rpg = if (cellFeed.getEntries.get(index + 3).getPlainTextContent == "0") {
             reboundsPerGame
           } else {
-            BigDecimal(reboundsPerGame).setScale(2, RoundingMode.CEILING).toDouble.toString
+            BigDecimal(reboundsPerGame).setScale(1, RoundingMode.CEILING).toDouble.toString
           }
 
           (player, Some(PlayerStats(name, ppg, apg, rpg)))
