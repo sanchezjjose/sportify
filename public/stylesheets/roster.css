@@ -2,10 +2,6 @@ table {
     table-layout: fixed;
 }
 
-th, td {
-    overflow: hidden;
-}
-
 @media screen and (max-width: 640px) { 
 
 	

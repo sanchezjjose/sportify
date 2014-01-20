@@ -14,7 +14,7 @@ object Roster {
 
   private[models] val cellFeedUrl = new URL("https://spreadsheets.google.com/feeds/cells/" +
     "0AplJrXBnbh50dHRRVnB6SE5NMC1DWDgzMXY3SEthRnc/1/public/basic" +
-    "?min-col=1&max-col=4&min-row=2&max-row=14")
+    "?min-col=1&max-col=5&min-row=2&max-row=14")
 
 	def parseNames : Iterator[String] = {
 		Source.fromFile("app/resources/roster.txt").getLines()
@@ -39,25 +39,14 @@ object Roster {
           val pointsPerGame = cellFeed.getEntries.get(index + 1).getPlainTextContent
           val assistsPerGame = cellFeed.getEntries.get(index + 2).getPlainTextContent
           val reboundsPerGame = cellFeed.getEntries.get(index + 3).getPlainTextContent
+          val gamesPlayed = cellFeed.getEntries.get(index + 4).getPlainTextContent
 
-          // Prettify
-          val ppg = if (cellFeed.getEntries.get(index + 1).getPlainTextContent == "0") {
-            pointsPerGame
-          } else {
-            BigDecimal(pointsPerGame).setScale(1, RoundingMode.CEILING).toDouble.toString
-          }
-          val apg = if (cellFeed.getEntries.get(index + 2).getPlainTextContent == "0") {
-            assistsPerGame
-          } else {
-            BigDecimal(assistsPerGame).setScale(1, RoundingMode.CEILING).toDouble.toString
-          }
-          val rpg = if (cellFeed.getEntries.get(index + 3).getPlainTextContent == "0") {
-            reboundsPerGame
-          } else {
-            BigDecimal(reboundsPerGame).setScale(1, RoundingMode.CEILING).toDouble.toString
-          }
+          // Rounding
+          val ppg = BigDecimal(pointsPerGame).setScale(1, RoundingMode.CEILING).toDouble.toString
+          val apg = BigDecimal(assistsPerGame).setScale(1, RoundingMode.CEILING).toDouble.toString
+          val rpg = BigDecimal(reboundsPerGame).setScale(1, RoundingMode.CEILING).toDouble.toString
 
-          (player, Some(PlayerStats(name, ppg, apg, rpg)))
+          (player, Some(PlayerStats(name, gamesPlayed, ppg, apg, rpg)))
         } else {
           (player, None)
         }

@@ -14,6 +14,7 @@ import java.util.UUID
  * and eventually player profiles.
  */
 case class PlayerStats(name: String,
+                       gamesPlayed: String,
                        pointsPerGame: String,
                        assistsPerGame: String,
                        reboundsPerGame: String)
