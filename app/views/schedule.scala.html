@@ -19,6 +19,7 @@
           }
         </div>
 
+        <!--should be hidden-->
         @if(user.isAdmin) {
           @(newGameForm())
           @(editGameForm())
@@ -138,28 +139,28 @@
    	  	function init () {
 
           // rsvp for a particular game
-   	  		$('.schedule > .btn').click(function (ev) {
-   	  			ev.preventDefault();
-   	  			$.ajax({
-   	  				url: $(this).attr('href'),
-   	  				success: function (data) {
+          $('.schedule > .btn').click(function (ev) {
+            ev.preventDefault();
+            $.ajax({
+                url: $(this).attr('href'),
+                success: function (data) {
 
-   	  					$('.alert').remove();
-   	  					if (data.status === 'in') {
-							     $('.season:first-child').before('<div class="game-status-msg alert alert-info">'+data.msg+'</div>');
-   	  					} else {
-							     $('.season:first-child').before('<div class="game-status-msg alert alert-danger" >'+data.msg+'</div>');
-                   $('.game-status-msg').addClass('alert-danger');
-   	  					}
-   	  					window.scrollTo(0, 0);
-   	  					setTimeout(function clearMsg () {
-   	  						$('.alert').fadeOut('1000', function (el) {
-   	  							$(el).remove();
-   	  						});
-   	  					}, 5000);
-   	  				}
-   	  			});
-   	  		});
+                    $('.alert').remove();
+                    if (data.status === 'in') {
+                             $('.season:first-child').before('<div class="game-status-msg alert alert-info">'+data.msg+'</div>');
+                    } else {
+                             $('.season:first-child').before('<div class="game-status-msg alert alert-danger" >'+data.msg+'</div>');
+               $('.game-status-msg').addClass('alert-danger');
+                    }
+                    window.scrollTo(0, 0);
+                    setTimeout(function clearMsg () {
+                        $('.alert').fadeOut('1000', function (el) {
+                            $(el).remove();
+                        });
+                    }, 5000);
+                }
+            });
+          });
 
           // open add new game modal
           $('.regular .add').click(function (ev) {

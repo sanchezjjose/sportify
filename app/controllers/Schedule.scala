@@ -97,7 +97,7 @@ object Schedule extends Controller with Loggable with Secured {
           // Ensure date format was correct
           DateTime.parse(gameForm.startTime, Game.format)
 
-          Game.insert(gameForm.toGame(isPlayoffGame.toBoolean))
+          Game.insert(gameForm.toNewGame(isPlayoffGame.toBoolean))
           Redirect(routes.Schedule.schedule)
         } catch {
           case e: Exception => {
@@ -144,6 +144,7 @@ object Schedule extends Controller with Loggable with Secured {
           // Ensure date format was correct
           DateTime.parse(gameForm.startTime, Game.format)
 
+          val updatedGame =
           Game.update(gameForm.toGame(gameId, gameSeq, isPlayoffGame.toBoolean))
           Redirect(routes.Schedule.schedule)
         } catch {

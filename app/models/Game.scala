@@ -1,30 +1,30 @@
 package models
 
 import scala.collection.mutable.Set
-import controllers.MongoManager
+import controllers.{Loggable, MongoManager}
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
 import com.novus.salat.global._
 import com.mongodb.casbah.Imports._
-import io.Source
-import play.api.libs.json._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTime
-
 
 case class GameForm(startTime: String,
                     address: String,
                     gym: String,
                     locationDetails: String,
                     opponent: String,
-                    result: Option[String]) {
+                    result: Option[String]) extends Loggable {
 
-  def toGame(isPlayoffGame: Boolean): Game = {
+  /**
+   * Create new game from the add game form.
+   */
+  def toNewGame(isPlayoffGame: Boolean): Game = {
 
     // Determine next game id and sequence
-    val nextGame = Game.findLastGame.get
-    val nextGameId = nextGame.game_id + 1
-    val nextGameSeq = nextGame.game_seq + 1
+    val finalGame = Game.findLastGame.get
+    val nextGameId = finalGame.game_id + 1
+    val nextGameSeq = finalGame.game_seq + 1
 
     Game(nextGameId,
          nextGameSeq,
@@ -40,20 +40,25 @@ case class GameForm(startTime: String,
          season = "Winter 2014")
   }
 
+  /**
+   * Update existing game with values from the edit game form.
+   */
   def toGame(gameId: Int, gameSeq: Int, isPlayoffGame: Boolean): Game = {
 
-    Game(gameId,
-      gameSeq,
-      startTime,
-      address,
-      gym,
-      locationDetails,
-      opponent,
-      result = result.getOrElse(""),
-      playersIn = Set.empty[String],
-      playersOut = Set.empty[String],
-      is_playoff_game = isPlayoffGame,
-      season = "Winter 2014")
+    Game.findByGameId(gameId).map { game =>
+      Game(gameId,
+        gameSeq,
+        startTime,
+        address,
+        gym,
+        locationDetails,
+        opponent,
+        result = result.getOrElse(""),
+        playersIn = game.playersIn,
+        playersOut = game.playersOut,
+        is_playoff_game = isPlayoffGame,
+        season = "Winter 2014")
+    }.get
   }
 }
 
@@ -125,31 +130,5 @@ object Game {
   def insert(game: Game) = {
     val dbo = grater[Game].asDBObject(game)
     MongoManager.gamesColl += dbo
-  }
-
-
-  //TODO: convert this to endpoint -- /games/load/<resource_location>
-  def loadGames : Unit = {
-    val jsonString = Source.fromFile("app/resources/games.json")
-    val json: JsValue = Json.parse(jsonString mkString)
-
-    val games = (json \ "games").as[List[JsObject]]
-
-    val gamesList = games.map { game =>
-                      Game(game_id = (game \ "game_id").as[Int],
-                           game_seq = (game \ "game_seq").as[Int],
-                           startTime = (game \ "start_time").as[String],
-                           address = (game \ "address").as[String],
-                           gym = (game \ "gym").as[String],
-                           locationDetails = (game \ "location_details").as[String],
-                           opponent = (game \ "opponent").as[String],
-                           result = (game \ "result").as[String],
-                           playersIn = (game \ "playersIn").as[Set[String]],
-                           playersOut = (game \ "playersOut").as[Set[String]],
-                           is_playoff_game = (game \ "is_playoff_game").as[Boolean],
-                           season = (game \ "season").as[String])
-                    }
-
-    for(game <- gamesList) insert(game)
   }
 }
