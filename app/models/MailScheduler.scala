@@ -31,7 +31,12 @@ class MailScheduler extends Loggable {
         Game.findNextGame.map { game =>
           val sendAt = format.parseDateTime(game.startTime).minusHours(20).getMillis
 
-          User.findAll.filter(_.email != "").foreach { user =>
+          User.findAll.filter(user => user.email != "" ||
+            /**
+             * Will eventually handle in a subscription model.
+             */
+            user.email.toLowerCase != "irosa8621@yahoo.com" ||
+            user.email.toLowerCase != "sbhargava@gilt.com").foreach { user =>
 
             // This is pretty bad. Look into how to use unique index on game id and recipient instead.
             if (!EmailMessage.findByGameIdAndRecipient(game.game_id, user.email).isDefined) {
