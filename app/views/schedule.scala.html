@@ -138,19 +138,18 @@
    	  $(document).ready(function () {
    	  	function init () {
 
-          // rsvp for a particular game
+          // rsvp for a game
           $('.schedule > .btn').click(function (ev) {
             ev.preventDefault();
             $.ajax({
                 url: $(this).attr('href'),
                 success: function (data) {
-
                     $('.alert').remove();
                     if (data.status === 'in') {
-                             $('.season:first-child').before('<div class="game-status-msg alert alert-info">'+data.msg+'</div>');
+                      $('.season:first-child').before('<div class="game-status-msg alert alert-info">'+data.msg+'</div>');
                     } else {
-                             $('.season:first-child').before('<div class="game-status-msg alert alert-danger" >'+data.msg+'</div>');
-               $('.game-status-msg').addClass('alert-danger');
+                      $('.season:first-child').before('<div class="game-status-msg alert alert-danger" >'+data.msg+'</div>');
+                      $('.game-status-msg').addClass('alert-danger');
                     }
                     window.scrollTo(0, 0);
                     setTimeout(function clearMsg () {

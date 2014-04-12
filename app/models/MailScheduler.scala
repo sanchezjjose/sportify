@@ -31,12 +31,7 @@ class MailScheduler extends Loggable {
         Game.findNextGame.map { game =>
           val sendAt = format.parseDateTime(game.startTime).minusHours(20).getMillis
 
-          User.findAll.filter(user => user.email != "" ||
-            /**
-             * Will eventually handle in a subscription model.
-             */
-            user.email.toLowerCase != "irosa8621@yahoo.com" ||
-            user.email.toLowerCase != "sbhargava@gilt.com").foreach { user =>
+          User.findAll.filter( user => shouldEmail(user)).foreach { user =>
 
             // This is pretty bad. Look into how to use unique index on game id and recipient instead.
             if (!EmailMessage.findByGameIdAndRecipient(game.game_id, user.email).isDefined) {
@@ -62,6 +57,16 @@ class MailScheduler extends Loggable {
       }
     }, 1, 120, TimeUnit.MINUTES)
   }
+
+  /**
+   * TODO: create subscription model to represent emailable users.
+   */
+  private def shouldEmail(user: User): Boolean = {
+    user.email != "" &&
+    user.email.toLowerCase != "irosa8621@yahoo.com" &&
+    user.email.toLowerCase != "sbhargava@gilt.com" &&
+    user.email.toLowerCase != "mporter@gilt.com"
+  }
 }
 
 /**
@@ -84,9 +89,6 @@ class MailSender extends Loggable with Config {
 
       val auth = new SMTPAuthenticator()
       val mailSession = Session.getInstance(props, auth)
-
-      // uncomment for debugging infos to stdout
-      // mailSession.setDebug(true);
 
       val transport = mailSession.getTransport()
       val message = new MimeMessage(mailSession)

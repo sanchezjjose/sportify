@@ -10,7 +10,7 @@ object Application extends Controller with Config with Secured with Loggable {
   val logger = LoggerFactory.getLogger(getClass.getName)
 
   def index = Action {
-    Redirect(routes.Application.home)
+    Redirect(routes.Application.home())
   }
 
   def home = IsAuthenticated { user => implicit request =>
@@ -29,7 +29,7 @@ object Application extends Controller with Config with Secured with Loggable {
 
   def updateScore(game_id: String, result: String, score: String) = Action {
     Game.updateScore(game_id, result, score)
-    Redirect(routes.Schedule.schedule)
+    Redirect(routes.Schedule.schedule())
   }
 }
 
@@ -43,6 +43,9 @@ object Config extends Config {
   lazy val environment = config.getString("environment").get
   lazy val fbAppId = config.getString("facebook_app_id").get
   lazy val fbAppSecret = config.getString("facebook_app_secret").get
+
+  //TODO: should be entered together with new games via front-end (maybe a drop down menu)
+  lazy val season = "Spring 2014"
 }
 
 object Environment {

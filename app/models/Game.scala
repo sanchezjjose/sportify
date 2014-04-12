@@ -1,7 +1,7 @@
 package models
 
 import scala.collection.mutable.Set
-import controllers.{Loggable, MongoManager}
+import controllers.{Config, Loggable, MongoManager}
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
 import com.novus.salat.global._
@@ -22,9 +22,8 @@ case class GameForm(startTime: String,
   def toNewGame(isPlayoffGame: Boolean): Game = {
 
     // Determine next game id and sequence
-    val finalGame = Game.findLastGame.get
-    val nextGameId = finalGame.game_id + 1
-    val nextGameSeq = finalGame.game_seq + 1
+    val nextGameId = Game.findLastGame.map( _.game_id + 1).getOrElse(1)
+    val nextGameSeq = Game.findLastGameInCurrentSeason.map( _.game_seq + 1).getOrElse(1)
 
     Game(nextGameId,
          nextGameSeq,
@@ -37,7 +36,7 @@ case class GameForm(startTime: String,
          playersIn = Set.empty[String],
          playersOut = Set.empty[String],
          is_playoff_game = isPlayoffGame,
-         season = "Winter 2014")
+         season = Config.season)
   }
 
   /**
@@ -57,7 +56,7 @@ case class GameForm(startTime: String,
         playersIn = game.playersIn,
         playersOut = game.playersOut,
         is_playoff_game = isPlayoffGame,
-        season = "Winter 2014")
+        season = Config.season)
     }.get
   }
 }
@@ -80,11 +79,15 @@ object Game {
   val format = DateTimeFormat.forPattern("E MM/dd/yyyy, H:mm a")
 
   def findNextGame: Option[Game] = {
-    findAll.filter(g => DateTime.now().getMillis < format.parseDateTime(g.startTime).plusDays(1).getMillis).toList.headOption
+    findAllInCurrentSeason.filter(g => DateTime.now().getMillis < format.parseDateTime(g.startTime).plusDays(1).getMillis).toList.headOption
   }
 
   def findLastGame: Option[Game] = {
     findAll.toIterable.lastOption
+  }
+
+  def findLastGameInCurrentSeason: Option[Game] = {
+    findAllInCurrentSeason.toIterable.lastOption
   }
 
   def findByGameId(game_id: Long): Option[Game] = {
@@ -93,30 +96,32 @@ object Game {
   }
 
   def findAll: Iterator[Game] = {
-    val dbObjects = MongoManager.gamesColl.find(MongoDBObject("season" -> "Winter 2014")).sort(MongoDBObject("game_id" -> 1))
+    val dbObjects = MongoManager.gamesColl.find().sort(MongoDBObject("game_id" -> 1))
+    for (x <- dbObjects) yield grater[Game].asObject(x)
+  }
+
+  def findAllInCurrentSeason: Iterator[Game] = {
+    val dbObjects = MongoManager.gamesColl.find(MongoDBObject("season" -> Config.season)).sort(MongoDBObject("game_id" -> 1))
     for (x <- dbObjects) yield grater[Game].asObject(x)
   }
 
   def findAllUpcomingGames: Iterator[Game] = {
-    Game.findAll.filter(game => DateTime.now().getMillis < format.parseDateTime(game.startTime).getMillis)
+    Game.findAllInCurrentSeason.filter(game => DateTime.now().getMillis < format.parseDateTime(game.startTime).getMillis)
   }
 
-  def update(game: Game) = {
+  def update(game: Game): Unit = {
     val dbo = grater[Game].asDBObject(game)
     MongoManager.gamesColl.update(MongoDBObject("game_id" -> game.game_id), dbo)
   }
 
-  def updateScore(game_id: String, result: String, score: String) = {
-    val gameOpt = findByGameId(game_id.toInt)
-
-    gameOpt.map { game =>
-
+  def updateScore(game_id: String, result: String, score: String): Unit = {
+    findByGameId(game_id.toInt).map { game =>
       val resultUpdated = $set("result" -> "%s %s".format(result, score))
       MongoManager.gamesColl.update(MongoDBObject("game_id" -> game.game_id), resultUpdated)
     }
   }
 
-  def removeGame(game_id: Long) {
+  def removeGame(game_id: Long): Unit = {
     findByGameId(game_id).map { game =>
       MongoManager.gamesColl.remove(MongoDBObject("game_id" -> game_id))
     }

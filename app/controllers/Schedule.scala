@@ -26,7 +26,7 @@ object Schedule extends Controller with Loggable with Secured {
   )
 
   def schedule = IsAuthenticated { user => implicit request =>
-    Ok(views.html.schedule(gameForm, "Winter 2014", Game.findNextGame, Game.findAll.toList)(user))
+    Ok(views.html.schedule(gameForm, Config.season, Game.findNextGame, Game.findAllInCurrentSeason.toList)(user))
   }
 
   def rsvp(game_id: Int, user_id: String, status: String) = Action {
@@ -143,8 +143,6 @@ object Schedule extends Controller with Loggable with Secured {
         try {
           // Ensure date format was correct
           DateTime.parse(gameForm.startTime, Game.format)
-
-          val updatedGame =
           Game.update(gameForm.toGame(gameId, gameSeq, isPlayoffGame.toBoolean))
           Redirect(routes.Schedule.schedule)
         } catch {
