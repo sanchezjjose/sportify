@@ -64,8 +64,7 @@ class MailScheduler extends Loggable {
   private def shouldEmail(user: User): Boolean = {
     user.email != "" &&
     user.email.toLowerCase != "irosa8621@yahoo.com" &&
-    user.email.toLowerCase != "sbhargava@gilt.com" &&
-    user.email.toLowerCase != "mporter@gilt.com"
+    user.email.toLowerCase != "sbhargava@gilt.com"
   }
 }
 
