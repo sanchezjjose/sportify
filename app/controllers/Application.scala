@@ -45,7 +45,7 @@ object Config extends Config {
   lazy val fbAppSecret = config.getString("facebook_app_secret").get
 
   //TODO: should be entered together with new games via front-end (maybe a drop down menu)
-  lazy val season = "Spring 2014"
+  lazy val season = "Summer 2014"
 }
 
 object Environment {
