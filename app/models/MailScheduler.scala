@@ -55,7 +55,7 @@ class MailScheduler extends Loggable {
           }
         }
       }
-    }, 1, 120, TimeUnit.MINUTES)
+    }, 0, 120, TimeUnit.MINUTES)
   }
 
   /**
@@ -110,17 +110,7 @@ class MailSender extends Loggable with Config {
           "- " + User.findById(id).get.firstName
         }
 
-        val html =
-          "You have an upcoming game against '" + game.opponent + "' on " + game.startTime + " <br><br> " +
-            "The address is " + game.address.replace(".","") + ", New York, New York <br> " +
-            "<u>Note</u>: <i> " + game.locationDetails + " </i> <br><br> " +
-            "Let us know if you are " +
-            "<a href='http://sportify.gilt.com/schedule/rsvp?game_id=" + game.game_id + "&user_id=" + userId + "&status=in' style='text-decoration: none'><b>IN</b></a> or " +
-            "<a href='http://sportify.gilt.com/schedule/rsvp?game_id=" + game.game_id + "&user_id=" + userId + "&status=out' style='text-decoration: none'><b>OUT</b></a> <br><br>" +
-            "So far, we have " + playersIn.size +  "  players confirmed: <br> " +
-            playersIn.mkString("<br>") + "  <br><br>" +
-            "<b>Remember to bring your game shirts, and lets get this W!</b> <br><br>" +
-            "<i>Sportify.</i>"
+        val html = views.html.email.reminderEmail(game, userId, playersIn).toString
 
         val part = new MimeBodyPart()
         part.setContent(html, "text/html")

@@ -15,7 +15,7 @@ GET     /home/facebook/event/:game_id                                 controller
 
 GET     /stats          				  	                                  controllers.Application.roster
 
-GET     /schedule 				                                      controllers.Schedule.schedule
+GET     /schedule 				                                            controllers.Schedule.schedule
 GET     /schedule/rsvp                                                controllers.Schedule.rsvp(game_id: Int, user_id: String, status: String)
 GET     /schedule/submit                                              controllers.Schedule.submit
 POST    /schedule/save/:is_playoff_game                               controllers.Schedule.save(is_playoff_game: String)
@@ -23,7 +23,7 @@ POST    /schedule/update/:game_id/:game_seq/:is_playoff_game          controller
 GET     /schedule/edit                                                controllers.Schedule.edit(game_id: Int)
 GET     /schedule/delete/:game_id                                     controllers.Schedule.delete(game_id: Int)
 
-GET     /signup 				  	                                  controllers.SignUp.signup
+GET     /signup 				  	                                          controllers.SignUp.signup
 POST    /signup/submit                                                controllers.SignUp.submit
 
 GET     /login                                                        controllers.Login.login
