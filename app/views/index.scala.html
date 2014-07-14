@@ -46,9 +46,14 @@
             }
           </div>
 
+          <div class="game-rsvp">
+              <a href="/game/rsvp?status=in&game_id=@game.game_id" class="btn btn-success">In</a>
+              <a href="/game/rsvp?status=out&game_id=@game.game_id" class="btn btn-default">Out</a>
+          </div>
+
           <h4>Gilt Unit vs. @game.opponent</h4>
           @game.startTime <br><br>
-          
+
           @game.address <br>
 
           @if(!game.locationDetails.isEmpty()){
@@ -109,7 +114,7 @@
                 var href = "/home/facebook/event/" + @game.game_id;
 
                 console.log(href);
-                 
+
                 window.location = href;
               });
           </script>
@@ -158,7 +163,7 @@
       </div>
     </div>
 
-  }.getOrElse { 
-      NO SCHEDULED GAMES. 
+  }.getOrElse {
+      NO SCHEDULED GAMES.
   }
 }

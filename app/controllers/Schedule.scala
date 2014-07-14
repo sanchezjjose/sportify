@@ -52,7 +52,7 @@ object Schedule extends Controller with Loggable with Secured {
     val gameId = request.rawQueryString.split("=")(2).toInt
     val game : Option[Game] = Game.findByGameId(gameId)
     val userId = User.loggedInUser._id
-    
+
     if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
 
       // Add user to game.
@@ -61,11 +61,11 @@ object Schedule extends Controller with Loggable with Secured {
       Game.update(game.get)
 
       Ok(Json.toJson(
-            Map(
-              "status" -> Json.toJson("in"),
-              "msg" -> Json.toJson("You are playing. See you there!")
-            )
-          ))
+        Map(
+          "status" -> Json.toJson("in"),
+          "msg" -> Json.toJson("You are playing. See you there!")
+        )
+      ))
     } else {
 
       // Remove user from game.
@@ -74,11 +74,11 @@ object Schedule extends Controller with Loggable with Secured {
       Game.update(game.get)
 
       Ok(Json.toJson(
-            Map(
-              "status" -> Json.toJson("out"),
-              "msg" -> Json.toJson("Ok, you are not playing in this game. Maybe next time!")
-            )
-          ))
+        Map(
+          "status" -> Json.toJson("out"),
+          "msg" -> Json.toJson("Ok, you are not playing in this game. Maybe next time!")
+        )
+      ))
     }
 	}
 

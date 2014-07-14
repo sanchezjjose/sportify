@@ -39,7 +39,14 @@
   margin: -20px auto 0; /* -35px was selected below to cover the width of main and container paddings, which is 15 and 20 respectively */
 }
 
-@media screen and (max-width: 640px) { 
+.game-rsvp a {
+  margin: 5px 5px 10px 0;
+  min-width: 65px;
+  padding: 10px;
+  width: 100px;
+}
+
+@media screen and (max-width: 640px) {
 
   .rsvp {
     width: 100%;
@@ -53,5 +60,9 @@
   .rsvp .playersOut {
     width: 45%;
     float: right;
+  }
+
+  .game-rsvp a {
+    width: 40%;
   }
 }

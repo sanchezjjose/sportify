@@ -31,6 +31,24 @@ object Application extends Controller with Config with Secured with Loggable {
     Game.updateScore(game_id, result, score)
     Redirect(routes.Schedule.schedule())
   }
+
+  def updateRsvpStatus(game_id: String, status: String) = Action { implicit request =>
+    val gameId = request.rawQueryString.split("=")(2).toInt
+    val game : Option[Game] = Game.findByGameId(gameId)
+    val userId = User.loggedInUser._id
+
+    if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
+      game.get.playersIn += userId
+      game.get.playersOut -= userId
+    } else {
+      game.get.playersIn -= userId
+      game.get.playersOut += userId
+    }
+
+    Game.update(game.get)
+
+    Redirect(routes.Application.home())
+  }
 }
 
 trait Config {
