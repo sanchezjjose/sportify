@@ -4,10 +4,10 @@ import scala.collection.mutable.Set
 import controllers.{Config, Loggable, MongoManager}
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import com.novus.salat.global._
 import com.mongodb.casbah.Imports._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTime
+import CustomPlaySalatContext._
 
 case class GameForm(startTime: String,
                     address: String,

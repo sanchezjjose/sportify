@@ -2,9 +2,9 @@ package models
 
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import com.novus.salat.global._
 import com.mongodb.casbah.Imports._
 import controllers.MongoManager
+import CustomPlaySalatContext._
 
 case class FacebookUser (
 	access_token: String,

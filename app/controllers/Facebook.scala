@@ -1,10 +1,12 @@
 package controllers
 
+import play.api.Play.current
 import play.api.mvc._
 import models._
 import play.api.libs.ws.WS
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTimeZone
+import play.api.libs.concurrent.Execution.Implicits._
 
 
 object Facebook extends Controller with Secured with Loggable {

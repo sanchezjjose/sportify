@@ -2,10 +2,11 @@ package models
 
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import com.novus.salat.global._
 import com.mongodb.casbah.Imports._
 import controllers.MongoManager
 import java.util.UUID
+import CustomPlaySalatContext._
+
 
 /**
  * This should eventually be linked to a player, and season.
