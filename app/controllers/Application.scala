@@ -49,6 +49,12 @@ object Application extends Controller with Config with Secured with Loggable {
 
     Redirect(routes.Application.home())
   }
+
+  def json = Action { implicit request =>
+    import play.api.libs.json.Json
+    val nieces = Seq("Hello", "World", "Listen", "Please")
+    Ok(Json.toJson(nieces))
+  }
 }
 
 trait Config {

@@ -37,5 +37,12 @@ GET     /game/update_score                                            controller
 
 GET     /game/rsvp                                                    controllers.Application.updateRsvpStatus(game_id: String, status: String)
 
+# Endpoints returning JSON
+GET     /json                                                          controllers.Application.json
+GET     /json/games                                                        controllers.Endpoints.games
+GET     /json/game/:id                                                     controllers.Endpoints.game(id: Long)
+GET     /json/nextgame                                                     controllers.Endpoints.nextgame
+GET     /json/users                                                        controllers.Endpoints.users
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -6,6 +6,8 @@ import com.mongodb.casbah.Imports._
 import controllers.MongoManager
 import java.util.UUID
 import CustomPlaySalatContext._
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 
 /**
@@ -39,6 +41,17 @@ case class User(_id: String,
 object User {
 
   var loggedInUser: User = _
+
+  implicit val userWrites: Writes[User] = (
+    (JsPath \ "_id").write[String] and
+    (JsPath \ "email").write[String] and
+    (JsPath \ "firstName").write[String] and
+    (JsPath \ "lastName").write[String] and
+    (JsPath \ "number").write[Int] and
+    (JsPath \ "position").write[String] and
+    (JsPath \ "facebookUser").write[Option[FacebookUser]] and
+    (JsPath \ "isAdmin").write[Boolean]
+  )(unlift(User.unapply))
 
   /**
    * Retrieve a User from id.

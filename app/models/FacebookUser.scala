@@ -13,6 +13,14 @@ case class FacebookUser (
 
 object FacebookUser {
 
+  import play.api.libs.json._
+  import play.api.libs.functional.syntax._
+
+  implicit val facebookUserWrites: Writes[FacebookUser] = (
+    (JsPath \ "access_token").write[String] and
+    (JsPath \ "user_id").write[String]
+  )(unlift(FacebookUser.unapply))
+
   def findByAccessToken(access_token: String): Option[FacebookUser] = {
   	val dbObject = MongoManager.facebookAuthColl.findOne( MongoDBObject("access_token" -> access_token) )
   	dbObject.map( o => grater[FacebookUser].asObject(o) )

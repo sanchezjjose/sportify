@@ -74,7 +74,27 @@ case class Game(game_id: Int,
                 is_playoff_game: Boolean,
                 season: String)
 
+
+
 object Game {
+
+  import play.api.libs.json._
+  import play.api.libs.functional.syntax._
+
+  implicit val gameWrites: Writes[Game] = (
+    (JsPath \ "game_id").write[Int] and
+    (JsPath \ "game_seq").write[Int] and
+    (JsPath \ "startTime").write[String] and
+    (JsPath \ "address").write[String] and
+    (JsPath \ "gym").write[String] and
+    (JsPath \ "locationDetails").write[String] and
+    (JsPath \ "opponent").write[String] and
+    (JsPath \ "result").write[String] and
+    (JsPath \ "playersIn").write[Set[String]] and
+    (JsPath \ "playersOut").write[Set[String]] and
+    (JsPath \ "is_playoff_game").write[Boolean] and
+    (JsPath \ "season").write[String]
+  )(unlift(Game.unapply))
 
   val format = DateTimeFormat.forPattern("E MM/dd/yyyy, H:mm a")
 
