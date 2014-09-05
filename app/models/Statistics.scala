@@ -1,24 +1,20 @@
 package models
 
-import scala.io.Source
-import com.google.gdata.client.authn.oauth._
+import java.net._
+
 import com.google.gdata.client.spreadsheet._
 import com.google.gdata.data.spreadsheet._
-import java.net._
+
 import scala.collection.JavaConversions._
 import scala.math.BigDecimal.RoundingMode
 
-object Roster {
+object Statistics {
 
   private[models] val service = new SpreadsheetService("SpreadsheetService-v1")
 
   private[models] val cellFeedUrl = new URL("https://spreadsheets.google.com/feeds/cells/" +
     "0AplJrXBnbh50dHRRVnB6SE5NMC1DWDgzMXY3SEthRnc/1/public/basic" +
     "?min-col=1&max-col=5&min-row=2&max-row=14")
-
-	def parseNames : Iterator[String] = {
-		Source.fromFile("app/resources/roster.txt").getLines()
-	}
 
   /**
    * Temporary, disgusting and horrendous implementation just for initial try-out of this feature.

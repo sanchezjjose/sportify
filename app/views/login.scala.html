@@ -3,61 +3,6 @@
 @mainAuth("Login to Sportify") {
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/login.css")">
-    
-    <div id="fb-root"></div>
-    <script>
-        window.fbAsyncInit = function() {
-
-            FB.init({
-                appId      : @Config.fbAppId,
-                channelUrl : '//@routes.Assets.at("javascripts/channel.html")',
-                status     : true, 
-                cookie     : true,
-                xfbml      : true 
-            });
-
-            FB.getLoginStatus(function(response) {
-                if (response.status === 'connected') {
-                    console.log("Logged into Facebook.")
-                } else if (response.status === 'not_authorized') {
-                    console.log("Not authorized.");
-                } else {
-                    console.log("Not logged into facebook.");
-                }
-            });
-
-            FB.Event.subscribe('auth.authResponseChange', function(response) {
-                if (response.status === 'connected') {
-                    var access_token = response.authResponse.accessToken;
-                    var user_id = response.authResponse.userID;
-
-                    console.log(access_token);
-                    console.log(user_id);
-
-                    window.location.href = "/login/facebook/" + access_token + "/" + user_id;
-
-                } else if (response.status === 'not_authorized') {
-                    FB.login(function(response) {
-                       // handle the response
-                    });
-                } else {
-                    FB.login(function(response) {
-                       // handle the response
-                    });
-                }
-            });
-        };
-
-        // Load the SDK asynchronously
-        (function(d){
-            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-            if (d.getElementById(id)) {return;}
-            js = d.createElement('script'); js.id = id; js.async = true;
-            js.src = "//connect.facebook.net/en_US/all.js";
-            ref.parentNode.insertBefore(js, ref);
-        }(document));
-
-    </script>
 
     <div class="main">
         @helper.form(routes.Login.authenticate) {
@@ -80,30 +25,10 @@
                     <input type="password" name="password" id="password" placeholder="Password">
                     <input type="submit" class="btn btn-primary" value="Login">
                 </div>
-
-                <button type="button" class="btn btn-default button-facebook" id="facebook_account_auth">Connect with Facebook</button>
                
                 <br><br><br>
                 On the team? <a href="@routes.SignUp.signup">Sign Up</a>
             </div>
         }
     </div>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            function init () {
-                $('.button-facebook').click(function (ev) {
-                    ev.preventDefault();
-                    FB.login(function(response) {
-                        if (response.authResponse) {
-                            console.log("Logged in with facebook.")
-                        } else {
-                            console.log("Cancelled facebook login.")
-                        }
-                    }, {scope: 'create_event'});
-                });
-            }   
-            init();
-      });
-    </script>
 }

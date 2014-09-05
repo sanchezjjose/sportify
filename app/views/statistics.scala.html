@@ -1,0 +1,46 @@
+@(playerInfo: List[(User, PlayerStats)])
+
+@import helper._
+@import models._
+
+@main(Html("Statistics."), nav = "statistics") {
+    
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/roster.css")">
+
+    <div class="main">
+    	<h2>Gilt Unit</h2>
+
+    	<div class="stats">
+		    <table class="table table-striped table-hover">
+			    <tbody>
+				    <header>
+				        <tr>
+				          Team Roster
+				        </tr>
+				        <div class="pull-right">
+    							<a target="_blank" href="https://docs.google.com/spreadsheet/ccc?key=0AplJrXBnbh50dHRRVnB6SE5NMC1DWDgzMXY3SEthRnc&usp=drive_web#gid=14">Update stats</a>
+								</div>
+				        <tr>
+				        	<td>No.</td>
+				          <td>Player</td>
+				          <td>GP</td>
+				          <td>PPG</td>
+				          <td>APG</td>
+				          <td class="last">RPG</td>
+				        </tr>
+				    </header>
+				    @for(player <- playerInfo) {
+				      <tr>
+				         <td>@player._1.number</td>
+				         <td>@player._1.firstName @player._1.lastName, @player._1.position</td>
+				         <td>@player._2.gamesPlayed</td>
+				         <td>@player._2.pointsPerGame</td>
+				         <td>@player._2.assistsPerGame</td>
+				         <td class="last">@player._2.reboundsPerGame</td>
+				      </tr>
+				    }
+				  </tbody>
+		    </table>
+	    </div>
+    </div>
+}

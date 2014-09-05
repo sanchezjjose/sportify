@@ -18,9 +18,9 @@ object Application extends Controller with Config with Secured with Loggable {
   }
 
   def roster = IsAuthenticated { user => _ =>
-    val playerInfo = Roster.pullStats.toList.sortBy(s => s._1.firstName)
+    val players = User.findAll.toList.sortBy(u => u.firstName)
 
-    Ok(views.html.roster(playerInfo))
+    Ok(views.html.roster(players))
   }
 
   def news = IsAuthenticated { user => _ =>
@@ -49,12 +49,6 @@ object Application extends Controller with Config with Secured with Loggable {
 
     Redirect(routes.Application.home())
   }
-
-  def json = Action { implicit request =>
-    import play.api.libs.json.Json
-    val nieces = Seq("Hello", "World", "Listen", "Please")
-    Ok(Json.toJson(nieces))
-  }
 }
 
 trait Config {
@@ -69,7 +63,7 @@ object Config extends Config {
   lazy val fbAppSecret = config.getString("facebook_app_secret").get
 
   //TODO: should be entered together with new games via front-end (maybe a drop down menu)
-  lazy val season = "Summer 2014"
+  lazy val season = "Fall 2014"
 }
 
 object Environment {

@@ -37,6 +37,7 @@ case class User(_id: String,
                 position: String,
                 facebookUser: Option[FacebookUser] = None,
                 isAdmin: Boolean = false)
+//                teams: List[Team] = List.empty[Team])
 
 object User {
 
@@ -50,7 +51,8 @@ object User {
     (JsPath \ "number").write[Int] and
     (JsPath \ "position").write[String] and
     (JsPath \ "facebookUser").write[Option[FacebookUser]] and
-    (JsPath \ "isAdmin").write[Boolean]
+    (JsPath \ "isAdmin").write[Boolean] //and
+//    (JsPath \ "teams").write[List[Team]]
   )(unlift(User.unapply))
 
   /**
