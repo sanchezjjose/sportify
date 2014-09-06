@@ -15,32 +15,46 @@ object Schedule extends Controller with Loggable with Secured {
       "start_time" -> text,
       "address" -> text,
       "gym" -> text,
-      "location_details" -> text,
+      "location_details" -> optional(text),
       "opponent" -> text,
       "result" -> optional(text)
     ) { (startTime, address, gym, locationDetails, opponent, result) =>
-      GameForm(startTime, address, gym, locationDetails, opponent, result)
+
+      GameForm(startTime,
+               address,
+               gym,
+               locationDetails,
+               opponent,
+               result)
+
     } { (game: GameForm) =>
-      Some((game.startTime, game.address, game.gym, game.locationDetails, game.opponent, game.result))
+
+      Some((game.startTime,
+            game.address,
+            game.gym,
+            game.locationDetails,
+            game.opponent,
+            game.result))
     }
   )
 
   def schedule = IsAuthenticated { user => implicit request =>
-    Ok(views.html.schedule(gameForm, Config.season, Game.findNextGame, Game.findAllInCurrentSeason.toList)(user))
+    Ok(views.html.schedule(gameForm, Season.findCurrentSeason().get, Game.findNextGame, Game.findAllInCurrentSeason.toList)(user))
   }
 
-  def rsvp(game_id: Int, user_id: String, status: String) = Action {
-    val game = Game.findByGameId(game_id)
+  def rsvp(game_id: Long, user_id: String, status: String) = Action {
+    val game = Game.findById(game_id)
+    val user = User.findById(user_id.toLong).get
 
     if (status == "in") {
-      game.get.playersIn += user_id
-      game.get.playersOut -= user_id
+      game.get.players_in += user.player.get
+      game.get.players_out -= user.player.get
       Game.update(game.get)
     }
 
     if (status == "out") {
-      game.get.playersIn -= user_id
-      game.get.playersOut += user_id
+      game.get.players_in -= user.player.get
+      game.get.players_out += user.player.get
       Game.update(game.get)
     }
 
@@ -50,14 +64,14 @@ object Schedule extends Controller with Loggable with Secured {
 	def submit = Action { implicit request =>
 
     val gameId = request.rawQueryString.split("=")(2).toInt
-    val game : Option[Game] = Game.findByGameId(gameId)
-    val userId = User.loggedInUser._id
+    val game : Option[Game] = Game.findById(gameId)
+    val user = User.loggedInUser
 
     if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
 
       // Add user to game.
-      game.get.playersIn += userId
-      game.get.playersOut -= userId
+      game.get.players_in += user.player.get
+      game.get.players_out -= user.player.get
       Game.update(game.get)
 
       Ok(Json.toJson(
@@ -69,8 +83,8 @@ object Schedule extends Controller with Loggable with Secured {
     } else {
 
       // Remove user from game.
-      game.get.playersIn -= userId
-      game.get.playersOut += userId
+      game.get.players_in -= user.player.get
+      game.get.players_out += user.player.get
       Game.update(game.get)
 
       Ok(Json.toJson(
@@ -82,7 +96,7 @@ object Schedule extends Controller with Loggable with Secured {
     }
 	}
 
-  def save(isPlayoffGame: String) = Action { implicit request =>
+  def save(isPlayoffGame: String, seasonId: Long) = Action { implicit request =>
     gameForm.bindFromRequest.fold(
       errors => {
         log.error(errors.toString)
@@ -97,7 +111,7 @@ object Schedule extends Controller with Loggable with Secured {
           // Ensure date format was correct
           DateTime.parse(gameForm.startTime, Game.format)
 
-          Game.insert(gameForm.toNewGame(isPlayoffGame.toBoolean))
+          Game.create(gameForm.toNewGame(isPlayoffGame.toBoolean))
           Redirect(routes.Schedule.schedule)
         } catch {
           case e: Exception => {
@@ -112,24 +126,24 @@ object Schedule extends Controller with Loggable with Secured {
     )
   }
 
-  def edit(game_id: Int) = IsAuthenticated { user => implicit request =>
-   val game = Game.findByGameId(game_id).get
+  def edit(game_id: Long) = IsAuthenticated { user => implicit request =>
+   val game = Game.findById(game_id).get
 
     Ok(Json.toJson(
       Map(
-        "game_id" -> Json.toJson(game.game_id),
-        "game_seq" -> Json.toJson(game.game_seq),
-        "start_time" -> Json.toJson(game.startTime),
+        "game_id" -> Json.toJson(game._id),
+        "number" -> Json.toJson(game.number),
+        "start_time" -> Json.toJson(game.start_time),
         "address" -> Json.toJson(game.address),
         "gym" -> Json.toJson(game.gym),
-        "location_details" -> Json.toJson(game.locationDetails),
+        "location_details" -> Json.toJson(game.location_details),
         "opponent" -> Json.toJson(game.opponent),
         "result" -> Json.toJson(game.result)
       )
     ))
   }
 
-  def update(gameId: Int, gameSeq: Int, isPlayoffGame: String) = Action { implicit request =>
+  def update(gameId: Long, gameNumber: Int, isPlayoffGame: String) = Action { implicit request =>
     gameForm.bindFromRequest.fold(
       errors => {
         log.error(errors.toString)
@@ -143,7 +157,7 @@ object Schedule extends Controller with Loggable with Secured {
         try {
           // Ensure date format was correct
           DateTime.parse(gameForm.startTime, Game.format)
-          Game.update(gameForm.toGame(gameId, gameSeq, isPlayoffGame.toBoolean))
+          Game.update(gameForm.toGame(gameId, gameNumber, isPlayoffGame.toBoolean))
           Redirect(routes.Schedule.schedule)
         } catch {
           case e: Exception => {
@@ -158,7 +172,7 @@ object Schedule extends Controller with Loggable with Secured {
     )
   }
 
-  def delete(game_id: Int) = IsAuthenticated { user => implicit request =>
+  def delete(game_id: Long) = IsAuthenticated { user => implicit request =>
     Game.removeGame(game_id)
     Redirect(routes.Schedule.schedule)
   }

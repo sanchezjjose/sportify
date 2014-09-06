@@ -9,9 +9,9 @@
   @gameOpt.map { game =>
 
     <div class="message">
-      @if(game.playersIn.size < 5) {
+      @if(game.players_in.size < 5) {
         <div class="alert alert-danger">
-          <strong><center>@(5-game.playersIn.size) more player(s) needed for this weeks game!</center></strong>
+          <strong><center>@(5-game.players_in.size) more player(s) needed for this weeks game!</center></strong>
         </div>
       } else {
         @if(game.is_playoff_game == true) {
@@ -38,26 +38,26 @@
     <div class="main">
       <div class="next-game">
 
-          <h3>Game @game.game_seq</h3> <br>
+          <h3>Game @game.number</h3> <br>
 
           <div class="facebook-event">
-            @if(User.loggedInUser.facebookUser.isDefined) {
+            @if(User.loggedInUser.facebook_user.isDefined) {
               <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a> <br><br>
             }
           </div>
 
           <div class="game-rsvp">
-              <a href="/game/rsvp?status=in&game_id=@game.game_id" class="btn btn-success">In</a>
-              <a href="/game/rsvp?status=out&game_id=@game.game_id" class="btn btn-default">Out</a>
+              <a href="/game/rsvp?status=in&game_id=@game._id" class="btn btn-success">In</a>
+              <a href="/game/rsvp?status=out&game_id=@game._id" class="btn btn-default">Out</a>
           </div>
 
           <h4>Gilt Unit vs. @game.opponent</h4>
-          @game.startTime <br><br>
+          @game.start_time <br><br>
 
           @game.address <br>
 
-          @if(!game.locationDetails.isEmpty()){
-            <b><font color="red">*&nbsp;</font></b>@game.locationDetails
+          @if(game.location_details.isDefined){
+            <b><font color="red">*&nbsp;</font></b>@game.location_details
           }
 
           <br><br><br>
@@ -67,15 +67,15 @@
               <table class="table">
                 <thead>
                   <tr>
-                    <th>@game.playersIn.size Confirmed</th>
+                    <th>@game.players_in.size Confirmed</th>
                   </tr>
                 </thead>
                 <tbody>
                 <tr>
                   <td class="playerName">
-                  @for(playerId <- game.playersIn){
-                    @if(User.findById(playerId).isDefined){
-                      &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName.charAt(0). <br>
+                  @for(player <- game.players_in){
+                    @if(User.findByPlayerId(player._id).isDefined){
+                      &nbsp; @User.findByPlayerId(player._id).get.first_name @User.findByPlayerId(player._id).get.last_name.charAt(0). <br>
                     }
                   }
                   </td>
@@ -88,15 +88,15 @@
               <table class="table">
                 <thead>
                 <tr>
-                  <th>@game.playersOut.size Declined</th>
+                  <th>@game.players_out.size Declined</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                   <td class="playerName">
-                    @for(playerId <- game.playersOut){
-                      @if(User.findById(playerId).isDefined){
-                        &nbsp; @User.findById(playerId).get.firstName @User.findById(playerId).get.lastName.charAt(0). <br>
+                    @for(player <- game.players_out){
+                      @if(User.findById(player._id).isDefined){
+                        &nbsp; @User.findById(player._id).get.first_name @User.findById(player._id).get.last_name.charAt(0). <br>
                       }
                     }
                   </td>
@@ -111,9 +111,7 @@
 
           <script type="text/javascript">
               $("#create-fb-event").on('click', function() {
-                var href = "/home/facebook/event/" + @game.game_id;
-
-                console.log(href);
+                var href = "/home/facebook/event/" + @game._id;
 
                 window.location = href;
               });

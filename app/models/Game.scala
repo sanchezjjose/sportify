@@ -1,105 +1,51 @@
 package models
 
-import scala.collection.mutable.Set
-import controllers.{Config, Loggable, MongoManager}
+import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import com.mongodb.casbah.Imports._
-import org.joda.time.format.DateTimeFormat
+import controllers.{Loggable, MongoManager}
+import models.CustomPlaySalatContext._
 import org.joda.time.DateTime
-import CustomPlaySalatContext._
-
-case class GameForm(startTime: String,
-                    address: String,
-                    gym: String,
-                    locationDetails: String,
-                    opponent: String,
-                    result: Option[String]) extends Loggable {
-
-  /**
-   * Create new game from the add game form.
-   */
-  def toNewGame(isPlayoffGame: Boolean): Game = {
-
-    // Determine next game id and sequence
-    val nextGameId = Game.findLastGame.map( _.game_id + 1).getOrElse(1)
-    val nextGameSeq = Game.findLastGameInCurrentSeason.map( _.game_seq + 1).getOrElse(1)
-
-    Game(nextGameId,
-         nextGameSeq,
-         startTime,
-         address,
-         gym,
-         locationDetails,
-         opponent,
-         result = result.getOrElse(""),
-         playersIn = Set.empty[String],
-         playersOut = Set.empty[String],
-         is_playoff_game = isPlayoffGame,
-         season = Config.season)
-  }
-
-  /**
-   * Update existing game with values from the edit game form.
-   */
-  def toGame(gameId: Int, gameSeq: Int, isPlayoffGame: Boolean): Game = {
-
-    Game.findByGameId(gameId).map { game =>
-      Game(gameId,
-        gameSeq,
-        startTime,
-        address,
-        gym,
-        locationDetails,
-        opponent,
-        result = result.getOrElse(""),
-        playersIn = game.playersIn,
-        playersOut = game.playersOut,
-        is_playoff_game = isPlayoffGame,
-        season = Config.season)
-    }.get
-  }
-}
-
-case class Game(game_id: Int,
-                game_seq: Int,
-                startTime: String,
-                address: String,
-                gym: String,
-                locationDetails: String,
-                opponent: String,
-                result: String,
-                playersIn: Set[String] = Set.empty,
-                playersOut: Set[String] = Set.empty,
-                is_playoff_game: Boolean,
-                season: String)
+import org.joda.time.format.DateTimeFormat
+import scala.collection.mutable.Set
 
 
+
+case class Game (_id: Long,
+                 number: Int,
+                 start_time: String,
+                 address: String,
+                 gym: String,
+                 location_details: Option[String],
+                 opponent: String,
+                 result: Option[String],
+                 players_in: Set[Player] = Set.empty,
+                 players_out: Set[Player] = Set.empty,
+                 is_playoff_game: Boolean = false)
 
 object Game {
 
-  import play.api.libs.json._
   import play.api.libs.functional.syntax._
+  import play.api.libs.json._
 
   implicit val gameWrites: Writes[Game] = (
-    (JsPath \ "game_id").write[Int] and
-    (JsPath \ "game_seq").write[Int] and
-    (JsPath \ "startTime").write[String] and
+    (JsPath \ "_id").write[Long] and
+    (JsPath \ "number").write[Int] and
+    (JsPath \ "start_time").write[String] and
     (JsPath \ "address").write[String] and
     (JsPath \ "gym").write[String] and
-    (JsPath \ "locationDetails").write[String] and
+    (JsPath \ "location_details").write[Option[String]] and
     (JsPath \ "opponent").write[String] and
-    (JsPath \ "result").write[String] and
-    (JsPath \ "playersIn").write[Set[String]] and
-    (JsPath \ "playersOut").write[Set[String]] and
-    (JsPath \ "is_playoff_game").write[Boolean] and
-    (JsPath \ "season").write[String]
+    (JsPath \ "result").write[Option[String]] and
+    (JsPath \ "players_in").write[Set[Player]] and
+    (JsPath \ "players_out").write[Set[Player]] and
+    (JsPath \ "is_playoff_game").write[Boolean]
   )(unlift(Game.unapply))
 
   val format = DateTimeFormat.forPattern("E MM/dd/yyyy, H:mm a")
 
   def findNextGame: Option[Game] = {
-    findAllInCurrentSeason.filter(g => DateTime.now().getMillis < format.parseDateTime(g.startTime).plusDays(1).getMillis).toList.headOption
+    findAllInCurrentSeason.filter(g => DateTime.now().getMillis < format.parseDateTime(g.start_time).plusDays(1).getMillis).toList.headOption
   }
 
   def findLastGame: Option[Game] = {
@@ -110,50 +56,95 @@ object Game {
     findAllInCurrentSeason.toIterable.lastOption
   }
 
-  def findByGameId(game_id: Long): Option[Game] = {
-    val dbObject = MongoManager.gamesColl.findOne(MongoDBObject("game_id" -> game_id))
+  def findById(id: Long): Option[Game] = {
+    val dbObject = MongoManager.games.findOne(MongoDBObject("_id" -> id))
     dbObject.map(o => grater[Game].asObject(o))
   }
 
   def findAll: Iterator[Game] = {
-    val dbObjects = MongoManager.gamesColl.find().sort(MongoDBObject("game_id" -> 1))
+    val dbObjects = MongoManager.games.find().sort(MongoDBObject("_id" -> 1))
     for (x <- dbObjects) yield grater[Game].asObject(x)
   }
 
   def findAllInCurrentSeason: Iterator[Game] = {
-    val dbObjects = MongoManager.gamesColl.find(MongoDBObject("season" -> Config.season)).sort(MongoDBObject("game_id" -> 1))
+    val currentSeason = Season.findCurrentSeason()
+    val dbObjects = MongoManager.games.find(MongoDBObject("season._id" -> currentSeason.get._id)).sort(MongoDBObject("_id" -> 1))
     for (x <- dbObjects) yield grater[Game].asObject(x)
   }
 
   def findAllUpcomingGames: Iterator[Game] = {
-    Game.findAllInCurrentSeason.filter(game => DateTime.now().getMillis < format.parseDateTime(game.startTime).getMillis)
+    Game.findAllInCurrentSeason.filter(game => DateTime.now().getMillis < format.parseDateTime(game.start_time).getMillis)
   }
 
   def update(game: Game): Unit = {
     val dbo = grater[Game].asDBObject(game)
-    MongoManager.gamesColl.update(MongoDBObject("game_id" -> game.game_id), dbo)
+    MongoManager.games.update(MongoDBObject("_id" -> game._id), dbo)
   }
 
-  def updateScore(game_id: String, result: String, score: String): Unit = {
-    findByGameId(game_id.toInt).map { game =>
+  def updateScore(game_id: Long, result: String, score: String): Unit = {
+    findById(game_id.toInt).map { game =>
       val resultUpdated = $set("result" -> "%s %s".format(result, score))
-      MongoManager.gamesColl.update(MongoDBObject("game_id" -> game.game_id), resultUpdated)
+      MongoManager.games.update(MongoDBObject("_id" -> game._id), resultUpdated)
     }
   }
 
-  def removeGame(game_id: Long): Unit = {
-    findByGameId(game_id).map { game =>
-      MongoManager.gamesColl.remove(MongoDBObject("game_id" -> game_id))
+  def removeGame(id: Long): Unit = {
+    findById(id).map { game =>
+      MongoManager.games.remove(MongoDBObject("_id" -> id))
     }
   }
 
-	/**
-   * Insert a new game.
-   *
-   * @param game The user values
-   */
-  def insert(game: Game) = {
+  def create(game: Game) = {
     val dbo = grater[Game].asDBObject(game)
-    MongoManager.gamesColl += dbo
+    MongoManager.games += dbo
+  }
+}
+
+case class GameForm(startTime: String,
+                    address: String,
+                    gym: String,
+                    locationDetails: Option[String],
+                    opponent: String,
+                    result: Option[String]) extends Loggable with Helper {
+
+  /**
+   * Create new game from the add game form.
+   */
+  def toNewGame(isPlayoffGame: Boolean): Game = {
+
+    // Determine new game number
+    val number = Game.findLastGameInCurrentSeason.map( _.number + 1 ).getOrElse(1)
+
+    Game(_id = generateRandomId(),
+         number = number,
+         start_time = startTime,
+         address = address,
+         gym = gym,
+         location_details = locationDetails,
+         opponent = opponent,
+         result = result,
+         players_in = Set.empty[Player],
+         players_out = Set.empty[Player],
+         is_playoff_game = isPlayoffGame)
+  }
+
+  /**
+   * Update existing game with values from the edit game form.
+   */
+  def toGame(id: Long, number: Int, isPlayoffGame: Boolean): Game = {
+
+    Game.findById(id).map { game =>
+      Game(_id = id,
+           number = number,
+           start_time = startTime,
+           address = address,
+           gym = gym,
+           location_details = locationDetails,
+           opponent = opponent,
+           result = result,
+           players_in = game.players_in,
+           players_out = game.players_out,
+           is_playoff_game = isPlayoffGame)
+    }.get
   }
 }

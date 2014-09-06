@@ -1,18 +1,17 @@
 package models
 
-import javax.mail._
-import javax.mail.internet._
-import javax.mail.PasswordAuthentication
 import java.util.Properties
-import java.util.concurrent.{TimeUnit, Executors}
-import org.joda.time.DateTime
-import com.novus.salat._
+import java.util.concurrent.{Executors, TimeUnit}
+import javax.mail.internet._
+import javax.mail.{PasswordAuthentication, _}
+
 import com.mongodb.casbah.Imports._
-import controllers.{Loggable, MongoManager}
 import com.mongodb.casbah.commons.MongoDBObject
+import com.novus.salat._
+import controllers.{Config, Environment, Loggable, MongoManager}
+import models.CustomPlaySalatContext._
+import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import controllers.{Config, Environment}
-import CustomPlaySalatContext._
 
 /**
  * Handles scheduling of the emails.
@@ -29,13 +28,13 @@ class MailScheduler extends Loggable {
         log.info("checking for next game to create email messages...")
 
         Game.findNextGame.map { game =>
-          val sendAt = format.parseDateTime(game.startTime).minusHours(20).getMillis
+          val sendAt = format.parseDateTime(game.start_time).minusHours(20).getMillis
 
           User.findAll.filter( user => shouldEmail(user)).foreach { user =>
 
             // This is pretty bad. Look into how to use unique index on game id and recipient instead.
-            if (!EmailMessage.findByGameIdAndRecipient(game.game_id, user.email).isDefined) {
-              val newMessage = EmailMessage(user._id, game.game_id, sendAt, None, 0, user.email)
+            if (!EmailMessage.findByGameIdAndRecipient(game._id, user.email).isDefined) {
+              val newMessage = EmailMessage(user._id, game._id, sendAt, None, 0, user.email)
               EmailMessage.insert(newMessage)
             }
           }
@@ -50,7 +49,7 @@ class MailScheduler extends Loggable {
         log.info("checking for new emails to send...")
 
         Game.findNextGame.map { game =>
-          EmailMessage.findUnsent(game.game_id).foreach { message =>
+          EmailMessage.findUnsent(game._id).foreach { message =>
             new MailSender().sendNextGameReminderEmail(message, game)
           }
         }
@@ -106,11 +105,11 @@ class MailSender extends Loggable with Config {
       // Only send emails to me if in development
       if (shouldSendEmail) {
 
-        val playersIn = game.playersIn.map { id =>
-          "- " + User.findById(id).get.firstName
+        val playersIn = game.players_in.map { player =>
+          "- " + User.findByPlayerId(player._id).get.first_name
         }
 
-        val html = views.html.email.reminderEmail(game, userId, playersIn).toString
+        val html = views.html.email.reminderEmail(game, userId, playersIn).toString()
 
         val part = new MimeBodyPart()
         part.setContent(html, "text/html")
@@ -119,10 +118,10 @@ class MailSender extends Loggable with Config {
 
         message.setContent(multipart)
         message.setFrom(new InternetAddress("sportify@email.heroku.com"))
-        message.setSubject("You have a basketball game on " + game.startTime)
+        message.setSubject("You have a basketball game on " + game.start_time)
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient))
 
-        log.info("Sending an email to " + recipient + " for game id " + game.game_id)
+        log.info("Sending an email to " + recipient + " for game id " + game._id)
 
         transport.connect()
         transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO))
@@ -133,7 +132,7 @@ class MailSender extends Loggable with Config {
 
     } catch {
       case e: Exception => {
-        log.error("There was a problem sending email message for game_id %s to %s".format(game.game_id, emailMessage.recipient), e)
+        log.error("There was a problem sending email message for game_id %s to %s".format(game._id, emailMessage.recipient), e)
 
         // Update number of attempts
         if (emailMessage.num_attempts < 5) {
@@ -154,8 +153,8 @@ class MailSender extends Loggable with Config {
   }
 }
 
-case class EmailMessage(_id: String,
-                        game_id: Int,
+case class EmailMessage(_id: Long,
+                        game_id: Long,
                         send_at: Long,
                         sent_at: Option[Long],
                         num_attempts: Int,
@@ -166,31 +165,31 @@ object EmailMessage {
 
   def insert(message: EmailMessage) = {
     val dbo = grater[EmailMessage].asDBObject(message)
-    MongoManager.emailMessagesColl += dbo
+    MongoManager.emailMessages += dbo
   }
 
   def findByGameId(game_id: Int): Option[EmailMessage] = {
-    val dbObject = MongoManager.emailMessagesColl.findOne(MongoDBObject("game_id" -> game_id))
+    val dbObject = MongoManager.emailMessages.findOne(MongoDBObject("game_id" -> game_id))
     dbObject.map(o => grater[EmailMessage].asObject(o))
   }
 
-  def findByGameIdAndRecipient(game_id: Int, recipient: String): Option[EmailMessage] = {
-    val dbObject = MongoManager.emailMessagesColl.findOne(MongoDBObject("game_id" -> game_id, "recipient" -> recipient))
+  def findByGameIdAndRecipient(game_id: Long, recipient: String): Option[EmailMessage] = {
+    val dbObject = MongoManager.emailMessages.findOne(MongoDBObject("game_id" -> game_id, "recipient" -> recipient))
     dbObject.map(o => grater[EmailMessage].asObject(o))
   }
 
-  def findUnsent(game_id: Int): Iterator[EmailMessage] = {
-    val dbObjects = MongoManager.emailMessagesColl.find(
+  def findUnsent(game_id: Long): Iterator[EmailMessage] = {
+    val dbObjects = MongoManager.emailMessages.find(
       MongoDBObject("game_id" -> game_id,
-        "status" -> "unsent",
-        "send_at" -> MongoDBObject("$lt" -> DateTime.now().getMillis),
-        "num_attempts" -> MongoDBObject("$lt" -> 5))
+                    "status" -> "unsent",
+                    "send_at" -> MongoDBObject("$lt" -> DateTime.now().getMillis),
+                    "num_attempts" -> MongoDBObject("$lt" -> 5))
     )
     for (x <- dbObjects) yield grater[EmailMessage].asObject(x)
   }
 
   def markAsSent(message: EmailMessage) = {
-    MongoManager.emailMessagesColl.update(MongoDBObject("_id" -> message._id),
+    MongoManager.emailMessages.update(MongoDBObject("_id" -> message._id),
       $set("sent_at" -> Some(DateTime.now().getMillis),
         "status" -> "sent"
       )
@@ -198,7 +197,7 @@ object EmailMessage {
   }
 
   def updateNumAttempts(message: EmailMessage) = {
-    MongoManager.emailMessagesColl.update(MongoDBObject("_id" -> message._id),
+    MongoManager.emailMessages.update(MongoDBObject("_id" -> message._id),
       $set("num_attempts" -> (message.num_attempts + 1))
     )
   }

@@ -1,19 +1,26 @@
 package models
 
-import models.Sport.SportName.SportName
-
 
 /**
  * Model for the currently supported sports.
  */
-case class Sport(id: Long,
-                 sportName: SportName)
+case class Sport(_id: Long,
+                 name: String)
 
 object Sport {
 
-  object SportName extends Enumeration {
-    type SportName = Value
+  import play.api.libs.functional.syntax._
+  import play.api.libs.json._
 
-    val Basketball, Baseball, Softball = Value
-  }
+  implicit val sportWrites: Writes[Sport] = (
+    (JsPath \ "_id").write[Long] and
+    (JsPath \ "name").write[String]
+  )(unlift(Sport.unapply))
+
+
+//  object Name extends Enumeration {
+//    type Name = Value
+//
+//    val Basketball, Baseball, Softball = Value
+//  }
 }

@@ -3,7 +3,7 @@
 @import helper._
 @import models._
 
-@main(Html(Config.season + " Roster."), nav = "roster") {
+@main(Html("Roster."), nav = "roster") {
 
 <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/roster.css")">
 
@@ -22,11 +22,11 @@
                     <td>Position</td>
                 </tr>
             </header>
-            @for(player <- users) {
+            @for(user <- users) {
             <tr>
-                <td>@player.number</td>
-                <td>@player.firstName @player.lastName</td>
-                <td>@player.position</td>
+                <td>@user.player.get.number</td>
+                <td>@user.first_name @user.last_name</td>
+                <td>@user.player.get.position</td>
             </tr>
             }
             </tbody>

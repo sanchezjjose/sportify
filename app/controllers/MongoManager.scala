@@ -1,24 +1,29 @@
 package controllers
 
-import com.novus.salat._
-import com.novus.salat.annotations._
-import com.novus.salat.global._
-import dao.SalatDAO
-import com.mongodb.casbah.{MongoClient, MongoDB, MongoConnection}
-import com.mongodb.casbah.commons.MongoDBObject
 import com.mongodb.casbah.Imports._
+import com.mongodb.casbah.MongoClient
+import com.mongodb.casbah.commons.MongoDBObject
 
 
-object MongoManager extends Config {
+object MongoManager extends Config with Loggable {
+
+  // Setup
   val mongoConn = MongoClient(new MongoClientURI(Config.mongoUrl))
-  val usersColl = mongoConn("***REMOVED***")("users")
-  val gamesColl = mongoConn("***REMOVED***")("games")
-  val facebookAuthColl = mongoConn("***REMOVED***")("facebook_autherizations")
-  val emailMessagesColl = mongoConn("***REMOVED***")("email_messages")
+  val dbName = "***REMOVED***"
+
+  // Collections
+  val users = mongoConn(dbName)("users")
+  val facebookAuths = mongoConn(dbName)("facebook_autherizations")
+  val players = mongoConn(dbName)("players")
+  val games = mongoConn(dbName)("games")
+  val seasons = mongoConn(dbName)("seasons")
+  val teams = mongoConn(dbName)("teams")
+  val sports = mongoConn(dbName)("sports")
+  val emailMessages = mongoConn(dbName)("email_messages")
 
   try {
-    emailMessagesColl.ensureIndex(MongoDBObject("game_id" -> 1, "recipient" -> 1), "game_id_", true)
+    emailMessages.ensureIndex(MongoDBObject("game_id" -> 1, "recipient" -> 1), "game_id_", true)
   } catch {
-    case e => println(e)
+    case e: Exception => log.error("There was an error creating indexes for the email messages collection.", e)
   }
 }

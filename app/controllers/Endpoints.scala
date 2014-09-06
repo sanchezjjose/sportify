@@ -1,8 +1,8 @@
 package controllers
 
-import play.api.mvc._
+import models.{Game, User}
 import play.api.libs.json._
-import models.{User, Game}
+import play.api.mvc._
 
 object Endpoints extends Controller with Config with Secured with Loggable {
 
@@ -11,7 +11,7 @@ object Endpoints extends Controller with Config with Secured with Loggable {
   }
 
   def game(id: Long) = Action {
-    Game.findByGameId(id).map { game =>
+    Game.findById(id).map { game =>
       Ok(Json.toJson(game))
     }.getOrElse(NotFound("Game Not Found"))
   }

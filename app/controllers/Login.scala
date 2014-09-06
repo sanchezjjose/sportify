@@ -1,11 +1,10 @@
 package controllers
 
-import play.api.mvc._
-import play.api.data._
-import play.api.data.Forms._
-
-import views._
 import models._
+import play.api.data.Forms._
+import play.api.data._
+import play.api.mvc._
+import views._
 
 object Login extends Controller with Loggable with Config {
 
@@ -71,10 +70,11 @@ trait Secured extends Loggable {
 
       User.loggedInUser = user
       Action(request => f(user)(request))
-    }.getOrElse{
+
+    }.getOrElse {
 
       // Next check by facebook user_id
-      User.findByFacebookUserId(key).map { user =>
+      User.findByFacebookUserId(key.toLong).map { user =>
 
         User.loggedInUser = user
         Action(request => f(user)(request))

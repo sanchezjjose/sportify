@@ -1,4 +1,4 @@
-@(playerInfo: List[(User, PlayerStats)])
+@(statistics: List[(User, PlayerStats)])
 
 @import helper._
 @import models._
@@ -29,14 +29,14 @@
 				          <td class="last">RPG</td>
 				        </tr>
 				    </header>
-				    @for(player <- playerInfo) {
+				    @for(stat <- statistics) {
 				      <tr>
-				         <td>@player._1.number</td>
-				         <td>@player._1.firstName @player._1.lastName, @player._1.position</td>
-				         <td>@player._2.gamesPlayed</td>
-				         <td>@player._2.pointsPerGame</td>
-				         <td>@player._2.assistsPerGame</td>
-				         <td class="last">@player._2.reboundsPerGame</td>
+				         <td>@stat._1.player.get.number</td>
+				         <td>@stat._1.first_name @stat._1.last_name, @stat._1.player.get.position</td>
+				         <td>@stat._2.gamesPlayed</td>
+				         <td>@stat._2.pointsPerGame</td>
+				         <td>@stat._2.assistsPerGame</td>
+				         <td class="last">@stat._2.reboundsPerGame</td>
 				      </tr>
 				    }
 				  </tbody>

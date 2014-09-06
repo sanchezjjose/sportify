@@ -1,4 +1,4 @@
-@(player: User)(implicit flash: Flash)
+@(player: PlayerData)(implicit flash: Flash)
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -20,12 +20,17 @@
 
         <h2>Jersey Number 
             <br> 
-            <small>@player.number</small> 
+            <small>@player.jerseyNumber</small>
         </h2>
 
         <h2>Position 
             <br> 
             <small>@player.position</small> 
+        </h2>
+
+        <h2>Team ID
+            <br>
+            <small>@player.teamId</small>
         </h2>
     </div>
 }

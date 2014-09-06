@@ -1,9 +1,9 @@
-@(gameForm: Form[GameForm], season: String, nextGame: Option[Game], games: List[Game])(user: User)(implicit flash: Flash)
+@(gameForm: Form[GameForm], season: Season, nextGame: Option[Game], games: List[Game])(user: User)(implicit flash: Flash)
 
 @import helper._
 @import controllers._
 
-@main(Html(season + " Schedule."), nav = "schedule") {
+@main(Html(season.title + " Schedule."), nav = "schedule") {
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/schedule.css")">
 
@@ -20,14 +20,14 @@
         </div>
 
         <!--should be hidden-->
-        @if(user.isAdmin) {
+        @if(user.is_admin) {
           @(newGameForm())
           @(editGameForm())
         }
 
         <h2 class="header">Regular Season</h2> 
 
-        @if(user.isAdmin) {
+        @if(user.is_admin) {
           <a href="#" class="add">+ Add game</a>
         }
 
@@ -40,15 +40,15 @@
   			        </tr>
   		    	</thead>
 		        @for(game <- games.filter(g => g.is_playoff_game == false)) {
-              @if(nextGame.isDefined && nextGame.get.game_id == game.game_id) {
-                <tr id="@game.game_id" class="success">
+              @if(nextGame.isDefined && nextGame.get._id == game._id) {
+                <tr id="@game._id" class="success">
               } else{
-                <tr id="@game.game_id">
+                <tr id="@game._id">
               }
                   <td class="game-details">
                     <div>
-                      <b>Game @game.game_seq</b> <br>
-                      @game.startTime <br>
+                      <b>Game @game.number</b> <br>
+                      @game.start_time <br>
                       @game.address <br>
                       vs. @game.opponent <br>
                       <b>
@@ -59,11 +59,11 @@
                           }
                       </b>
 
-                      @if(user.isAdmin) {
+                      @if(user.is_admin) {
                         <div>
                           <br>
-                          <a href="@routes.Schedule.edit(game.game_id)" class="edit text-muted">Edit</a> &nbsp;
-                          <a href="#" onclick='deleteGame(@game.game_id)' class="delete text-danger">Delete</a>
+                          <a href="@routes.Schedule.edit(game._id)" class="edit text-muted">Edit</a> &nbsp;
+                          <a href="#" onclick='deleteGame(@game._id)' class="delete text-danger">Delete</a>
                         </div>
                       }
 
@@ -71,8 +71,8 @@
                   </td>
                   <td>
                       <div class="schedule form">
-                          <a href="/schedule/submit?status=in?game_id=@game.game_id" class="btn btn-primary">In</a>
-                          <a href="/schedule/submit?status=out?game_id=@game.game_id" class="btn btn-default">Out</a>
+                          <a href="/schedule/submit?status=in?game_id=@game._id" class="btn btn-primary">In</a>
+                          <a href="/schedule/submit?status=out?game_id=@game._id" class="btn btn-default">Out</a>
                       </div>
                   </td>
                 </tr>
@@ -84,7 +84,7 @@
       <div class="season playoffs">
         <h2 class="header">Playoffs</h2>
 
-        @if(user.isAdmin) {
+        @if(user.is_admin) {
           <a href="#" class="add">+ Add game</a>
         }
 
@@ -98,10 +98,10 @@
             </thead>
 
             @for(game <- games.filter(g => g.is_playoff_game == true)) {
-              <tr id="@game.game_id">
+              <tr id="@game._id">
                   <td class="game-details">
-                      <b>Game @game.game_seq</b> <br>
-                      @game.startTime <br>
+                      <b>Game @game.number</b> <br>
+                      @game.start_time <br>
                       @game.address <br>
                       vs. @game.opponent <br>
                       <b>
@@ -112,19 +112,19 @@
                           }
                       </b>
 
-                      @if(user.isAdmin) {
+                      @if(user.is_admin) {
                         <div>
                           <br>
-                          <a href="@routes.Schedule.edit(game.game_id)" class="edit text-muted">Edit</a> &nbsp;
-                          <a href="#" onclick='deleteGame(@game.game_id)' class="delete text-danger">Delete</a>
+                          <a href="@routes.Schedule.edit(game._id)" class="edit text-muted">Edit</a> &nbsp;
+                          <a href="#" onclick='deleteGame(@game._id)' class="delete text-danger">Delete</a>
                         </div>
                       }
 
                   </td>
                   <td class="game-rsvp">
                       <div class="schedule form">
-                          <a href="/schedule/submit?status=in?game_id=@game.game_id" class="btn btn-danger">In</a>
-                          <a href="/schedule/submit?status=out?game_id=@game.game_id" class="btn btn-default">Out</a>
+                          <a href="/schedule/submit?status=in?game_id=@game._id" class="btn btn-danger">In</a>
+                          <a href="/schedule/submit?status=out?game_id=@game._id" class="btn btn-default">Out</a>
                       </div>
                   </td>
               </tr>
@@ -202,7 +202,7 @@
                 $(".opponent input").val(data.opponent);
                 $(".result input").val(data.result);
 
-                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + data.game_seq + '/' + false);
+                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data._id + '/' + data.number + '/' + false);
                 $('#edit-game form').get(0).setAttribute('method', 'post');
 
                 // open and fill form
@@ -224,7 +224,7 @@
                 $(".opponent input").val(data.opponent);
                 $(".result input").val(data.result);
 
-                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + data.game_seq + '/' + true);
+                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data._id + '/' + data.number + '/' + true);
                 $('#edit-game form').get(0).setAttribute('method', 'post');
 
                 // open and fill form

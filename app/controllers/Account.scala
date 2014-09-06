@@ -1,25 +1,31 @@
 package controllers
 
-import play.api.mvc._
-import play.api.data._
-import play.api.data.Forms._
-
-import views._
 import models._
+import play.api.data.Forms._
+import play.api.data._
+import play.api.mvc._
+import views._
+
+
+
+case class AccountData (email: String,
+                        firstName: String,
+                        lastName: String,
+                        number: Int,
+                        position: String,
+                        isAdmin: Boolean)
 
 object Account extends Controller with Secured {
 
-	val accountForm: Form[User] = Form(
+	val accountForm: Form[AccountData] = Form(
 		mapping(
-      "_id" -> ignored(""),
       "email" -> email,
-			"firstname" -> text,
-			"lastname" -> text,
+			"first_name" -> text,
+			"last_name" -> text,
 			"number" -> number,
       "position" -> text,
-      "facebookUser" -> ignored[Option[FacebookUser]](None),
       "is_admin" -> boolean
-		)(User.apply)(User.unapply)
+		)(AccountData.apply)(AccountData.unapply)
 	)
 
   /**
@@ -29,9 +35,18 @@ object Account extends Controller with Secured {
    * @return
    */
   def account = IsAuthenticated { user => implicit request =>
-    val filledForm = accountForm.fill(User.loggedInUser)
+    val user = User.loggedInUser
 
-    Ok(views.html.account(filledForm, user.isAdmin))
+    val accountData = AccountData (email = user.email,
+                                   firstName = user.first_name,
+                                   lastName = user.last_name,
+                                   number = user.player.get.number,
+                                   position = user.player.get.position,
+                                   isAdmin = user.is_admin)
+
+    val filledForm = accountForm.fill(accountData)
+
+    Ok(views.html.account(filledForm, user.is_admin))
   }
 
   def delete = IsAuthenticated { user => implicit request =>
@@ -44,11 +59,12 @@ object Account extends Controller with Secured {
 
   def submit = IsAuthenticated { user => implicit request =>
     accountForm.bindFromRequest.fold(
-       // Form has errors, re-display it
-       errors => BadRequest(html.account(errors, user.isAdmin)),
 
-       updatedUser => {
-         User.updateAccountInformation(updatedUser)
+       // Form has errors, re-display it
+       errors => BadRequest(html.account(errors, user.is_admin)),
+
+       userFormData => {
+         User.update(userFormData)
 
          Redirect(routes.Account.account()).flashing(
             "success" -> "Your account information has been successfully updated."

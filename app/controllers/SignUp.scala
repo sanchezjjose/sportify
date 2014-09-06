@@ -1,35 +1,38 @@
 package controllers
 
-import play.api.mvc._
-import play.api.data._
-import play.api.data.Forms._
-
-import views._
 import models._
-import org.bson.types.ObjectId
-import java.util.UUID
+import play.api.data.Forms._
+import play.api.data._
+import play.api.mvc._
+import views._
 
-object SignUp extends Controller {
 
-	val signupForm: Form[User] = Form(
 
-		// Define a mapping that will handle Player values
+case class PlayerData(email: String,
+                      firstName: String,
+                      lastName: String,
+                      jerseyNumber: Int,
+                      position: String,
+                      teamId: Long)
+
+
+object SignUp extends Controller with Helper {
+
+	val signupForm: Form[PlayerData] = Form(
 		mapping(
-      "_id" -> ignored(UUID.randomUUID().toString),
       "email" -> email,
-			"firstname" -> nonEmptyText,
-			"lastname" -> nonEmptyText,
+			"first_name" -> nonEmptyText,
+			"last_name" -> nonEmptyText,
 			"number" -> number,
       "position" -> nonEmptyText,
-      "facebookUser" -> ignored[Option[FacebookUser]](None),
-      "isAdmin" -> ignored(false)
-		)(User.apply)(User.unapply)
+      "team_id" -> longNumber
+		)(PlayerData.apply)(PlayerData.unapply)
 	)
 
 	/**
    	* Display an empty form.
     */
-  def signup = Action {
+  def signup = Action { implicit request =>
  	  Ok(html.signup.form(signupForm))
 	}
 
@@ -37,18 +40,44 @@ object SignUp extends Controller {
   * Handle form submission.
   */
   def submit = Action { implicit request =>
-     signupForm.bindFromRequest.fold(  
-       // Form has errors, redisplay it
-       errors => BadRequest(html.signup.form(errors)),
-      
-       // We got a valid Player value, display the summary
-       user => {
-         User.insert(user)
-         Ok(html.signup.summary(user)).withNewSession.flashing(
-            "success" -> "Your account has been created. Please login."
-         )
+
+     signupForm.bindFromRequest.fold(
+
+       errors => {
+         BadRequest(html.signup.form(errors))
+       },
+
+       data => {
+
+         Team.findById(data.teamId).map { team =>
+
+           val player = Player(_id = generateRandomId(),
+             number = data.jerseyNumber,
+             position = data.position)
+
+           val user = User(_id = generateRandomId(),
+                           email = data.email,
+                           first_name = data.firstName,
+                           last_name = data.lastName,
+                           player = Some(player))
+
+           // Create all required DB entries
+//           Player.create(player)
+           User.create(user)
+
+           // Add player to the team
+           team.players += player
+
+           Ok(html.signup.summary(data)).withNewSession.flashing(
+             "success" -> "Your account has been created. Please login."
+           )
+         }.getOrElse {
+
+           Redirect(routes.SignUp.signup).withNewSession.flashing(
+             "failure" -> "Sorry, the team id you entered does not exist."
+           )
+         }
        }
     )
   }
-  
 }

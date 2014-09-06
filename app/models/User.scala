@@ -1,148 +1,158 @@
 package models
 
+import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import com.mongodb.casbah.Imports._
-import controllers.MongoManager
-import java.util.UUID
-import CustomPlaySalatContext._
-import play.api.libs.json._
+import controllers.{AccountData, MongoManager}
+import models.CustomPlaySalatContext._
 import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Writes}
 
 
 /**
- * This should eventually be linked to a player, and season.
- * It will mean tracking historical data, per player and season.
- * It will also lend itself to finally be able to view data per game,
- * and eventually player profiles.
+ * A model representation of a user. The user could also optionally be a facebook user,
+ * depending on the method of registration.
  */
-case class PlayerStats(name: String,
-                       gamesPlayed: String,
-                       pointsPerGame: String,
-                       assistsPerGame: String,
-                       reboundsPerGame: String)
+case class User (_id: Long,
+                 email: String,
+                 first_name: String,
+                 last_name: String,
+                 player: Option[Player] = None,
+                 facebook_user: Option[FacebookUser] = None,
+                 is_admin: Boolean = false)
 
-object PlayerHelper {
+object User extends Helper {
+
+  var loggedInUser: User = _
+
+  implicit val userWrites: Writes[User] = (
+    (JsPath \ "_id").write[Long] and
+    (JsPath \ "email").write[String] and
+    (JsPath \ "first_name").write[String] and
+    (JsPath \ "last_name").write[String] and
+    (JsPath \ "player").write[Option[Player]] and
+    (JsPath \ "facebook_user").write[Option[FacebookUser]] and
+    (JsPath \ "is_admin").write[Boolean]
+  )(unlift(User.unapply))
+ 
+
+  def findById(id: Long): Option[User] = {
+    val dbObject = MongoManager.users.findOne( MongoDBObject("_id" -> id) )
+    dbObject.map(o => grater[User].asObject(o))
+  }
+
+  def findByFacebookUserId(user_id: Long): Option[User] = {
+    val dbObject = MongoManager.users.findOne( MongoDBObject("facebook_user.user_id" -> user_id) )
+    dbObject.map(o => grater[User].asObject(o))
+  }
+
+  def findByEmail(email: String): Option[User] = {
+    val dbObject = MongoManager.users.findOne( MongoDBObject("email" -> email) )
+    dbObject.map(o => grater[User].asObject(o))
+  }
+
+  def findByPlayerId(id: Long): Option[User] = {
+    val dbObject = MongoManager.users.findOne( MongoDBObject("player._id" -> id) )
+    dbObject.map(o => grater[User].asObject(o))
+  }
+
+  def findAll: Iterator[User] = {
+    val dbObjects = MongoManager.users.find()
+    for (x <- dbObjects) yield grater[User].asObject(x)
+  }
+
+  def authenticate(email: String, password: String): Option[User] = {
+    val dbObject = MongoManager.users.findOne( MongoDBObject("email" -> email, "password" -> password) )
+    dbObject.map(o => grater[User].asObject(o))
+  }
+
+  def create(user: User) = {
+    val dbo = grater[User].asDBObject(user)
+    dbo.put("_id", generateRandomId())
+    dbo.put("password", "giltunit") // TODO: move to Environment variable or hash in the DB
+
+    MongoManager.users += dbo
+  }
+
+  def create(email: Option[String], firstName: String, lastName: Option[String], player: Option[Player], facebookUser: Option[FacebookUser]) = {
+    val id = if (facebookUser.isDefined) {
+      facebookUser.get.user_id.toLong
+    } else {
+      generateRandomId()
+    }
+
+    val user = User(id, email.getOrElse(""), firstName, lastName.getOrElse(""), player, facebookUser)
+    val dbo = grater[User].asDBObject(user)
+    dbo.put("password", "giltunit") // TODO: move to Environment variable or hash in the DB
+
+    MongoManager.users += dbo
+  }
+
+  def update(data: AccountData) = {
+    MongoManager.users.update(MongoDBObject("_id" -> User.loggedInUser._id),
+      $set("email" -> data.email,
+           "first_name" -> data.firstName,
+           "last_name" -> data.lastName,
+           "player.position" -> data.position,
+           "player.number" -> data.number)
+    )
+  }
+
+  def updateAccessToken(access_token: String, user_id: String) = {
+    MongoManager.users.update(MongoDBObject("facebook_user.user_id" -> user_id), $set("facebook_user.access_token" -> access_token))
+  }
+
+  def delete(user: User) = {
+    val dbo = grater[User].asDBObject(user)
+    MongoManager.users -= dbo
+  }
+}
+
+object UserHelper {
 
   def formatName(firstName: String, lastName: String): String = {
     "%s %s.".format(firstName, lastName.charAt(0))
   }
 }
 
-case class User(_id: String,
-                email: String,
-                firstName: String,
-                lastName: String,
-                number: Int,
-                position: String,
-                facebookUser: Option[FacebookUser] = None,
-                isAdmin: Boolean = false)
-//                teams: List[Team] = List.empty[Team])
 
-object User {
+/**
+ * A user who signed up with Facebook login.
+ */
+case class FacebookUser (access_token: String,
+	                       user_id: String)
 
-  var loggedInUser: User = _
+object FacebookUser {
 
-  implicit val userWrites: Writes[User] = (
-    (JsPath \ "_id").write[String] and
-    (JsPath \ "email").write[String] and
-    (JsPath \ "firstName").write[String] and
-    (JsPath \ "lastName").write[String] and
-    (JsPath \ "number").write[Int] and
-    (JsPath \ "position").write[String] and
-    (JsPath \ "facebookUser").write[Option[FacebookUser]] and
-    (JsPath \ "isAdmin").write[Boolean] //and
-//    (JsPath \ "teams").write[List[Team]]
-  )(unlift(User.unapply))
+  import play.api.libs.functional.syntax._
+  import play.api.libs.json._
 
-  /**
-   * Retrieve a User from id.
-   */
-  def findByFacebookUserId(user_id: String): Option[User] = {
-    val dbObject = MongoManager.usersColl.findOne( MongoDBObject("facebookUser.user_id" -> user_id) )
-    dbObject.map(o => grater[User].asObject(o))
+  implicit val facebookUserWrites: Writes[FacebookUser] = (
+    (JsPath \ "access_token").write[String] and
+    (JsPath \ "user_id").write[String]
+  )(unlift(FacebookUser.unapply))
+
+
+  def findByAccessToken(access_token: String): Option[FacebookUser] = {
+  	val dbObject = MongoManager.facebookAuths.findOne( MongoDBObject("access_token" -> access_token) )
+  	dbObject.map( o => grater[FacebookUser].asObject(o) )
   }
 
-  /**
-   * Retrieve a User from id.
-   */
-  def findById(_id: String): Option[User] = {
-    val dbObject = MongoManager.usersColl.findOne( MongoDBObject("_id" -> _id) )
-    dbObject.map(o => grater[User].asObject(o))
-  }
-  
-  /**
-   * Retrieve a User from email.
-   */
-  def findByEmail(email: String): Option[User] = {
-    val dbObject = MongoManager.usersColl.findOne( MongoDBObject("email" -> email) )
-    dbObject.map(o => grater[User].asObject(o))
-  }
-  
-  /**
-   * Retrieve all users.
-   */
-  def findAll: Iterator[User] = {
-    val dbObjects = MongoManager.usersColl.find()
-    for (x <- dbObjects) yield grater[User].asObject(x)
-  }
-  
-  /**
-   * Authenticate a User.
-   */
-  def authenticate(email: String, password: String): Option[User] = {
-    val dbObject = MongoManager.usersColl.findOne( MongoDBObject("email" -> email, "password" -> password) )
-    dbObject.map(o => grater[User].asObject(o))
+  def findByUserId(user_id: String): Option[FacebookUser] = {
+    val dbObject = MongoManager.facebookAuths.findOne( MongoDBObject("user_id" -> user_id) )
+    dbObject.map( o => grater[FacebookUser].asObject(o) )
   }
 
-  /**
-   * Insert a new user.
-   *
-   * @param user The user values
-   */
-  def insert(user: User) = {
-    val dbo = grater[User].asDBObject(user)
-    dbo.put("_id", UUID.randomUUID().toString)
-    dbo.put("password", "giltunit")
+  def create(access_token: String, user_id: String, email: Option[String], firstName: String, lastName: Option[String], player: Option[Player]) = {
+  	val facebookUser = FacebookUser(access_token, user_id)
+    val dbo = grater[FacebookUser].asDBObject(facebookUser)
+    MongoManager.facebookAuths += dbo
 
-    MongoManager.usersColl += dbo
+    User.create(email, firstName, lastName, player, Option(facebookUser))
   }
 
-  /**
-   * Insert a new user with an option of a facebook user.
-   */
-  def insert(email: Option[String], firstName: String, lastName: Option[String], facebookUser: Option[FacebookUser]) = {
-    val _id = if (facebookUser.isDefined) {
-      facebookUser.get.user_id
-    } else {
-      UUID.randomUUID().toString
-    }
-    val user = User(_id, email.getOrElse(""), firstName, lastName.getOrElse(""), 0, "SF", facebookUser)
-    val dbo = grater[User].asDBObject(user)
-    dbo.put("password", "giltunit")
-
-    MongoManager.usersColl += dbo
-  }
-
-  def updateAccountInformation(updatedUser: User) = {
-    MongoManager.usersColl.update(MongoDBObject("_id" -> User.loggedInUser._id),
-      $set("email" -> updatedUser.email,
-        "firstName" -> updatedUser.firstName,
-        "lastName" -> updatedUser.lastName,
-        "number" -> updatedUser.number,
-        "position" -> updatedUser.position)
-    )
-  }
-
-  /**
-   * Update access token.
-   */
   def updateAccessToken(access_token: String, user_id: String) = {
-    MongoManager.usersColl.update(MongoDBObject("facebookUser.user_id" -> user_id), $set("facebookUser.access_token" -> access_token))
-  }
-
-  def delete(user: User) = {
-    val dbo = grater[User].asDBObject(user)
-    MongoManager.usersColl -= dbo
+    MongoManager.facebookAuths.update(MongoDBObject("user_id" -> user_id), $set("access_token" -> access_token))
+    MongoManager.users.update(MongoDBObject("facebook_user.user_id" -> user_id), $set("facebook_user.access_token" -> access_token))
   }
 }

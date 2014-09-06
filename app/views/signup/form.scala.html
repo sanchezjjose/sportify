@@ -1,4 +1,4 @@
-@(signupForm: Form[User])
+@(signupForm: Form[PlayerData])(implicit flash: Flash)
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -8,6 +8,13 @@
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/signup.css")">
 
     <div class="main">
+
+        @if(flash.get("failure").isDefined) {
+            <div class="alert alert-danger">
+                @flash.get("failure")
+            </div>
+        }
+
         @helper.form(action = routes.SignUp.submit) {
 
             <div class="signup">
@@ -22,14 +29,14 @@
                     )
 
                     @inputText(
-                        signupForm("firstname"),
+                        signupForm("first_name"),
                         '_label -> "First Name",
                         '_help -> "",
                         '_error -> signupForm.globalError
                     )
 
                     @inputText(
-                        signupForm("lastname"),
+                        signupForm("last_name"),
                         '_label -> "Last Name",
                         '_help -> "",
                         '_error -> signupForm.globalError
@@ -39,6 +46,13 @@
                         signupForm("number"),
                         '_label -> "Jersey Number",
                         '_help -> "",
+                        '_error -> signupForm.globalError
+                    )
+
+                    @inputText(
+                        signupForm("team_id"),
+                        '_label -> "Team ID",
+                        '_help -> "If you don't have your team id, please request it from your team captain.",
                         '_error -> signupForm.globalError
                     )
 

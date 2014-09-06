@@ -1,4 +1,4 @@
-@(accountForm: Form[User], isAdmin: Boolean)(implicit flash: Flash)
+@(accountForm: Form[AccountData], isAdmin: Boolean)(implicit flash: Flash)
 
 @import helper._
 
@@ -27,14 +27,14 @@
                 )
 
                 @inputText(
-                    accountForm("firstname"),
+                    accountForm("first_name"),
                     '_label -> "First Name",
                     '_help -> "",
                     '_error -> accountForm.globalError
                 )
 
                 @inputText(
-                    accountForm("lastname"),
+                    accountForm("last_name"),
                     '_label -> "Last Name",
                     '_help -> "",
                     '_error -> accountForm.globalError
@@ -53,7 +53,7 @@
                     <select class="form-control" id="position" name="position">
                             <option class="blank" value="">-------- Choose a Position --------</option>
                             <option value="PG">PG</option>
-                            <option value="SG" selected="">SG</option>
+                            <option value="SG">SG</option>
                             <option value="SF">SF</option>
                             <option value="F">F</option>
                             <option value="C">C</option>
