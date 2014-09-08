@@ -95,8 +95,8 @@
                 <tr>
                   <td class="playerName">
                     @for(player <- game.players_out){
-                      @if(User.findById(player._id).isDefined){
-                        &nbsp; @User.findById(player._id).get.first_name @User.findById(player._id).get.last_name.charAt(0). <br>
+                      @if(User.findByPlayerId(player._id).isDefined){
+                        &nbsp; @User.findByPlayerId(player._id).get.first_name @User.findByPlayerId(player._id).get.last_name.charAt(0). <br>
                       }
                     }
                   </td>

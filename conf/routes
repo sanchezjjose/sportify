@@ -13,17 +13,17 @@ GET     /account/delete                                               controller
 GET     /home                                                         controllers.Application.home
 GET     /home/facebook/event/:game_id                                 controllers.Facebook.createEvent(game_id: Int)
 
-GET     /roster          				  	                          controllers.Application.roster
+GET     /roster          				  	                                  controllers.Application.roster
 
-GET     /schedule 				                                      controllers.Schedule.schedule
-GET     /schedule/rsvp                                                controllers.Schedule.rsvp(game_id: Long, player_id: String, status: String)
+GET     /schedule 				                                            controllers.Schedule.schedule
+GET     /schedule/rsvp                                                controllers.Schedule.changeRsvpStatus(game_id: Long, player_id: String, status: String)
 GET     /schedule/submit                                              controllers.Schedule.submit
-POST    /schedule/save/:is_playoff_game/:season_id                    controllers.Schedule.save(is_playoff_game: String, season_id: Long)
+POST    /schedule/save/:season_id/:is_playoff_game                    controllers.Schedule.save(season_id: Long, is_playoff_game: String)
 POST    /schedule/update/:game_id/:game_number/:is_playoff_game       controllers.Schedule.update(game_id: Long, game_number: Int, is_playoff_game: String)
 GET     /schedule/edit                                                controllers.Schedule.edit(game_id: Long)
-GET     /schedule/delete/:game_id                                     controllers.Schedule.delete(game_id: Long)
+GET     /schedule/delete/:season_id/:game_id                          controllers.Schedule.delete(season_id: Long, game_id: Long)
 
-GET     /signup 				  	                                  controllers.SignUp.signup
+GET     /signup 				  	                                          controllers.SignUp.signup
 POST    /signup/submit                                                controllers.SignUp.submit
 
 GET     /login                                                        controllers.Login.login
@@ -33,9 +33,7 @@ GET     /login/facebook/:access_token/:user_id                        controller
 
 GET     /news                                                         controllers.Application.news
 
-GET     /game/update_score                                            controllers.Application.updateScore(game_id: Long, result, score)
-
-GET     /game/rsvp                                                    controllers.Application.updateRsvpStatus(game_id: Long, status: String)
+GET     /game/rsvp                                                    controllers.Application.changeRsvpStatus(game_id: Long, status: String)
 
 # Endpoints returning JSON
 GET     /json/games                                                   controllers.Endpoints.games

@@ -17,7 +17,7 @@ import scala.collection.mutable.Set
  */
 case class Season (_id: Long,
                    title: String,
-                   games: Set[Game],
+                   gameIds: Set[Long],
                    is_current_season: Boolean)
 
 object Season {
@@ -28,19 +28,25 @@ object Season {
   implicit val seasonWrites: Writes[Season] = (
     (JsPath \ "_id").write[Long] and
     (JsPath \ "title").write[String] and
-    (JsPath \ "games").write[Set[Game]] and
+    (JsPath \ "gameIds").write[Set[Long]] and
     (JsPath \ "is_current_season").write[Boolean]
   )(unlift(Season.unapply))
 
 
+  lazy val currentSeason: Option[Season] = findCurrentSeason()
+
   def findById(id: Long): Option[Season] = {
-    val dbObject = MongoManager.seasons.findOne( MongoDBObject("_id" -> id) )
+    val dbObject = MongoManager.seasons.findOne(MongoDBObject("_id" -> id))
     dbObject.map(o => grater[Season].asObject(o))
   }
 
   def findCurrentSeason(): Option[Season] = {
     val dbObject = MongoManager.seasons.findOne(MongoDBObject("is_current_season" -> true))
     dbObject.map(o => grater[Season].asObject(o))
+  }
+
+  def findLastGameIdInSeason(seasonId: Long): Option[Long] = {
+    findById(seasonId).get.gameIds.toIterable.lastOption
   }
 
   def update(season: Season): Unit = {

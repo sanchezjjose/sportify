@@ -27,25 +27,22 @@ object Application extends Controller with Config with Secured with Loggable {
     Ok(views.html.news("News & Highlights"))
   }
 
-  def updateScore(game_id: Long, result: String, score: String) = Action {
-    Game.updateScore(game_id, result, score)
-    Redirect(routes.Schedule.schedule())
-  }
-
-  def updateRsvpStatus(game_id: Long, status: String) = Action { implicit request =>
-    val gameId = request.rawQueryString.split("=")(2).toInt
-    val game: Option[Game] = Game.findById(gameId)
+  // TODO: move this into a Homepage controller
+  // Called from the Homepage via the 'In' and 'Out' buttons
+  def changeRsvpStatus(gameId: Long, status: String) = Action { implicit request =>
+//    val gameId = request.rawQueryString.split("=")(2).toInt
+    val game: Game = Game.findById(gameId).get
     val user = User.loggedInUser
 
     if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
-      game.get.players_in += user.player.get
-      game.get.players_out -= user.player.get
+      game.players_in += user.player.get
+      game.players_out -= user.player.get
     } else {
-      game.get.players_in -= user.player.get
-      game.get.players_out += user.player.get
+      game.players_in -= user.player.get
+      game.players_out += user.player.get
     }
 
-    Game.update(game.get)
+    Game.update(game)
 
     Redirect(routes.Application.home())
   }

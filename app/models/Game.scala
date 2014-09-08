@@ -3,12 +3,11 @@ package models
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import controllers.{Loggable, MongoManager}
 import models.CustomPlaySalatContext._
+import controllers.{MongoManager, Loggable}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import scala.collection.mutable.Set
-
 
 
 case class Game (_id: Long,
@@ -42,23 +41,18 @@ object Game {
     (JsPath \ "is_playoff_game").write[Boolean]
   )(unlift(Game.unapply))
 
-  val format = DateTimeFormat.forPattern("E MM/dd/yyyy, H:mm a")
 
-  def findNextGame: Option[Game] = {
-    findAllInCurrentSeason.filter(g => DateTime.now().getMillis < format.parseDateTime(g.start_time).plusDays(1).getMillis).toList.headOption
-  }
-
-  def findLastGame: Option[Game] = {
-    findAll.toIterable.lastOption
-  }
-
-  def findLastGameInCurrentSeason: Option[Game] = {
-    findAllInCurrentSeason.toIterable.lastOption
-  }
+  val gameDateFormat = DateTimeFormat.forPattern("E MM/dd/yyyy, H:mm a")
 
   def findById(id: Long): Option[Game] = {
     val dbObject = MongoManager.games.findOne(MongoDBObject("_id" -> id))
     dbObject.map(o => grater[Game].asObject(o))
+  }
+
+  def findNextGame: Option[Game] = {
+    findAll.filter(g =>
+      DateTime.now().getMillis < gameDateFormat.parseDateTime(g.start_time).plusDays(1).getMillis
+    ).toList.headOption
   }
 
   def findAll: Iterator[Game] = {
@@ -66,37 +60,28 @@ object Game {
     for (x <- dbObjects) yield grater[Game].asObject(x)
   }
 
-  def findAllInCurrentSeason: Iterator[Game] = {
-    val currentSeason = Season.findCurrentSeason()
-    val dbObjects = MongoManager.games.find(MongoDBObject("season._id" -> currentSeason.get._id)).sort(MongoDBObject("_id" -> 1))
-    for (x <- dbObjects) yield grater[Game].asObject(x)
+  def findLastGame: Option[Game] = {
+    findAll.toIterable.lastOption
   }
 
   def findAllUpcomingGames: Iterator[Game] = {
-    Game.findAllInCurrentSeason.filter(game => DateTime.now().getMillis < format.parseDateTime(game.start_time).getMillis)
+    findAll.filter { game =>
+      DateTime.now().getMillis < gameDateFormat.parseDateTime(game.start_time).getMillis
+    }.toIterator
+  }
+
+  def create(game: Game): Unit = {
+    val dbo = grater[Game].asDBObject(game)
+    MongoManager.games += dbo
+  }
+
+  def remove(id: Long): Unit = {
+    MongoManager.games.remove(MongoDBObject("_id" -> id))
   }
 
   def update(game: Game): Unit = {
     val dbo = grater[Game].asDBObject(game)
     MongoManager.games.update(MongoDBObject("_id" -> game._id), dbo)
-  }
-
-  def updateScore(game_id: Long, result: String, score: String): Unit = {
-    findById(game_id.toInt).map { game =>
-      val resultUpdated = $set("result" -> "%s %s".format(result, score))
-      MongoManager.games.update(MongoDBObject("_id" -> game._id), resultUpdated)
-    }
-  }
-
-  def removeGame(id: Long): Unit = {
-    findById(id).map { game =>
-      MongoManager.games.remove(MongoDBObject("_id" -> id))
-    }
-  }
-
-  def create(game: Game) = {
-    val dbo = grater[Game].asDBObject(game)
-    MongoManager.games += dbo
   }
 }
 
@@ -110,13 +95,13 @@ case class GameForm(startTime: String,
   /**
    * Create new game from the add game form.
    */
-  def toNewGame(isPlayoffGame: Boolean): Game = {
+  def toNewGame(seasonId: Long, isPlayoffGame: Boolean): Game = {
 
-    // Determine new game number
-    val number = Game.findLastGameInCurrentSeason.map( _.number + 1 ).getOrElse(1)
+    val gameNumberOpt = for (gameId <- Season.findLastGameIdInSeason(seasonId);
+                             game <- Game.findById(gameId)) yield game.number
 
     Game(_id = generateRandomId(),
-         number = number,
+         number = gameNumberOpt.getOrElse(0) + 1, // Determine game number
          start_time = startTime,
          address = address,
          gym = gym,
@@ -129,22 +114,15 @@ case class GameForm(startTime: String,
   }
 
   /**
-   * Update existing game with values from the edit game form.
+   * Create a new game from existing game with values from the edit game form.
    */
-  def toGame(id: Long, number: Int, isPlayoffGame: Boolean): Game = {
-
-    Game.findById(id).map { game =>
-      Game(_id = id,
-           number = number,
-           start_time = startTime,
-           address = address,
-           gym = gym,
-           location_details = locationDetails,
-           opponent = opponent,
-           result = result,
-           players_in = game.players_in,
-           players_out = game.players_out,
-           is_playoff_game = isPlayoffGame)
-    }.get
+  def toGame(gameId: Long, number: Int, isPlayoffGame: Boolean): Game = {
+    Game.findById(gameId).get
+      .copy(start_time = startTime,
+            address = address,
+            gym = gym,
+            opponent = opponent,
+            location_details = locationDetails,
+            result = result)
   }
 }

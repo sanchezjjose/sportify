@@ -8,7 +8,7 @@
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/schedule.css")">
 
     <div class="main">
-      <div class="season regular">
+      <div class="season regular" id="@season._id">
 
         <div class="message">
           @if(flash.get("failure").isDefined) {
@@ -25,7 +25,7 @@
           @(editGameForm())
         }
 
-        <h2 class="header">Regular Season</h2> 
+        <h2 class="header">Regular Season</h2>
 
         @if(user.is_admin) {
           <a href="#" class="add">+ Add game</a>
@@ -63,7 +63,7 @@
                         <div>
                           <br>
                           <a href="@routes.Schedule.edit(game._id)" class="edit text-muted">Edit</a> &nbsp;
-                          <a href="#" onclick='deleteGame(@game._id)' class="delete text-danger">Delete</a>
+                          <a href="#" onclick='deleteGame(@season._id, @game._id)' class="delete text-danger">Delete</a>
                         </div>
                       }
 
@@ -116,7 +116,7 @@
                         <div>
                           <br>
                           <a href="@routes.Schedule.edit(game._id)" class="edit text-muted">Edit</a> &nbsp;
-                          <a href="#" onclick='deleteGame(@game._id)' class="delete text-danger">Delete</a>
+                          <a href="#" onclick='deleteGame(@season._id, @game._id)' class="delete text-danger">Delete</a>
                         </div>
                       }
 
@@ -137,6 +137,8 @@
     <script type="text/javascript">
    	  $(document).ready(function () {
    	  	function init () {
+
+          var seasonId = $('.season.regular').attr('id');
 
           // rsvp for a game
           $('.schedule > .btn').click(function (ev) {
@@ -161,32 +163,28 @@
             });
           });
 
-          // open add new game modal
-          $('.regular .add').click(function (ev) {
-            ev.preventDefault();
+          function displayAddGameModal(isPlayoffs) {
 
             // clear inputs
             $('form input').val("")
 
-            $('#new-game form').get(0).setAttribute('action', '/schedule/save/' + false);
+            $('#new-game form').get(0).setAttribute('action', '/schedule/save/' + seasonId + '/' + isPlayoffs);
             $('#new-game form').get(0).setAttribute('method', 'post');
 
             // open modal
             window.location = "#new-game";
+          }
+
+          // open add new game modal
+          $('.regular .add').click(function (ev) {
+            ev.preventDefault();
+            displayAddGameModal(false);
           });
 
           // open add new game modal
           $('.playoffs .add').click(function (ev) {
             ev.preventDefault();
-
-            // clear inputs
-            $('form input').val("")
-
-            $('#new-game form').get(0).setAttribute('action', '/schedule/save/' + true);
-            $('#new-game form').get(0).setAttribute('method', 'post');
-
-            // open modal
-            window.location = "#new-game";
+            displayAddGameModal(true);
           });
 
           // open and set fields for the edit game modal
@@ -202,7 +200,7 @@
                 $(".opponent input").val(data.opponent);
                 $(".result input").val(data.result);
 
-                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data._id + '/' + data.number + '/' + false);
+                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + data.number + '/' + false);
                 $('#edit-game form').get(0).setAttribute('method', 'post');
 
                 // open and fill form
@@ -224,7 +222,7 @@
                 $(".opponent input").val(data.opponent);
                 $(".result input").val(data.result);
 
-                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data._id + '/' + data.number + '/' + true);
+                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + data.number + '/' + true);
                 $('#edit-game form').get(0).setAttribute('method', 'post');
 
                 // open and fill form
@@ -236,13 +234,13 @@
 
    	  	init();
    	  });
-  
-      function deleteGame(gameId) {
-            var shouldDelete = confirm('Are you sure you want to delete this game?');
-            if (shouldDelete) {
-              window.location = "/schedule/delete/" + gameId;
-            }
-          };
+
+      function deleteGame(seasonId, gameId) {
+        var shouldDelete = confirm('Are you sure you want to delete this game?');
+        if (shouldDelete) {
+          window.location = "/schedule/delete/" + seasonId + "/" + gameId;
+        }
+      };
 
    	</script>
 }
