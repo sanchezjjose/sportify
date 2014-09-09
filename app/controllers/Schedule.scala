@@ -20,7 +20,7 @@ object Schedule extends Controller with Loggable with Secured {
 	def submit = Action { implicit request =>
     val gameId = request.rawQueryString.split("=")(2).toInt
     val game : Option[Game] = Game.findById(gameId)
-    val user = User.loggedInUser
+    lazy val user = User.loggedInUser
 
     if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
 
@@ -83,7 +83,7 @@ object Schedule extends Controller with Loggable with Secured {
   // TODO: move to Game controller
   def changeRsvpStatus(game_id: Long, user_id: String, status: String) = Action {
     val game = Game.findById(game_id).get
-    val user = User.findById(user_id.toLong).get
+    val user = User.loggedInUser
 
     if (status == "in") {
       game.players_in += user.player.get

@@ -8,16 +8,16 @@ import views._
 
 
 
-case class AccountData (email: String,
-                        firstName: String,
-                        lastName: String,
-                        number: Int,
-                        position: String,
-                        isAdmin: Boolean)
+case class UserForm (email: String,
+                     firstName: String,
+                     lastName: String,
+                     number: Int,
+                     position: String,
+                     isAdmin: Boolean)
 
 object Account extends Controller with Secured {
 
-	val accountForm: Form[AccountData] = Form(
+	val userForm: Form[UserForm] = Form(
 		mapping(
       "email" -> email,
 			"first_name" -> text,
@@ -25,7 +25,7 @@ object Account extends Controller with Secured {
 			"number" -> number,
       "position" -> text,
       "is_admin" -> boolean
-		)(AccountData.apply)(AccountData.unapply)
+		)(UserForm.apply)(UserForm.unapply)
 	)
 
   /**
@@ -37,14 +37,14 @@ object Account extends Controller with Secured {
   def account = IsAuthenticated { user => implicit request =>
     val user = User.loggedInUser
 
-    val accountData = AccountData (email = user.email,
-                                   firstName = user.first_name,
-                                   lastName = user.last_name,
-                                   number = user.player.get.number,
-                                   position = user.player.get.position,
-                                   isAdmin = user.is_admin)
+    val form = UserForm(email = user.email,
+                        firstName = user.first_name,
+                        lastName = user.last_name,
+                        number = user.player.get.number,
+                        position = user.player.get.position,
+                        isAdmin = user.is_admin)
 
-    val filledForm = accountForm.fill(accountData)
+    val filledForm = userForm.fill(form)
 
     Ok(views.html.account(filledForm, user.is_admin))
   }
@@ -58,7 +58,7 @@ object Account extends Controller with Secured {
   }
 
   def submit = IsAuthenticated { user => implicit request =>
-    accountForm.bindFromRequest.fold(
+    userForm.bindFromRequest.fold(
 
        // Form has errors, re-display it
        errors => BadRequest(html.account(errors, user.is_admin)),

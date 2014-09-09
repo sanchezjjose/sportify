@@ -16,9 +16,7 @@ object Facebook extends Controller with Secured with Loggable {
 
   def authenticate(access_token: String, user_id: String) = Action { implicit request =>
 
-  // Async { put code below here and make non-blocking }
-
-    log.info("A: " + access_token)
+    log.debug("access_token[ %s ]".format(access_token))
 
     WS.url(graphApiBaseUrl + user_id + "?fields=email,first_name,last_name").get().map { response =>
 
@@ -63,11 +61,11 @@ object Facebook extends Controller with Secured with Loggable {
 
       WS.url(graphApiCreateEventBaseUrl + User.loggedInUser.facebook_user.get.access_token).post(data).map { response =>
 
-        log.info("C: " + user.facebook_user.get.access_token)
-        log.info("D: " + User.loggedInUser.facebook_user.get.access_token)
+        log.debug("user.facebook_user.get.access_token[ %s ]".format(user.facebook_user.get.access_token))
+        log.debug("User.loggedInUser.facebook_user.get.access_token[ %s ]".format(User.loggedInUser.facebook_user.get.access_token))
 
         // TODO: check response for error, and generate new access_token here if expired
-        log.info(response.json.toString())
+        log.debug("response = " + response.json.toString())
 
 //        if (response.getAHCResponse.getStatusCode != 200) {
 //          "https://graph.facebook.com/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s"

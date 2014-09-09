@@ -67,7 +67,6 @@ trait Secured extends Loggable {
 
     // First check by email
     User.findByEmail(key).map { user =>
-
       User.loggedInUser = user
       Action(request => f(user)(request))
 
@@ -75,7 +74,6 @@ trait Secured extends Loggable {
 
       // Next check by facebook user_id
       User.findByFacebookUserId(key.toLong).map { user =>
-
         User.loggedInUser = user
         Action(request => f(user)(request))
 

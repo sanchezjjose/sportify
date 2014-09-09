@@ -3,7 +3,7 @@ package models
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import controllers.{AccountData, MongoManager}
+import controllers.{UserForm, MongoManager}
 import models.CustomPlaySalatContext._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
@@ -52,7 +52,7 @@ object User extends Helper {
   }
 
   def findByPlayerId(id: Long): Option[User] = {
-    val dbObject = MongoManager.users.findOne( MongoDBObject("player._id" -> id) )
+    val dbObject = MongoManager.users.findOne( MongoDBObject("player.id" -> id) )
     dbObject.map(o => grater[User].asObject(o))
   }
 
@@ -88,7 +88,7 @@ object User extends Helper {
     MongoManager.users += dbo
   }
 
-  def update(data: AccountData) = {
+  def update(data: UserForm) = {
     MongoManager.users.update(MongoDBObject("_id" -> User.loggedInUser._id),
       $set("email" -> data.email,
            "first_name" -> data.firstName,

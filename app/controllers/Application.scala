@@ -30,8 +30,7 @@ object Application extends Controller with Config with Secured with Loggable {
   // TODO: move this into a Homepage controller
   // Called from the Homepage via the 'In' and 'Out' buttons
   def changeRsvpStatus(gameId: Long, status: String) = Action { implicit request =>
-//    val gameId = request.rawQueryString.split("=")(2).toInt
-    val game: Game = Game.findById(gameId).get
+    val game = Game.findById(gameId).get
     val user = User.loggedInUser
 
     if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {

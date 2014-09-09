@@ -47,7 +47,7 @@
           </div>
 
           <div class="game-rsvp">
-              <a href="/game/rsvp?status=in&game_id=@game._id" class="btn btn-success">In</a>
+              <a href="/game/rsvp?status=in&game_id=@game._id" class="btn btn-primary">In</a>
               <a href="/game/rsvp?status=out&game_id=@game._id" class="btn btn-default">Out</a>
           </div>
 
@@ -74,8 +74,8 @@
                 <tr>
                   <td class="playerName">
                   @for(player <- game.players_in){
-                    @if(User.findByPlayerId(player._id).isDefined){
-                      &nbsp; @User.findByPlayerId(player._id).get.first_name @User.findByPlayerId(player._id).get.last_name.charAt(0). <br>
+                    @if(User.findByPlayerId(player.id).isDefined){
+                      &nbsp; @User.findByPlayerId(player.id).get.first_name @User.findByPlayerId(player.id).get.last_name.charAt(0). <br>
                     }
                   }
                   </td>
@@ -95,8 +95,8 @@
                 <tr>
                   <td class="playerName">
                     @for(player <- game.players_out){
-                      @if(User.findByPlayerId(player._id).isDefined){
-                        &nbsp; @User.findByPlayerId(player._id).get.first_name @User.findByPlayerId(player._id).get.last_name.charAt(0). <br>
+                      @if(User.findByPlayerId(player.id).isDefined){
+                        &nbsp; @User.findByPlayerId(player.id).get.first_name @User.findByPlayerId(player.id).get.last_name.charAt(0). <br>
                       }
                     }
                   </td>

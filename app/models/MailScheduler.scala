@@ -106,7 +106,7 @@ class MailSender extends Loggable with Config {
       if (shouldSendEmail) {
 
         val playersIn = game.players_in.map { player =>
-          "- " + User.findByPlayerId(player._id).get.first_name
+          "- " + User.findByPlayerId(player.id).get.first_name
         }
 
         val html = views.html.email.reminderEmail(game, userId, playersIn).toString()

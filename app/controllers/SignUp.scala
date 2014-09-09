@@ -51,9 +51,9 @@ object SignUp extends Controller with Helper {
 
          Team.findById(data.teamId).map { team =>
 
-           val player = Player(_id = generateRandomId(),
-             number = data.jerseyNumber,
-             position = data.position)
+           val player = Player(id = generateRandomId(),
+               number = data.jerseyNumber,
+               position = data.position)
 
            val user = User(_id = generateRandomId(),
                            email = data.email,
@@ -62,7 +62,6 @@ object SignUp extends Controller with Helper {
                            player = Some(player))
 
            // Create all required DB entries
-//           Player.create(player)
            User.create(user)
 
            // Add player to the team

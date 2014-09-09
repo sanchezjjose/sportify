@@ -18,9 +18,9 @@ object Sport {
   )(unlift(Sport.unapply))
 
 
-//  object Name extends Enumeration {
-//    type Name = Value
-//
-//    val Basketball, Baseball, Softball = Value
-//  }
+  object Name extends Enumeration {
+    type Name = Value
+
+    val Basketball, Softball, Soccer = Value
+  }
 }

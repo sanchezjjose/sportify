@@ -10,7 +10,7 @@ import org.joda.time.format.DateTimeFormat
 import scala.collection.mutable.Set
 
 
-case class Game (_id: Long,
+case class Game (_id: Long, // TODO: change from Long to Int for all '_id' variables
                  number: Int,
                  start_time: String,
                  address: String,
