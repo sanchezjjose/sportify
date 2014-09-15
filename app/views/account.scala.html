@@ -1,4 +1,4 @@
-@(accountForm: Form[AccountData], isAdmin: Boolean)(implicit flash: Flash)
+@(userForm: Form[UserForm], isAdmin: Boolean)(implicit flash: Flash)
 
 @import helper._
 
@@ -20,31 +20,31 @@
                 <legend>Account Information</legend>
 
                 @inputText(
-                    accountForm("email"),
+                    userForm("email"),
                     '_label -> "Email",
                     '_help -> "",
-                    '_error -> accountForm.globalError
+                    '_error -> userForm.globalError
                 )
 
                 @inputText(
-                    accountForm("first_name"),
+                    userForm("first_name"),
                     '_label -> "First Name",
                     '_help -> "",
-                    '_error -> accountForm.globalError
+                    '_error -> userForm.globalError
                 )
 
                 @inputText(
-                    accountForm("last_name"),
+                    userForm("last_name"),
                     '_label -> "Last Name",
                     '_help -> "",
-                    '_error -> accountForm.globalError
+                    '_error -> userForm.globalError
                 )
 
                 @inputText(
-                    accountForm("number"),
+                    userForm("number"),
                     '_label -> "Jersey Number",
                     '_help -> "",
-                    '_error -> accountForm.globalError
+                    '_error -> userForm.globalError
                 )
 
                 <dl id="position_field">
@@ -65,9 +65,9 @@
                 @if(isAdmin) {
                     <input name="is_admin" value="@isAdmin" type="checkbox" disabled checked>
                 } else {
-                    <input name="is_admin" value="@isAdmin" type="checkbox" disabled>   
+                    <input name="is_admin" value="@isAdmin" type="checkbox" disabled>
                 }
-                
+
 
             </fieldset>
 
