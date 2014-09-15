@@ -54,15 +54,17 @@ object Schedule extends Controller with Loggable with Secured {
   // TODO: move to Game controller
   val gameForm: Form[GameForm] = Form(
     mapping(
+      "number" -> optional(text),
       "start_time" -> text,
       "address" -> text,
       "gym" -> text,
       "location_details" -> optional(text),
       "opponent" -> text,
       "result" -> optional(text)
-    ) { (startTime, address, gym, locationDetails, opponent, result) =>
+    ) { (number, startTime, address, gym, locationDetails, opponent, result) =>
 
-      GameForm(startTime,
+      GameForm(number,
+        startTime,
         address,
         gym,
         locationDetails,
@@ -71,7 +73,8 @@ object Schedule extends Controller with Loggable with Secured {
 
     } { (game: GameForm) =>
 
-      Some((game.startTime,
+      Some((game.number,
+        game.startTime,
         game.address,
         game.gym,
         game.locationDetails,
@@ -81,7 +84,7 @@ object Schedule extends Controller with Loggable with Secured {
   )
 
   // TODO: move to Game controller
-  def changeRsvpStatus(game_id: Long, user_id: String, status: String) = Action {
+  def changeRsvpStatus(game_id: Long, status: String) = Action {
     val game = Game.findById(game_id).get
     val user = User.loggedInUser
 
@@ -102,7 +105,7 @@ object Schedule extends Controller with Loggable with Secured {
   def save(seasonId: Long, isPlayoffGame: String) = Action { implicit request =>
     gameForm.bindFromRequest.fold(
       errors => {
-        log.error(errors.toString)
+        log.error("There was a problem adding a new game", errors)
 
         Redirect(routes.Schedule.schedule).flashing(
         "failure" -> "There was a problem with adding a new game."
@@ -117,7 +120,6 @@ object Schedule extends Controller with Loggable with Secured {
           Season.findById(seasonId).map { season =>
 
             val newGame = gameForm.toNewGame(seasonId, isPlayoffGame.toBoolean)
-
             Game.create(newGame)
 
             // Add game to season and update
@@ -158,7 +160,7 @@ object Schedule extends Controller with Loggable with Secured {
   }
 
   // TODO: move to Game controller
-  def update(gameId: Long, gameNumber: Int, isPlayoffGame: String) = Action { implicit request =>
+  def update(gameId: Long, isPlayoffGame: String) = Action { implicit request =>
     gameForm.bindFromRequest.fold(
       errors => {
         log.error(errors.toString)
@@ -172,7 +174,7 @@ object Schedule extends Controller with Loggable with Secured {
         try {
           // Validate date format was correct
           DateTime.parse(gameForm.startTime, Game.gameDateFormat)
-          val game = gameForm.toGame(gameId, gameNumber, isPlayoffGame.toBoolean)
+          val game = gameForm.toGame(gameId, isPlayoffGame.toBoolean)
 
           Game.update(game)
 
@@ -194,9 +196,12 @@ object Schedule extends Controller with Loggable with Secured {
   def delete(seasonId: Long, gameId: Long) = IsAuthenticated { user => implicit request =>
     val season = Season.findById(seasonId).get
 
-    Game.remove(gameId)
+    // remove from season first
     season.gameIds -= gameId
     Season.update(season)
+
+    // remove game
+    Game.remove(gameId)
 
     Redirect(routes.Schedule.schedule)
   }

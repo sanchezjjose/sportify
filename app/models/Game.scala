@@ -85,7 +85,8 @@ object Game {
   }
 }
 
-case class GameForm(startTime: String,
+case class GameForm(number: Option[String],
+                    startTime: String,
                     address: String,
                     gym: String,
                     locationDetails: Option[String],
@@ -116,9 +117,10 @@ case class GameForm(startTime: String,
   /**
    * Create a new game from existing game with values from the edit game form.
    */
-  def toGame(gameId: Long, number: Int, isPlayoffGame: Boolean): Game = {
+  def toGame(gameId: Long, isPlayoffGame: Boolean): Game = {
     Game.findById(gameId).get
-      .copy(start_time = startTime,
+      .copy(number = number.get.toInt,
+            start_time = startTime,
             address = address,
             gym = gym,
             opponent = opponent,

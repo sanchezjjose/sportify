@@ -16,10 +16,10 @@ GET     /home/facebook/event/:game_id                                 controller
 GET     /roster          				  	                                  controllers.Application.roster
 
 GET     /schedule 				                                            controllers.Schedule.schedule
-GET     /schedule/rsvp                                                controllers.Schedule.changeRsvpStatus(game_id: Long, player_id: String, status: String)
+GET     /schedule/rsvp                                                controllers.Schedule.changeRsvpStatus(game_id: Long, status: String)
 GET     /schedule/submit                                              controllers.Schedule.submit
 POST    /schedule/save/:season_id/:is_playoff_game                    controllers.Schedule.save(season_id: Long, is_playoff_game: String)
-POST    /schedule/update/:game_id/:game_number/:is_playoff_game       controllers.Schedule.update(game_id: Long, game_number: Int, is_playoff_game: String)
+POST    /schedule/update/:game_id/:is_playoff_game                    controllers.Schedule.update(game_id: Long, is_playoff_game: String)
 GET     /schedule/edit                                                controllers.Schedule.edit(game_id: Long)
 GET     /schedule/delete/:season_id/:game_id                          controllers.Schedule.delete(season_id: Long, game_id: Long)
 

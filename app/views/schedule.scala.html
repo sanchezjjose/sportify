@@ -193,6 +193,7 @@
             $.ajax({
               url: $(this).attr('href'),
               success: function (data) {
+                $(".number input").val(data.number);
                 $(".start_time input").val(data.start_time);
                 $(".address input").val(data.address);
                 $(".gym input").val(data.gym);
@@ -200,7 +201,7 @@
                 $(".opponent input").val(data.opponent);
                 $(".result input").val(data.result);
 
-                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + data.number + '/' + false);
+                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + false);
                 $('#edit-game form').get(0).setAttribute('method', 'post');
 
                 // open and fill form
@@ -215,6 +216,7 @@
             $.ajax({
               url: $(this).attr('href'),
               success: function (data) {
+                $(".number input").val(data.number);
                 $(".start_time input").val(data.start_time);
                 $(".address input").val(data.address);
                 $(".gym input").val(data.gym);
@@ -222,7 +224,7 @@
                 $(".opponent input").val(data.opponent);
                 $(".result input").val(data.result);
 
-                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + data.number + '/' + true);
+                $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + true);
                 $('#edit-game form').get(0).setAttribute('method', 'post');
 
                 // open and fill form

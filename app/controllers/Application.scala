@@ -33,7 +33,7 @@ object Application extends Controller with Config with Secured with Loggable {
     val game = Game.findById(gameId).get
     val user = User.loggedInUser
 
-    if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
+    if (request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
       game.players_in += user.player.get
       game.players_out -= user.player.get
     } else {
