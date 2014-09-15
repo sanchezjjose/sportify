@@ -5,6 +5,7 @@ import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
 import controllers.MongoManager
 import models.CustomPlaySalatContext._
+import org.joda.time.DateTime
 import scala.collection.mutable.Set
 
 /**
@@ -43,6 +44,12 @@ object Season {
   def findCurrentSeason(): Option[Season] = {
     val dbObject = MongoManager.seasons.findOne(MongoDBObject("is_current_season" -> true))
     dbObject.map(o => grater[Season].asObject(o))
+  }
+
+  def findNextGameInCurrentSeason: Option[Game] = {
+    Game.findNextGame.filter { nextGame =>
+      findCurrentSeason().get.gameIds.contains(nextGame._id)
+    }
   }
 
   def findLastGameIdInSeason(seasonId: Long): Option[Long] = {

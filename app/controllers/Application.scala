@@ -14,7 +14,7 @@ object Application extends Controller with Config with Secured with Loggable {
   }
 
   def home = IsAuthenticated { user => implicit request =>
-    Ok(views.html.index("Next Game", Game.findNextGame))
+    Ok(views.html.index("Next Game", Season.findNextGameInCurrentSeason))
   }
 
   def roster = IsAuthenticated { user => _ =>
