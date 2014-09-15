@@ -14,7 +14,7 @@ object Schedule extends Controller with Loggable with Secured {
     val currentSeason = Season.findCurrentSeason().get
     val games = currentSeason.gameIds.flatMap(Game.findById).toList.sortBy(_.number)
 
-    Ok(views.html.schedule(gameForm, currentSeason, Game.findNextGame, games)(user))
+    Ok(views.html.schedule(gameForm, currentSeason, Season.findNextGameInCurrentSeason, games)(user))
   }
 
 	def submit = Action { implicit request =>

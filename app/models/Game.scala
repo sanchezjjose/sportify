@@ -52,7 +52,9 @@ object Game {
   def findNextGame: Option[Game] = {
     findAll.filter(g =>
       DateTime.now().getMillis < gameDateFormat.parseDateTime(g.start_time).plusDays(1).getMillis
-    ).toList.headOption
+    ).toList
+      .sortBy(g => gameDateFormat.parseDateTime(g.start_time).plusDays(1).getMillis)
+        .headOption
   }
 
   def findAll: Iterator[Game] = {
