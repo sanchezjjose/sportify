@@ -12,7 +12,7 @@ object Schedule extends Controller with Loggable with Secured {
 
   def schedule = IsAuthenticated { user => implicit request =>
     val currentSeason = Season.findCurrentSeason().get
-    val games = currentSeason.gameIds.flatMap(Game.findById).toList.sortBy(_.number)
+    val games = currentSeason.game_ids.flatMap(Game.findById).toList.sortBy(_.number)
 
     Ok(views.html.schedule(gameForm, currentSeason, Season.findNextGameInCurrentSeason, games)(user))
   }
@@ -123,7 +123,7 @@ object Schedule extends Controller with Loggable with Secured {
             Game.create(newGame)
 
             // Add game to season and update
-            season.gameIds += newGame._id
+            season.game_ids += newGame._id
             Season.update(season)
           }
 
@@ -197,7 +197,7 @@ object Schedule extends Controller with Loggable with Secured {
     val season = Season.findById(seasonId).get
 
     // remove from season first
-    season.gameIds -= gameId
+    season.game_ids -= gameId
     Season.update(season)
 
     // remove game

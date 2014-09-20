@@ -1,5 +1,5 @@
-html { 
-  background: url(/assets/images/nyc-court.jpg) no-repeat center center fixed; 
+html {
+  background: url(/assets/images/nyc-court.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -15,13 +15,27 @@ body {
   width: 100%;
 }
 
+.container .navbar-header {
+  margin-left: -45px;
+}
+
+.navbar-header .dropdown {
+  width: 150px;
+  font-size: 16px;
+}
+
+.navbar-header .dropdown-toggle {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .container > footer p {
     text-align: center;
 }
 
 .container {
     width: 60%;
-    max-width: 840px; 
+    max-width: 840px;
 }
 
 /* The white background content wrapper */
@@ -50,13 +64,13 @@ body {
     padding: 0px 15px 10px;
 }
 
-@media screen and (max-width: 768px) { 
+@media screen and (max-width: 768px) {
 
   .navbar .container {
     width: 90%;
   }
 
-  .container { 
+  .container {
     width: 87.5%;
   }
 
@@ -72,13 +86,13 @@ body {
   }
 }
 
-@media screen and (max-width: 640px) { 
+@media screen and (max-width: 640px) {
 
   .navbar .container {
     width: 90%;
   }
 
-  .container { 
+  .container {
     width: 87.5%;
   }
 
@@ -88,7 +102,7 @@ body {
   }
 }
 
-@media screen and (max-width: 320px) { 
+@media screen and (max-width: 320px) {
 
   .page-header h1 {
     font-size: 100%;

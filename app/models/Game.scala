@@ -51,6 +51,7 @@ object Game {
 
   def findNextGame: Option[Game] = {
     findAll.filter(g =>
+      // TODO: replace plusDays(1) with another solution, to allow for back to back games, etc...
       DateTime.now().getMillis < gameDateFormat.parseDateTime(g.start_time).plusDays(1).getMillis
     ).toList
       .sortBy(g => gameDateFormat.parseDateTime(g.start_time).plusDays(1).getMillis)

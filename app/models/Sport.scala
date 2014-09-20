@@ -21,6 +21,6 @@ object Sport {
   object Name extends Enumeration {
     type Name = Value
 
-    val Basketball, Softball, Soccer = Value
+    val Basketball, Softball, Soccer, Football, Ping_Pong = Value
   }
 }

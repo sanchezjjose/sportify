@@ -5,14 +5,15 @@ import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
 import controllers.MongoManager
 import models.CustomPlaySalatContext._
-import scala.collection.mutable.Set
+import scala.collection.mutable.{Set => MSet}
 
 /**
  * Model of a team, which is made up of players and a specific sport.
  */
 case class Team (_id: Long,
                  name: String,
-                 players: Set[Player],
+                 players: MSet[Player],
+                 season_ids: Set[Long],
                  sport: Sport)
 
 object Team {
@@ -23,7 +24,8 @@ object Team {
   implicit val teamWrites: Writes[Team] = (
     (JsPath \ "_id").write[Long] and
     (JsPath \ "name").write[String] and
-    (JsPath \ "players").write[Set[Player]] and
+    (JsPath \ "players").write[MSet[Player]] and
+    (JsPath \ "seasons").write[Set[Long]] and
     (JsPath \ "sport").write[Sport]
   )(unlift(Team.unapply))
 
@@ -31,6 +33,11 @@ object Team {
   def findById(id: Long): Option[Team] = {
     val dbObject = MongoManager.teams.findOne( MongoDBObject("_id" -> id) )
     dbObject.map(o => grater[Team].asObject(o))
+  }
+
+  def findAll: Set[Team] = {
+    val dbObjects = MongoManager.teams.find().sort(MongoDBObject("_id" -> 1))
+    (for (x <- dbObjects) yield grater[Team].asObject(x)).toSet[Team]
   }
 
   def update(team: Team): Unit = {

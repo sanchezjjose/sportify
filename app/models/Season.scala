@@ -18,7 +18,7 @@ import scala.collection.mutable.Set
  */
 case class Season (_id: Long,
                    title: String,
-                   gameIds: Set[Long],
+                   game_ids: Set[Long],
                    is_current_season: Boolean)
 
 object Season {
@@ -29,7 +29,7 @@ object Season {
   implicit val seasonWrites: Writes[Season] = (
     (JsPath \ "_id").write[Long] and
     (JsPath \ "title").write[String] and
-    (JsPath \ "gameIds").write[Set[Long]] and
+    (JsPath \ "game_ids").write[Set[Long]] and
     (JsPath \ "is_current_season").write[Boolean]
   )(unlift(Season.unapply))
 
@@ -48,12 +48,12 @@ object Season {
 
   def findNextGameInCurrentSeason: Option[Game] = {
     Game.findNextGame.filter { nextGame =>
-      findCurrentSeason().get.gameIds.contains(nextGame._id)
+      findCurrentSeason().get.game_ids.contains(nextGame._id)
     }
   }
 
   def findLastGameIdInSeason(seasonId: Long): Option[Long] = {
-    findById(seasonId).get.gameIds.toIterable.lastOption
+    findById(seasonId).get.game_ids.toIterable.lastOption
   }
 
   def update(season: Season): Unit = {

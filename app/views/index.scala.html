@@ -5,6 +5,7 @@
 @main(Html("Next Game."), nav = "home") {
 
   <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/home.css")">
+  <script src="@routes.Assets.at("javascripts/index.js")" type="text/javascript"></script>
 
   @gameOpt.map { game =>
 
@@ -109,54 +110,7 @@
           <!-- http://stackoverflow.com/questions/12871710/why-clear-both-css -->
           <div style="clear:both;"></div>
 
-          <script type="text/javascript">
-              $("#create-fb-event").on('click', function() {
-                var href = "/home/facebook/event/" + @game._id;
-
-                window.location = href;
-              });
-          </script>
-
-          <div id="map-canvas"></div>
-
-          <script type="text/javascript">
-            function initialize() {
-              var directionsDisplay;
-              var map;
-              var directionsService = new google.maps.DirectionsService();
-              var manhattan = new google.maps.LatLng(40.7711329, -73.9741874);
-
-              directionsDisplay = new google.maps.DirectionsRenderer();
-              var mapOptions = {
-                zoom: 14,
-                center: manhattan,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-              }
-              map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-              directionsDisplay.setMap(map);
-
-              var request = {
-                origin: '2 Park Ave, New York',
-                destination: '@game.address, New York',
-                travelMode: google.maps.DirectionsTravelMode.TRANSIT
-              };
-
-              directionsService.route(request, function(response, status) {
-                if (status == google.maps.DirectionsStatus.OK) {
-                  directionsDisplay.setDirections(response);
-                }
-              });
-            }
-
-            function loadScript() {
-              var script = document.createElement("script");
-              script.type = "text/javascript";
-              script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
-              document.body.appendChild(script);
-            }
-
-            window.onload = loadScript;
-          </script>
+          <div id="map-canvas" data-game-address="@game.address"></div>
 
       </div>
     </div>
