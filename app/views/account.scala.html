@@ -1,8 +1,8 @@
-@(userForm: Form[UserForm], isAdmin: Boolean)(implicit flash: Flash)
+@(userForm: Form[UserForm], isAdmin: Boolean, selectedTeam: Team, otherTeams: Set[Team])(implicit flash: Flash)
 
 @import helper._
 
-@main(Html("Your Account Information.")) {
+@main(Html("Your Account Information."), nav = "", selectedTeam, otherTeams) {
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/account.css")">
 

@@ -60,6 +60,11 @@ body {
     color: black;
 }
 
+.page-header .logo {
+  width: 70px;
+  height: auto;
+}
+
 .content .main {
     padding: 0px 15px 10px;
 }

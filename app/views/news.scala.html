@@ -1,8 +1,8 @@
-@(header: String)
+@(header: String, selectedTeam: Team, otherTeams: Set[Team])
 
 @import helper._
 
-@main(Html("News & Highlights."), nav = "news") {
+@main(Html("News & Highlights."), nav = "news", selectedTeam, otherTeams) {
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/news.css")">
 
@@ -125,5 +125,5 @@
             - Jose Sanchez
         </p>
     </div>
-    
+
 }

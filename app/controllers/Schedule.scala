@@ -8,13 +8,17 @@ import play.api.data.Forms._
 import play.api.data.Forms.text
 import org.joda.time.DateTime
 
-object Schedule extends Controller with Loggable with Secured {
+
+object Schedule extends Controller with Teams with Loggable with Secured {
 
   def schedule = IsAuthenticated { user => implicit request =>
-    val currentSeason = Season.findCurrentSeason().get
-    val games = currentSeason.game_ids.flatMap(Game.findById).toList.sortBy(_.number)
+    val selectedTeam = getSelectedTeam(request)
+    val currentSeason = selectedTeam.season_ids.flatMap(Season.findById).find(_.is_current_season)
+    val games = currentSeason.map(_.game_ids.flatMap(Game.findById).toList.sortBy(_.number)).getOrElse(List.empty[Game])
+    val nextGameInSeason = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
 
-    Ok(views.html.schedule(gameForm, currentSeason, Season.findNextGameInCurrentSeason, games)(user))
+    Ok(views.html.schedule(gameForm, currentSeason, nextGameInSeason, games,
+        getSelectedTeam(request), getOtherTeams(request))(user))
   }
 
 	def submit = Action { implicit request =>

@@ -5,7 +5,8 @@ package models
  * Model for the currently supported sports.
  */
 case class Sport(_id: Long,
-                 name: String)
+                 name: String,
+                 logo_image_url: String)
 
 object Sport {
 
@@ -14,7 +15,8 @@ object Sport {
 
   implicit val sportWrites: Writes[Sport] = (
     (JsPath \ "_id").write[Long] and
-    (JsPath \ "name").write[String]
+    (JsPath \ "name").write[String] and
+    (JsPath \ "logo_image_url").write[String]
   )(unlift(Sport.unapply))
 
 

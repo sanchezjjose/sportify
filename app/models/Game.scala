@@ -44,6 +44,12 @@ object Game {
 
   val gameDateFormat = DateTimeFormat.forPattern("E MM/dd/yyyy, H:mm a")
 
+  def getNextGame(gameIds: Set[Long]): Option[Game] = {
+    gameIds.flatMap(findById).filter { game =>
+      DateTime.now().getMillis < gameDateFormat.parseDateTime(game.start_time).plusDays(1).getMillis
+    }.toList.sortBy(g => gameDateFormat.parseDateTime(g.start_time).plusDays(1).getMillis).headOption
+  }
+
   def findById(id: Long): Option[Game] = {
     val dbObject = MongoManager.games.findOne(MongoDBObject("_id" -> id))
     dbObject.map(o => grater[Game].asObject(o))
@@ -51,11 +57,8 @@ object Game {
 
   def findNextGame: Option[Game] = {
     findAll.filter(g =>
-      // TODO: replace plusDays(1) with another solution, to allow for back to back games, etc...
       DateTime.now().getMillis < gameDateFormat.parseDateTime(g.start_time).plusDays(1).getMillis
-    ).toList
-      .sortBy(g => gameDateFormat.parseDateTime(g.start_time).plusDays(1).getMillis)
-        .headOption
+    ).toList.sortBy(g => gameDateFormat.parseDateTime(g.start_time).plusDays(1).getMillis).headOption
   }
 
   def findAll: Iterator[Game] = {

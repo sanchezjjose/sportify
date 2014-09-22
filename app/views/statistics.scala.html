@@ -1,10 +1,10 @@
-@(statistics: List[(User, PlayerStats)])
+@(statistics: List[(User, PlayerStats)], selectedTeam: Team, otherTeams: Set[Team])
 
 @import helper._
 @import models._
 
-@main(Html("Statistics."), nav = "statistics") {
-    
+@main(Html("Statistics."), nav = "statistics", selectedTeam, otherTeams) {
+
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/roster.css")">
 
     <div class="main">

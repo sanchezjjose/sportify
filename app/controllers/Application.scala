@@ -2,29 +2,40 @@ package controllers
 
 import models._
 import org.slf4j.LoggerFactory
-import play.api.Play.current
 import play.api.mvc._
 
-object Application extends Controller with Config with Secured with Loggable {
+object Application
+  extends Controller
+  with Teams
+  with Config
+  with Secured
+  with Loggable {
 
   val logger = LoggerFactory.getLogger(getClass.getName)
 
-  def index = Action {
+  def index = Action { implicit request =>
     Redirect(routes.Application.home())
   }
 
   def home = IsAuthenticated { user => implicit request =>
-    Ok(views.html.index("Next Game", Season.findNextGameInCurrentSeason))
+    val selectedTeam = getSelectedTeam(request)
+    val currentSeason = selectedTeam.season_ids.flatMap(Season.findById).find(_.is_current_season)
+    val nextGameInSeason = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
+
+    Ok(views.html.index("Next Game", nextGameInSeason,
+      selectedTeam, getOtherTeams(request), selectedTeam.playersNeeded))
   }
 
-  def roster = IsAuthenticated { user => _ =>
-    val users = User.findAll.toList.sortBy(u => u.first_name)
+  def roster = IsAuthenticated { user => implicit request =>
+    val selectedTeam = getSelectedTeam(request)
+    val users = selectedTeam.players.flatMap(player => User.findByPlayerId(player.id)).toList.sortBy(u => u.first_name)
 
-    Ok(views.html.roster(users))
+    Ok(views.html.roster(users, getSelectedTeam(request), getOtherTeams(request)))
   }
 
-  def news = IsAuthenticated { user => _ =>
-    Ok(views.html.news("News & Highlights"))
+  def news = IsAuthenticated { user => implicit request =>
+
+    Ok(views.html.news("News & Highlights", getSelectedTeam(request), getOtherTeams(request)))
   }
 
   // TODO: move this into a Homepage controller
@@ -43,23 +54,10 @@ object Application extends Controller with Config with Secured with Loggable {
 
     Game.update(game)
 
-    Redirect(routes.Application.home())
+    Redirect(routes.Application.home)
   }
 }
 
-trait Config {
-  val config = play.api.Play.configuration
-}
 
-object Config extends Config {
-  lazy val msg = config.getString("msg").getOrElse("Remember to bring your game shirts. Let's get this W!")
-  lazy val mongoUrl = config.getString("mongo_url").get
-  lazy val environment = config.getString("environment").get
-  lazy val fbAppId = config.getString("facebook_app_id").get
-  lazy val fbAppSecret = config.getString("facebook_app_secret").get
-}
 
-object Environment {
-  val DEVELOPMENT = "development"
-  val PRODUCTION = "production"
-}
+

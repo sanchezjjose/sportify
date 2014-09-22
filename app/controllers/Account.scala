@@ -7,7 +7,6 @@ import play.api.mvc._
 import views._
 
 
-
 case class UserForm (email: String,
                      firstName: String,
                      lastName: String,
@@ -15,7 +14,7 @@ case class UserForm (email: String,
                      position: String,
                      isAdmin: Boolean)
 
-object Account extends Controller with Secured {
+object Account extends Controller with Teams with Secured {
 
 	val userForm: Form[UserForm] = Form(
 		mapping(
@@ -46,7 +45,7 @@ object Account extends Controller with Secured {
 
     val filledForm = userForm.fill(form)
 
-    Ok(views.html.account(filledForm, user.is_admin))
+    Ok(views.html.account(filledForm, user.is_admin, getSelectedTeam(request), getOtherTeams(request)))
   }
 
   def delete = IsAuthenticated { user => implicit request =>
@@ -61,7 +60,7 @@ object Account extends Controller with Secured {
     userForm.bindFromRequest.fold(
 
        // Form has errors, re-display it
-       errors => BadRequest(html.account(errors, user.is_admin)),
+       errors => BadRequest(html.account(errors, user.is_admin, getSelectedTeam(request), getOtherTeams(request))),
 
        userFormData => {
          User.update(userFormData)

@@ -14,11 +14,9 @@ object MongoManager extends Config with Loggable {
   // Collections
   val users = mongoConn(dbName)("users")
   val facebookAuths = mongoConn(dbName)("facebook_autherizations")
-//  val players = mongoConn(dbName)("players")
   val games = mongoConn(dbName)("games")
   val seasons = mongoConn(dbName)("seasons")
   val teams = mongoConn(dbName)("teams")
-  val sports = mongoConn(dbName)("sports")
   val emailMessages = mongoConn(dbName)("email_messages")
 
   try {

@@ -73,11 +73,13 @@ trait Secured extends Loggable {
     }.getOrElse {
 
       // Next check by facebook user_id
-      User.findByFacebookUserId(key.toLong).map { user =>
+      /*User.findByFacebookUserId(key.toLong).map { user =>
         User.loggedInUser = user
         Action(request => f(user)(request))
 
-      }.getOrElse {
+      }*/
+        // TODO: remove me when Facebook login is added back
+        None.getOrElse {
 
         // Finally return onAuthorized
         Action(request => onUnauthorized(request))

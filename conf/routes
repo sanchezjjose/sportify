@@ -5,6 +5,9 @@
 # Home page
 GET     /                                                             controllers.Application.index
 
+# Teams
+GET     /team/:team_name                                              controllers.Teams.switch(team_name: String)
+
 # Other
 GET     /account                                                      controllers.Account.account
 POST    /account/submit                                               controllers.Account.submit

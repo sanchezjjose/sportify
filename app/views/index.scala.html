@@ -1,8 +1,8 @@
-@(header: String, gameOpt: Option[Game])(implicit flash: Flash)
+@(header: String, gameOpt: Option[Game], selectedTeam: Team, otherTeams: Set[Team], playersNeeded: Int)(implicit flash: Flash)
 
 @import helper._
 
-@main(Html("Next Game."), nav = "home") {
+@main(Html("Next Game."), nav = "home", selectedTeam, otherTeams) {
 
   <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/home.css")">
   <script src="@routes.Assets.at("javascripts/index.js")" type="text/javascript"></script>
@@ -10,9 +10,9 @@
   @gameOpt.map { game =>
 
     <div class="message">
-      @if(game.players_in.size < 5) {
+      @if(game.players_in.size < playersNeeded) {
         <div class="alert alert-danger">
-          <strong><center>@(5-game.players_in.size) more player(s) needed for this weeks game!</center></strong>
+          <strong><center>@(playersNeeded - game.players_in.size) more player(s) needed for this weeks game!</center></strong>
         </div>
       } else {
         @if(game.is_playoff_game == true) {
@@ -52,10 +52,12 @@
               <a href="/game/rsvp?status=out&game_id=@game._id" class="btn btn-default">Out</a>
           </div>
 
-          <h4>Gilt Unit vs. @game.opponent</h4>
+          <h4>@selectedTeam.name vs. @game.opponent</h4>
           @game.start_time <br><br>
 
           @game.address <br>
+
+          <i>@game.gym</i> <br>
 
           @if(game.location_details.isDefined){
             <b><font color="red">*&nbsp;</font></b>@game.location_details

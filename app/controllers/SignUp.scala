@@ -61,11 +61,11 @@ object SignUp extends Controller with Helper {
                            last_name = data.lastName,
                            player = Some(player))
 
-           // Create all required DB entries
-           User.create(user)
-
-           // Add player to the team
            team.players += player
+
+           // Save user and add to team
+           User.create(user)
+           Team.update(team)
 
            Ok(html.signup.summary(data)).withNewSession.flashing(
              "success" -> "Your account has been created. Please login."

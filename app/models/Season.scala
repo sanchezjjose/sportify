@@ -46,11 +46,11 @@ object Season {
     dbObject.map(o => grater[Season].asObject(o))
   }
 
-  def findNextGameInCurrentSeason: Option[Game] = {
-    Game.findNextGame.filter { nextGame =>
-      findCurrentSeason().get.game_ids.contains(nextGame._id)
-    }
-  }
+//  def findNextGameInCurrentSeason: Option[Game] = {
+//    Game.findNextGame.find { nextGame =>
+//      findCurrentSeason().get.game_ids.contains(nextGame._id)
+//    }
+//  }
 
   def findLastGameIdInSeason(seasonId: Long): Option[Long] = {
     findById(seasonId).get.game_ids.toIterable.lastOption
