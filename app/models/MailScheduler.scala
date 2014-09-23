@@ -41,7 +41,7 @@ class MailScheduler extends Loggable with Helper {
           }
         }
       }
-    }, 0, 12, TimeUnit.HOURS)
+    }, 0, 2, TimeUnit.HOURS)
   }
 
   def startSending() {
@@ -55,7 +55,7 @@ class MailScheduler extends Loggable with Helper {
           }
         }
       }
-    }, 0, 120, TimeUnit.MINUTES)
+    }, 0, 1, TimeUnit.HOURS)
   }
 
   /**
