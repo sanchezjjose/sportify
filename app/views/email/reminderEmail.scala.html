@@ -1,10 +1,12 @@
-@(game: Game, userId: Long, playersIn: scala.collection.mutable.Set[String])
+@(team: Team, game: Game, userId: Long, playersIn: scala.collection.mutable.Set[String])
 
 You have an upcoming game against @game.opponent on @game.start_time <br><br>
 
 The address is @game.address.replace(".",""), New York, New York <br><br>
 
-<u>Note</u>: <i> @game.location_details </i> <br><br>
+@game.location_details.map { locationDetails =>
+  <u>Note</u>: <i> @locationDetails </i> <br><br>
+}
 
 <table>
   <tr>
@@ -20,7 +22,7 @@ So far, we have @playersIn.size players confirmed: <br><br>
 
 @Html(playersIn.mkString("<br>")) <br><br>
 
-<b>Remember to bring your game shirts, and lets get this W!</b> <br><br>
+<b>@Config.msg</b> <br><br>
 
 <i>Sportify.</i> <br>
-<img src="http://sportify.gilt.com/assets/images/basketball-icon-2.png" width="70" height="70" />
+<img src="http://sportify.gilt.com/assets/@team.sport.logo_image_url" width="70" height="70" />

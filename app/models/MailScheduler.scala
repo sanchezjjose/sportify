@@ -16,7 +16,7 @@ import org.joda.time.format.DateTimeFormat
 /**
  * Handles scheduling of the emails.
  */
-class MailScheduler extends Loggable {
+class MailScheduler extends Loggable with Helper {
 
   private val emailScheduler = Executors.newScheduledThreadPool(2)
 
@@ -24,18 +24,19 @@ class MailScheduler extends Loggable {
 
   def startChecking() {
     emailScheduler.scheduleAtFixedRate(new Runnable {
-      def run {
+      def run() {
         log.info("checking for next game to create email messages...")
 
-        Game.findNextGame.map { game =>
-          val sendAt = format.parseDateTime(game.start_time).minusHours(20).getMillis
+        Team.getNextGameByTeam.foreach { case (team, nextGame) =>
+          team.players.foreach { player =>
+            User.findByPlayerId(player.id).foreach { user =>
+              val sendAt = format.parseDateTime(nextGame.start_time).minusHours(20).getMillis
 
-          User.findAll.filter( user => shouldEmail(user)).foreach { user =>
-
-            // This is pretty bad. Look into how to use unique index on game id and recipient instead.
-            if (!EmailMessage.findByGameIdAndRecipient(game._id, user.email).isDefined) {
-              val newMessage = EmailMessage(user._id, game._id, sendAt, None, 0, user.email)
-              EmailMessage.insert(newMessage)
+              // This is pretty bad. Look into how to use unique index on game id and recipient instead.
+              if (!EmailMessage.findByGameIdAndRecipient(nextGame._id, user.email).isDefined) {
+                val newMessage = EmailMessage(generateRandomId(), user._id, nextGame._id, sendAt, None, 0, user.email)
+                EmailMessage.insert(newMessage)
+              }
             }
           }
         }
@@ -45,12 +46,12 @@ class MailScheduler extends Loggable {
 
   def startSending() {
     emailScheduler.scheduleAtFixedRate(new Runnable {
-      def run {
+      def run() {
         log.info("checking for new emails to send...")
 
-        Game.findNextGame.map { game =>
-          EmailMessage.findUnsent(game._id).foreach { message =>
-            new MailSender().sendNextGameReminderEmail(message, game)
+        Team.getNextGameByTeam.foreach { case (team, nextGame) =>
+          EmailMessage.findUnsent(nextGame._id).foreach { message =>
+            new MailSender().sendNextGameReminderEmail(message, team, nextGame)
           }
         }
       }
@@ -62,8 +63,7 @@ class MailScheduler extends Loggable {
    */
   private def shouldEmail(user: User): Boolean = {
     user.email != "" &&
-    user.email.toLowerCase != "irosa8621@yahoo.com" &&
-    user.email.toLowerCase != "sbhargava@gilt.com"
+    user.email.toLowerCase != "irosa8621@yahoo.com"
   }
 }
 
@@ -76,7 +76,7 @@ class MailSender extends Loggable with Config {
   private val SMTP_AUTH_USER = System.getenv("SENDGRID_USERNAME");
   private val SMTP_AUTH_PWD  = System.getenv("SENDGRID_PASSWORD");
 
-  def sendNextGameReminderEmail(emailMessage: EmailMessage, game: Game) {
+  def sendNextGameReminderEmail(emailMessage: EmailMessage, team: Team, game: Game) {
 
     try {
       val props = new Properties()
@@ -88,11 +88,11 @@ class MailSender extends Loggable with Config {
       val auth = new SMTPAuthenticator()
       val mailSession = Session.getInstance(props, auth)
 
-      val transport = mailSession.getTransport()
+      val transport = mailSession.getTransport
       val message = new MimeMessage(mailSession)
       val multipart = new MimeMultipart("alternative")
 
-      val userId = emailMessage._id
+      val userId = emailMessage.user_id
       val recipient = emailMessage.recipient
 
       val shouldSendEmail = {
@@ -109,7 +109,7 @@ class MailSender extends Loggable with Config {
           "- " + User.findByPlayerId(player.id).get.first_name
         }
 
-        val html = views.html.email.reminderEmail(game, userId, playersIn).toString()
+        val html = views.html.email.reminderEmail(team, game, userId, playersIn).toString()
 
         val part = new MimeBodyPart()
         part.setContent(html, "text/html")
@@ -118,7 +118,7 @@ class MailSender extends Loggable with Config {
 
         message.setContent(multipart)
         message.setFrom(new InternetAddress("sportify@email.heroku.com"))
-        message.setSubject("You have a basketball game on " + game.start_time)
+        message.setSubject("You have an upcoming game on " + game.start_time)
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient))
 
         log.info("Sending an email to " + recipient + " for game id " + game._id)
@@ -154,6 +154,7 @@ class MailSender extends Loggable with Config {
 }
 
 case class EmailMessage(_id: Long,
+                        user_id: Long,
                         game_id: Long,
                         send_at: Long,
                         sent_at: Option[Long],

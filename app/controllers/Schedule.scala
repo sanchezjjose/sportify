@@ -92,6 +92,9 @@ object Schedule extends Controller with Teams with Loggable with Secured {
     val game = Game.findById(game_id).get
     val user = User.loggedInUser
 
+    println(game)
+    println(user)
+
     if (status == "in") {
       game.players_in += user.player.get
       game.players_out -= user.player.get

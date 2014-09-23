@@ -34,23 +34,10 @@ object Season {
   )(unlift(Season.unapply))
 
 
-  lazy val currentSeason: Option[Season] = findCurrentSeason()
-
   def findById(id: Long): Option[Season] = {
     val dbObject = MongoManager.seasons.findOne(MongoDBObject("_id" -> id))
     dbObject.map(o => grater[Season].asObject(o))
   }
-
-  def findCurrentSeason(): Option[Season] = {
-    val dbObject = MongoManager.seasons.findOne(MongoDBObject("is_current_season" -> true))
-    dbObject.map(o => grater[Season].asObject(o))
-  }
-
-//  def findNextGameInCurrentSeason: Option[Game] = {
-//    Game.findNextGame.find { nextGame =>
-//      findCurrentSeason().get.game_ids.contains(nextGame._id)
-//    }
-//  }
 
   def findLastGameIdInSeason(seasonId: Long): Option[Long] = {
     findById(seasonId).get.game_ids.toIterable.lastOption

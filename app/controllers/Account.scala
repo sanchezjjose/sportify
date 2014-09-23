@@ -65,6 +65,16 @@ object Account extends Controller with Teams with Secured {
        userFormData => {
          User.update(userFormData)
 
+         val player = User.loggedInUser.player.get
+         val updatedPlayer = player.copy(number = userFormData.number, position = userFormData.position)
+
+         val players = getSelectedTeam(request).players
+         players -= player
+         players += updatedPlayer
+
+         val updatedTeam = getSelectedTeam(request).copy(players = players)
+         Team.update(updatedTeam)
+
          Redirect(routes.Account.account()).flashing(
             "success" -> "Your account information has been successfully updated."
          )

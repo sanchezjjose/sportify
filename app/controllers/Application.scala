@@ -6,6 +6,7 @@ import play.api.mvc._
 
 object Application
   extends Controller
+  with HomeEndpoints
   with Teams
   with Config
   with Secured
@@ -36,25 +37,6 @@ object Application
   def news = IsAuthenticated { user => implicit request =>
 
     Ok(views.html.news("News & Highlights", getSelectedTeam(request), getOtherTeams(request)))
-  }
-
-  // TODO: move this into a Homepage controller
-  // Called from the Homepage via the 'In' and 'Out' buttons
-  def changeRsvpStatus(gameId: Long, status: String) = Action { implicit request =>
-    val game = Game.findById(gameId).get
-    val user = User.loggedInUser
-
-    if (request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
-      game.players_in += user.player.get
-      game.players_out -= user.player.get
-    } else {
-      game.players_in -= user.player.get
-      game.players_out += user.player.get
-    }
-
-    Game.update(game)
-
-    Redirect(routes.Application.home)
   }
 }
 

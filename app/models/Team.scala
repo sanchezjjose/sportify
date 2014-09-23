@@ -42,6 +42,13 @@ object Team {
   )(unlift(Team.unapply))
 
 
+  def getNextGameByTeam: Set[(Team, Game)] = {
+    for (team <- Team.findAll;
+         seasonId <- team.season_ids.filter(Season.findById(_).exists(_.is_current_season));
+         currentSeason <- Season.findById(seasonId);
+         nextGame <- Game.getNextGame(currentSeason.game_ids)) yield (team, nextGame)
+  }
+
   def findById(id: Long): Option[Team] = {
     val dbObject = MongoManager.teams.findOne( MongoDBObject("_id" -> id) )
     dbObject.map(o => grater[Team].asObject(o))
