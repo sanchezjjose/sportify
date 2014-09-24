@@ -29,7 +29,11 @@ fieldset .clearfix {
 	margin-right: 10px;
 }
 
-#position {
+.signup .hidden {
+  display: none;
+}
+
+.signup select {
   min-width: 240px;
   width: 50%;
 }

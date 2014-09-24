@@ -51,12 +51,13 @@
                     <dt><label for="position">Position</label></dt>
                     <dd>
                     <select class="form-control" id="position" name="position">
-                            <option class="blank" value="">-------- Choose a Position --------</option>
-                            <option value="PG">PG</option>
-                            <option value="SG">SG</option>
-                            <option value="SF">SF</option>
-                            <option value="F">F</option>
-                            <option value="C">C</option>
+                        <!-- TODO: fix me, shows duplicates -->
+                        <option selected>@userForm("position").value</option>
+                        <option value="PG">PG</option>
+                        <option value="SG">SG</option>
+                        <option value="SF">SF</option>
+                        <option value="F">F</option>
+                        <option value="C">C</option>
                     </select>
                     </dd>
                 </dl>

@@ -12,7 +12,7 @@ case class PlayerData(email: String,
                       firstName: String,
                       lastName: String,
                       jerseyNumber: Int,
-                      position: String,
+                      position: Option[String],
                       teamId: Long)
 
 
@@ -24,7 +24,7 @@ object SignUp extends Controller with Helper {
 			"first_name" -> nonEmptyText,
 			"last_name" -> nonEmptyText,
 			"number" -> number,
-      "position" -> nonEmptyText,
+      "position" -> optional(text),
       "team_id" -> longNumber
 		)(PlayerData.apply)(PlayerData.unapply)
 	)

@@ -11,7 +11,7 @@ case class UserForm (email: String,
                      firstName: String,
                      lastName: String,
                      number: Int,
-                     position: String,
+                     position: Option[String],
                      isAdmin: Boolean)
 
 object Account extends Controller with Teams with Secured {
@@ -22,7 +22,7 @@ object Account extends Controller with Teams with Secured {
 			"first_name" -> text,
 			"last_name" -> text,
 			"number" -> number,
-      "position" -> text,
+      "position" -> optional(nonEmptyText),
       "is_admin" -> boolean
 		)(UserForm.apply)(UserForm.unapply)
 	)

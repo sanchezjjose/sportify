@@ -10,7 +10,7 @@ import play.api.libs.json.{JsPath, Writes}
  */
 case class Player(id: Long,
                   number: Int,
-                  position: String) {
+                  position: Option[String]) {
 
   /*
    * The overrides below are there to avoid the scenario where a player
@@ -41,7 +41,7 @@ object Player {
   implicit val playerWrites: Writes[Player] = (
     (JsPath \ "id").write[Long] and
     (JsPath \ "number").write[Int] and
-    (JsPath \ "position").write[String]
+    (JsPath \ "position").write[Option[String]]
   )(unlift(Player.unapply))
 
 }

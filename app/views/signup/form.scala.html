@@ -6,6 +6,9 @@
 @mainAuth("Signup to Sportify") {
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/signup.css")">
+    <script src="//fb.me/react-0.11.0.js"></script>
+    <script src="//fb.me/JSXTransformer-0.8.0.js"></script>
+    <script type="text/jsx" src="@routes.Assets.at("javascripts/signup.js")"></script>
 
     <div class="main">
 
@@ -56,10 +59,22 @@
                         '_error -> signupForm.globalError
                     )
 
-                    <div class="clearfix  " id="position_field">
+                    <div class="clearfix" id="sport_field">
+                        <label for="sport">Sport</label>
+                        <div class="input">
+                        <select class="form-control" id="sport" name="sport">
+                            <option class="blank" value="">-------- Choose a Sport --------</option>
+                            <option value="Basketball">Basketball</option>
+                            <option value="Ping Pong">Ping Pong</option>
+                        </select>
+                            <span class="help-inline"></span>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="hidden clearfix" id="position_field" >
                         <label for="position">Position</label>
                         <div class="input">
-
                         <select class="form-control" id="position" name="position">
                             <option class="blank" value="">-------- Choose a Position --------</option>
                             <option value="PG">PG</option>
