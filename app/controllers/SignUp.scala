@@ -67,7 +67,7 @@ object SignUp extends Controller with Helper {
            User.create(user)
            Team.update(team)
 
-           Ok(html.signup.summary(data)).withNewSession.flashing(
+           Ok(html.signup.summary(data)).discardingCookies(DiscardingCookie("team_name")).withNewSession.flashing(
              "success" -> "Your account has been created. Please login."
            )
          }.getOrElse {
