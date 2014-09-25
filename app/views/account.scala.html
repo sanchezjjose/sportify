@@ -47,20 +47,23 @@
                     '_error -> userForm.globalError
                 )
 
-                <dl id="position_field">
-                    <dt><label for="position">Position</label></dt>
-                    <dd>
-                    <select class="form-control" id="position" name="position">
-                        <!-- TODO: fix me, shows duplicates -->
-                        <option selected>@userForm("position").value</option>
-                        <option value="PG">PG</option>
-                        <option value="SG">SG</option>
-                        <option value="SF">SF</option>
-                        <option value="F">F</option>
-                        <option value="C">C</option>
-                    </select>
-                    </dd>
-                </dl>
+                <!-- TODO: use partial templates and render server side -->
+                @if(selectedTeam.sport.name == "Basketball") {
+                    <dl id="position_field">
+                        <dt><label for="position">Position</label></dt>
+                        <dd>
+                        <select class="form-control" id="position" name="position">
+                            <!-- TODO: fix me, shows duplicates -->
+                            <option selected>@userForm("position").value</option>
+                            <option value="PG">PG</option>
+                            <option value="SG">SG</option>
+                            <option value="SF">SF</option>
+                            <option value="F">F</option>
+                            <option value="C">C</option>
+                        </select>
+                        </dd>
+                    </dl>
+                }
 
                 <label>Admin?</label>
                 @if(isAdmin) {
