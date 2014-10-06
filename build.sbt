@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
   "javax.activation" % "activation" % "1.1",
   "javax.mail" % "mail" % "1.4",
   "com.google.oauth-client" % "google-oauth-client" % "1.17.0-rc",
-  "com.newrelic.agent.java" % "newrelic-agent" % "2.21.4"
+  "com.newrelic.agent.java" % "newrelic-agent" % "2.21.4",
+  "org.mindrot" % "jbcrypt" % "0.3m"
 )
 
 libraryDependencies += ws

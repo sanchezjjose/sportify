@@ -8,6 +8,7 @@ import views._
 
 
 case class UserForm (email: String,
+                     password: Option[String],
                      firstName: String,
                      lastName: String,
                      number: Int,
@@ -19,6 +20,7 @@ object Account extends Controller with Teams with Secured {
 	val userForm: Form[UserForm] = Form(
 		mapping(
       "email" -> email,
+      "password" -> optional(text),
 			"first_name" -> text,
 			"last_name" -> text,
 			"number" -> number,
@@ -37,6 +39,7 @@ object Account extends Controller with Teams with Secured {
     val user = User.loggedInUser
 
     val form = UserForm(email = user.email,
+                        password = user.password,
                         firstName = user.first_name,
                         lastName = user.last_name,
                         number = user.player.get.number,

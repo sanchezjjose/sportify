@@ -9,6 +9,7 @@ import views._
 
 
 case class PlayerData(email: String,
+                      password: String,
                       firstName: String,
                       lastName: String,
                       jerseyNumber: Int,
@@ -21,6 +22,7 @@ object SignUp extends Controller with Helper {
 	val signupForm: Form[PlayerData] = Form(
 		mapping(
       "email" -> email,
+      "password" -> nonEmptyText,
 			"first_name" -> nonEmptyText,
 			"last_name" -> nonEmptyText,
 			"number" -> number,
@@ -57,6 +59,7 @@ object SignUp extends Controller with Helper {
 
            val user = User(_id = generateRandomId(),
                            email = data.email,
+                           password = Some(data.password),
                            first_name = data.firstName,
                            last_name = data.lastName,
                            player = Some(player))

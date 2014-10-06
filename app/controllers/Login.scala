@@ -12,7 +12,7 @@ object Login extends Controller with Loggable with Config {
     tuple(
       "email" -> text,
       "password" -> text
-    ) verifying ("Invalid email or password. Hint: team name", result => result match {
+    ) verifying ("Invalid email or password.", result => result match {
       case (email, password) => User.authenticate(email, password).isDefined
     })
   )
