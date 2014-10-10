@@ -60,6 +60,11 @@ object Game {
     dbObject.map(o => grater[Game].asObject(o))
   }
 
+  def findByStartTime(startTime: String): Iterator[Game] = {
+    val dbObject = MongoManager.games.find(MongoDBObject("start_time" -> startTime))
+    dbObject.map(o => grater[Game].asObject(o))
+  }
+
   def findNextGame: Option[Game] = {
     findAll.filter(g =>
       DateTime.now().getMillis < gameDateFormat.parseDateTime(g.start_time).plusDays(1).getMillis

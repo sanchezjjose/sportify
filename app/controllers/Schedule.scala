@@ -128,6 +128,20 @@ object Schedule extends Controller with Helper with Loggable with Secured {
             // Add game to season and update
             season.game_ids += newGame._id
             Season.update(season)
+
+            // Also add the game to opponent's season if opponent has a team
+            Team.findByName(gameForm.opponent).map { opponentTeam =>
+              opponentTeam.season_ids.map { opponentSeasonId =>
+                Season.findById(opponentSeasonId).find(season => season.is_current_season).map { opponentSeason =>
+                  val tVm = buildTeamView
+                  val oppNewGame = gameForm.toNewGame(opponentSeasonId, isPlayoffGame.toBoolean).copy(opponent = tVm.current.name)
+                  Game.create(oppNewGame)
+
+                  opponentSeason.game_ids += oppNewGame._id
+                  Season.update(opponentSeason)
+                }
+              }
+            }
           }
 
           Redirect(routes.Schedule.schedule)
