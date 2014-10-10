@@ -1,8 +1,8 @@
-@(userForm: Form[UserForm], isAdmin: Boolean, selectedTeam: Team, otherTeams: Set[Team])(implicit flash: Flash)
+@(userForm: Form[UserForm], isAdmin: Boolean, tVm: TeamViewModel)(implicit user: User, flash: Flash)
 
 @import helper._
 
-@main(Html("Your Account Information."), nav = "", selectedTeam, otherTeams) {
+@main(Html("Your Account Information."), nav = "", tVm) {
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/account.css")">
 
@@ -55,7 +55,7 @@
                 )
 
                 <!-- TODO: use partial templates and render server side -->
-                @if(selectedTeam.sport.name == "Basketball") {
+                @if(tVm.current.sport.name == "Basketball") {
                     <dl id="position_field">
                         <dt><label for="position">Position</label></dt>
                         <dd>

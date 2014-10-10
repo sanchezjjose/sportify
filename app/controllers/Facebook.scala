@@ -7,6 +7,7 @@ import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.ws.WS
 import play.api.mvc._
+import scala.collection.mutable.{Set => MSet}
 
 
 object Facebook extends Controller with Secured with Loggable {
@@ -32,7 +33,7 @@ object Facebook extends Controller with Secured with Loggable {
       if (fbUserOpt.isDefined) {
         FacebookUser.updateAccessToken(access_token, user_id)
       } else {
-        FacebookUser.create(access_token, user_id, email, firstName, lastName, None)
+        FacebookUser.create(access_token, user_id, email, firstName, lastName, MSet.empty[Player])
       }
     }
 
@@ -59,10 +60,10 @@ object Facebook extends Controller with Secured with Loggable {
         "location" -> Seq(game.address + ", New York, New York"),
         "privacy_type" -> Seq("SECRET"))
 
-      WS.url(graphApiCreateEventBaseUrl + User.loggedInUser.facebook_user.get.access_token).post(data).map { response =>
+      WS.url(graphApiCreateEventBaseUrl + user.facebook_user.get.access_token).post(data).map { response =>
 
         log.debug("user.facebook_user.get.access_token[ %s ]".format(user.facebook_user.get.access_token))
-        log.debug("User.loggedInUser.facebook_user.get.access_token[ %s ]".format(User.loggedInUser.facebook_user.get.access_token))
+        log.debug("User.loggedInUser.facebook_user.get.access_token[ %s ]".format(user.facebook_user.get.access_token))
 
         // TODO: check response for error, and generate new access_token here if expired
         log.debug("response = " + response.json.toString())

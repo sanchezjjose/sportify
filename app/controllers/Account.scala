@@ -7,7 +7,8 @@ import play.api.mvc._
 import views._
 
 
-case class UserForm (email: String,
+case class UserForm (playerId: Long,
+                     email: String,
                      password: Option[String],
                      firstName: String,
                      lastName: String,
@@ -15,7 +16,10 @@ case class UserForm (email: String,
                      position: Option[String],
                      isAdmin: Boolean)
 
-object Account extends Controller with Teams with Secured {
+object Account extends Controller with Helper with Secured {
+
+  private var tVm: TeamViewModel = _
+  private var pVm: PlayerViewModel = _
 
 	val userForm: Form[UserForm] = Form(
 		mapping(
@@ -26,29 +30,38 @@ object Account extends Controller with Teams with Secured {
 			"number" -> number,
       "position" -> optional(nonEmptyText),
       "is_admin" -> boolean
-		)(UserForm.apply)(UserForm.unapply)
+		) {
+      // Data Binding
+      (email, password, firstName, lastName, number, position, isAdmin) =>
+        UserForm(pVm.id, email, password, firstName, lastName, number, position, isAdmin)
+    } {
+      // Data Unbinding
+      userForm =>
+        Some((userForm.email, userForm.password, userForm.firstName, userForm.lastName,
+              userForm.number, userForm.position, userForm.isAdmin))
+    }
 	)
 
-  /**
-   * NOTE ABOUT FLASH AND WHY 'implicit request' is needed here.
+  /*
+   * NOTE: why flash and 'implicit request' is needed here.
    * http://stackoverflow.com/questions/18560327/could-not-find-implicit-value-for-parameter-flash-play-api-mvc-flash
-   *
-   * @return
    */
-  def account = IsAuthenticated { user => implicit request =>
-    val user = User.loggedInUser
+  def account = IsAuthenticated { implicit user => implicit request =>
+    tVm = buildTeamView
+    pVm = buildPlayerView
 
-    val form = UserForm(email = user.email,
+    val form = UserForm(playerId = pVm.id,
+                        email = user.email,
                         password = user.password,
                         firstName = user.first_name,
                         lastName = user.last_name,
-                        number = user.player.get.number,
-                        position = user.player.get.position,
+                        number = pVm.number,
+                        position = pVm.position,
                         isAdmin = user.is_admin)
 
     val filledForm = userForm.fill(form)
 
-    Ok(views.html.account(filledForm, user.is_admin, getSelectedTeam(request), getOtherTeams(request)))
+    Ok(views.html.account(filledForm, user.is_admin, tVm))
   }
 
   def delete = IsAuthenticated { user => implicit request =>
@@ -59,24 +72,16 @@ object Account extends Controller with Teams with Secured {
     )
   }
 
-  def submit = IsAuthenticated { user => implicit request =>
+  def submit = IsAuthenticated { implicit user => implicit request =>
+    tVm = buildTeamView
+
     userForm.bindFromRequest.fold(
 
        // Form has errors, re-display it
-       errors => BadRequest(html.account(errors, user.is_admin, getSelectedTeam(request), getOtherTeams(request))),
+       errors => BadRequest(html.account(errors, user.is_admin, tVm)),
 
        userFormData => {
-         User.update(userFormData)
-
-         val player = User.loggedInUser.player.get
-         val updatedPlayer = player.copy(number = userFormData.number, position = userFormData.position)
-
-         val players = getSelectedTeam(request).players
-         players -= player
-         players += updatedPlayer
-
-         val updatedTeam = getSelectedTeam(request).copy(players = players)
-         Team.update(updatedTeam)
+         User.updatePlayer(userFormData)
 
          Redirect(routes.Account.account()).flashing(
             "success" -> "Your account information has been successfully updated."

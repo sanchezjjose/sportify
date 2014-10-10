@@ -1,8 +1,8 @@
-@(header: String, gameOpt: Option[Game], selectedTeam: Team, otherTeams: Set[Team], playersNeeded: Int)(implicit flash: Flash)
+@(header: String, gameOpt: Option[Game], playersIn: Iterable[User], playersOut: Iterable[User], tVm: TeamViewModel)(implicit user: User, flash: Flash)
 
 @import helper._
 
-@main(Html("Next Game."), nav = "home", selectedTeam, otherTeams) {
+@main(Html("Next Game."), nav = "home", tVm) {
 
   <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/home.css")">
   <script src="@routes.Assets.at("javascripts/index.js")" type="text/javascript"></script>
@@ -10,9 +10,9 @@
   @gameOpt.map { game =>
 
     <div class="message">
-      @if(game.players_in.size < playersNeeded) {
+      @if(game.players_in.size < tVm.current.playersRequired) {
         <div class="alert alert-danger">
-          <strong><center>@(playersNeeded - game.players_in.size) more player(s) needed for this weeks game!</center></strong>
+          <strong><center>@(tVm.current.playersRequired - game.players_in.size) more player(s) needed for this weeks game!</center></strong>
         </div>
       } else {
         @if(game.is_playoff_game == true) {
@@ -42,7 +42,7 @@
           <h3>Game @game.number</h3> <br>
 
           <div class="facebook-event">
-            @if(User.loggedInUser.facebook_user.isDefined) {
+            @if(user.facebook_user.isDefined) {
               <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a> <br><br>
             }
           </div>
@@ -52,7 +52,7 @@
               <a href="/game/rsvp?status=out&game_id=@game._id" class="btn btn-default">Out</a>
           </div>
 
-          <h4>@selectedTeam.name vs. @game.opponent</h4>
+          <h4>@tVm.current.name vs. @game.opponent</h4>
           @game.start_time <br><br>
 
           @game.address <br>
@@ -76,10 +76,8 @@
                 <tbody>
                 <tr>
                   <td class="playerName">
-                  @for(player <- game.players_in){
-                    @if(User.findByPlayerId(player.id).isDefined){
-                      &nbsp; @User.findByPlayerId(player.id).get.first_name @User.findByPlayerId(player.id).get.last_name.charAt(0). <br>
-                    }
+                  @for(player <- playersIn){
+                    &nbsp; @player.first_name @player.last_name.charAt(0). <br>
                   }
                   </td>
                 </tr>
@@ -97,10 +95,8 @@
                 <tbody>
                 <tr>
                   <td class="playerName">
-                    @for(player <- game.players_out){
-                      @if(User.findByPlayerId(player.id).isDefined){
-                        &nbsp; @User.findByPlayerId(player.id).get.first_name @User.findByPlayerId(player.id).get.last_name.charAt(0). <br>
-                      }
+                    @for(player <- playersOut){
+                      &nbsp; @player.first_name @player.last_name.charAt(0). <br>
                     }
                   </td>
                 </tr>
@@ -118,6 +114,10 @@
     </div>
 
   }.getOrElse {
-      NO SCHEDULED GAMES.
+    <div class="main">
+      <div class="next-game">
+        NO SCHEDULED GAMES.
+      </div>
+    </div>
   }
 }

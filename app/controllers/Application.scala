@@ -7,7 +7,7 @@ import play.api.mvc._
 object Application
   extends Controller
   with HomeEndpoints
-  with Teams
+  with Helper
   with Config
   with Secured
   with Loggable {
@@ -18,25 +18,31 @@ object Application
     Redirect(routes.Application.home())
   }
 
-  def home = IsAuthenticated { user => implicit request =>
-    val selectedTeam = getSelectedTeam(request)
-    val currentSeason = selectedTeam.season_ids.flatMap(Season.findById).find(_.is_current_season)
+  def home = IsAuthenticated { implicit user => implicit request =>
+    val tVm = buildTeamView
+    val currentSeason = tVm.current.season_ids.flatMap(Season.findById).find(_.is_current_season)
     val nextGameInSeason = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
+    val playersIn = nextGameInSeason.map(game => game.players_in.flatMap(id => User.findByPlayerId(id))).getOrElse(Set.empty[User])
+    val playersOut = nextGameInSeason.map(game => game.players_out.flatMap(id => User.findByPlayerId(id))).getOrElse(Set.empty[User])
 
-    Ok(views.html.index("Next Game", nextGameInSeason,
-      selectedTeam, getOtherTeams(request), selectedTeam.playersNeeded))
+    Ok(views.html.index("Next Game", nextGameInSeason, playersIn, playersOut, tVm))
   }
 
-  def roster = IsAuthenticated { user => implicit request =>
-    val selectedTeam = getSelectedTeam(request)
-    val users = selectedTeam.players.flatMap(player => User.findByPlayerId(player.id)).toList.sortBy(u => u.first_name)
+  def roster = IsAuthenticated { implicit user => implicit request =>
+    val tVm = buildTeamView
+    val pVm = buildPlayerViews.toList.sortBy(p => p.name)
 
-    Ok(views.html.roster(users, getSelectedTeam(request), getOtherTeams(request)))
+    Ok(views.html.roster(pVm, tVm))
   }
 
-  def news = IsAuthenticated { user => implicit request =>
+  def news = IsAuthenticated { implicit user => implicit request =>
+    val tVm = buildTeamView
 
-    Ok(views.html.news("News & Highlights", getSelectedTeam(request), getOtherTeams(request)))
+    Ok(views.html.news("News & Highlights", tVm))
+  }
+
+  def team(teamName: String) = IsAuthenticated { user => implicit request =>
+    Redirect(routes.Application.home()).withCookies(Cookie("team_name", teamName))
   }
 }
 

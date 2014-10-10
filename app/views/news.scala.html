@@ -1,8 +1,8 @@
-@(header: String, selectedTeam: Team, otherTeams: Set[Team])
+@(header: String, tVm: TeamViewModel)(implicit  user: User)
 
 @import helper._
 
-@main(Html("News & Highlights."), nav = "news", selectedTeam, otherTeams) {
+@main(Html("News & Highlights."), nav = "news", tVm) {
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/news.css")">
 

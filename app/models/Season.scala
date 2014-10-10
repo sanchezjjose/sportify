@@ -5,8 +5,7 @@ import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
 import controllers.MongoManager
 import models.CustomPlaySalatContext._
-import org.joda.time.DateTime
-import scala.collection.mutable.Set
+import scala.collection.mutable.{Set => MSet}
 
 /**
  * Model for a season. This can hold any value that represents a season for a sport.
@@ -18,7 +17,7 @@ import scala.collection.mutable.Set
  */
 case class Season (_id: Long,
                    title: String,
-                   game_ids: Set[Long],
+                   game_ids: MSet[Long],
                    is_current_season: Boolean)
 
 object Season {
@@ -29,10 +28,14 @@ object Season {
   implicit val seasonWrites: Writes[Season] = (
     (JsPath \ "_id").write[Long] and
     (JsPath \ "title").write[String] and
-    (JsPath \ "game_ids").write[Set[Long]] and
+    (JsPath \ "game_ids").write[MSet[Long]] and
     (JsPath \ "is_current_season").write[Boolean]
   )(unlift(Season.unapply))
 
+
+  /*
+   * MONGO API -- TODO: move to separate DB Trait
+   */
 
   def findById(id: Long): Option[Season] = {
     val dbObject = MongoManager.seasons.findOne(MongoDBObject("_id" -> id))

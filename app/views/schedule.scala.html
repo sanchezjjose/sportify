@@ -1,9 +1,9 @@
-@(gameForm: Form[GameForm], seasons: Option[Season], nextGame: Option[Game], games: List[Game], selectedTeam: Team, otherTeams: Set[Team])(user: User)(implicit flash: Flash)
+@(gameForm: Form[GameForm], seasons: Option[Season], nextGame: Option[Game], games: List[Game], tVm: TeamViewModel)(implicit user: User, flash: Flash)
 
 @import helper._
 @import controllers._
 
-@main(Html(seasons.map(_.title + " ").getOrElse("") + "Schedule."), nav = "schedule", selectedTeam, otherTeams) {
+@main(Html(seasons.map(_.title + " ").getOrElse("") + "Schedule."), nav = "schedule", tVm) {
 
 @seasons.map { season =>
 

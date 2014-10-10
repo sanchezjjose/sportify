@@ -7,20 +7,21 @@ import controllers.MongoManager
 import models.CustomPlaySalatContext._
 import scala.collection.mutable.{Set => MSet}
 
+
+case class TeamViewModel(current: Team, other: Iterable[Team])
+
 /**
  * Model of a team, which is made up of players and a specific sport.
  */
 case class Team (_id: Long,
                  name: String,
-                 players: MSet[Player],
+                 player_ids: MSet[Long],
                  season_ids: Set[Long],
                  sport: Sport) {
 
-  def playersNeeded: Int = {
-  // import Sport.Name._
-  // TODO: use enums below
+  def playersRequired: Int = {
 
-    sport.name match {
+    sport.name match { // TODO: use enums below
       case "Basketball" => 5
       case "Ping Pong" => 2
       case _ => sys.error("%s is not a supported sport at the moment".format(sport.name))
@@ -36,7 +37,7 @@ object Team {
   implicit val teamWrites: Writes[Team] = (
     (JsPath \ "_id").write[Long] and
     (JsPath \ "name").write[String] and
-    (JsPath \ "players").write[MSet[Player]] and
+    (JsPath \ "player_ids").write[MSet[Long]] and
     (JsPath \ "seasons").write[Set[Long]] and
     (JsPath \ "sport").write[Sport]
   )(unlift(Team.unapply))
@@ -48,6 +49,11 @@ object Team {
          currentSeason <- Season.findById(seasonId);
          nextGame <- Game.getNextGame(currentSeason.game_ids)) yield (team, nextGame)
   }
+
+
+  /*
+   * MONGO API -- TODO: move to separate DB Trait
+   */
 
   def findById(id: Long): Option[Team] = {
     val dbObject = MongoManager.teams.findOne( MongoDBObject("_id" -> id) )
@@ -62,6 +68,18 @@ object Team {
   def findAll: Set[Team] = {
     val dbObjects = MongoManager.teams.find().sort(MongoDBObject("_id" -> 1))
     (for (x <- dbObjects) yield grater[Team].asObject(x)).toSet[Team]
+  }
+
+  def findAllByPlayerId(playerId: Long): Iterator[Team] = {
+    val dbObject = MongoManager.teams.find( MongoDBObject("player_ids" -> playerId) )
+    dbObject.map(o => grater[Team].asObject(o))
+  }
+
+  def findAllByUser(user: User): Set[Team] = {
+    user.players.flatMap { player =>
+      val dbObject = MongoManager.teams.find( MongoDBObject("player_ids" -> player.id) )
+      dbObject.map(o => grater[Team].asObject(o))
+    }.toSet
   }
 
   def update(team: Team): Unit = {

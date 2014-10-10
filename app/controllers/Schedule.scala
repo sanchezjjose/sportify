@@ -9,28 +9,27 @@ import play.api.data.Forms.text
 import org.joda.time.DateTime
 
 
-object Schedule extends Controller with Teams with Loggable with Secured {
+object Schedule extends Controller with Helper with Loggable with Secured {
 
-  def schedule = IsAuthenticated { user => implicit request =>
-    val selectedTeam = getSelectedTeam(request)
-    val currentSeason = selectedTeam.season_ids.flatMap(Season.findById).find(_.is_current_season)
+  def schedule = IsAuthenticated { implicit user => implicit request =>
+    val tVm = buildTeamView
+    val currentSeason = tVm.current.season_ids.flatMap(Season.findById).find(_.is_current_season)
     val games = currentSeason.map(_.game_ids.flatMap(Game.findById).toList.sortBy(_.number)).getOrElse(List.empty[Game])
     val nextGameInSeason = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
 
-    Ok(views.html.schedule(gameForm, currentSeason, nextGameInSeason, games,
-        getSelectedTeam(request), getOtherTeams(request))(user))
+    Ok(views.html.schedule(gameForm, currentSeason, nextGameInSeason, games, tVm))
   }
 
-	def submit = Action { implicit request =>
+	def submit = IsAuthenticated { implicit user => implicit request =>
     val gameId = request.rawQueryString.split("=")(2).toInt
-    val game : Option[Game] = Game.findById(gameId)
-    lazy val user = User.loggedInUser
+    val game: Option[Game] = Game.findById(gameId)
+    val playerId = buildPlayerView.id
 
     if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
 
       // Add user to game.
-      game.get.players_in += user.player.get
-      game.get.players_out -= user.player.get
+      game.get.players_in += playerId
+      game.get.players_out -= playerId
       Game.update(game.get)
 
       Ok(Json.toJson(
@@ -42,8 +41,8 @@ object Schedule extends Controller with Teams with Loggable with Secured {
     } else {
 
       // Remove user from game.
-      game.get.players_in -= user.player.get
-      game.get.players_out += user.player.get
+      game.get.players_in -= playerId
+      game.get.players_out += playerId
       Game.update(game.get)
 
       Ok(Json.toJson(
@@ -88,16 +87,16 @@ object Schedule extends Controller with Teams with Loggable with Secured {
   )
 
   // TODO: move to Game controller
-  def changeRsvpStatus(game_id: Long, status: String) = Action {
+  def changeRsvpStatus(game_id: Long, status: String) = IsAuthenticated { implicit user => implicit request =>
     val game = Game.findById(game_id).get
-    val user = User.loggedInUser
+    val playerId = buildPlayerView.id
 
     if (status == "in") {
-      game.players_in += user.player.get
-      game.players_out -= user.player.get
+      game.players_in += playerId
+      game.players_out -= playerId
     } else if (status == "out") {
-      game.players_in -= user.player.get
-      game.players_out += user.player.get
+      game.players_in -= playerId
+      game.players_out += playerId
     }
 
     Game.update(game)
@@ -106,7 +105,7 @@ object Schedule extends Controller with Teams with Loggable with Secured {
   }
 
   // TODO: move to Game controller
-  def save(seasonId: Long, isPlayoffGame: String) = Action { implicit request =>
+  def save(seasonId: Long, isPlayoffGame: String) = IsAuthenticated { implicit user => implicit request =>
     gameForm.bindFromRequest.fold(
       errors => {
         log.error("There was a problem adding a new game", errors)
@@ -146,7 +145,7 @@ object Schedule extends Controller with Teams with Loggable with Secured {
   }
 
   // TODO: move to Game controller
-  def edit(gameId: Long) = IsAuthenticated { user => implicit request =>
+  def edit(gameId: Long) = IsAuthenticated { implicit user => implicit request =>
    val game = Game.findById(gameId).get
 
     Ok(Json.toJson(
@@ -164,7 +163,7 @@ object Schedule extends Controller with Teams with Loggable with Secured {
   }
 
   // TODO: move to Game controller
-  def update(gameId: Long, isPlayoffGame: String) = Action { implicit request =>
+  def update(gameId: Long, isPlayoffGame: String) = IsAuthenticated { implicit user => implicit request =>
     gameForm.bindFromRequest.fold(
       errors => {
         log.error(errors.toString)

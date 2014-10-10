@@ -12,8 +12,8 @@ object Login extends Controller with Loggable with Config {
     tuple(
       "email" -> text,
       "password" -> text
-    ) verifying ("Invalid email or password.", result => result match {
-      case (email, password) => User.authenticate(email, password).isDefined
+    ) verifying ("Invalid email or password.", _  match {
+      case (email: String, password: String) => User.authenticate(email, password).isDefined
     })
   )
 
@@ -63,27 +63,15 @@ trait Secured extends Loggable {
   /** 
    * Action for authenticated users.
    */
-  def IsAuthenticated(f: => User => Request[AnyContent] => Result) = Security.Authenticated(sessionKey, onUnauthorized) { key =>
+  def IsAuthenticated(f: => User => Request[AnyContent] => Result) = Security.Authenticated(sessionKey, onUnauthorized) { email =>
 
-    // First check by email
-    User.findByEmail(key).map { user =>
-      User.loggedInUser = user
+
+
+    // TODO: add to some sort of session to avoid hitting DB with each request
+    User.findByEmail(email).map { user =>
       Action(request => f(user)(request))
-
     }.getOrElse {
-
-      // Next check by facebook user_id
-      /*User.findByFacebookUserId(key.toLong).map { user =>
-        User.loggedInUser = user
-        Action(request => f(user)(request))
-
-      }*/
-        // TODO: remove me when Facebook login is added back
-        None.getOrElse {
-
-        // Finally return onAuthorized
-        Action(request => onUnauthorized(request))
-      }
+      Action(request => onUnauthorized(request))
     }
   }
 

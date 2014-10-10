@@ -8,7 +8,7 @@ import javax.mail.{PasswordAuthentication, _}
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import controllers.{Config, Environment, Loggable, MongoManager}
+import controllers._
 import models.CustomPlaySalatContext._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -28,8 +28,8 @@ class MailScheduler extends Loggable with Helper {
         log.info("checking for next game to create email messages...")
 
         Team.getNextGameByTeam.foreach { case (team, nextGame) =>
-          team.players.foreach { player =>
-            User.findByPlayerId(player.id).foreach { user =>
+          team.player_ids.foreach { playerId =>
+            User.findByPlayerId(playerId).foreach { user =>
               val sendAt = format.parseDateTime(nextGame.start_time).minusHours(20).getMillis
 
               // This is pretty bad. Look into how to use unique index on game id and recipient instead.
@@ -62,7 +62,7 @@ class MailScheduler extends Loggable with Helper {
    * TODO: create subscription model to represent emailable users.
    */
   private def shouldEmail(user: User): Boolean = {
-    user.email != "" &&
+    user.email.trim != "" &&
     user.email.toLowerCase != "irosa8621@yahoo.com"
   }
 }
@@ -97,7 +97,7 @@ class MailSender extends Loggable with Config {
 
       val shouldSendEmail = {
         (Config.environment == Environment.DEVELOPMENT && recipient == "***REMOVED***") ||
-          Config.environment == Environment.PRODUCTION
+         Config.environment == Environment.PRODUCTION
       }
 
       log.info("Should send email to %s? %s".format(recipient, shouldSendEmail))
@@ -105,8 +105,8 @@ class MailSender extends Loggable with Config {
       // Only send emails to me if in development
       if (shouldSendEmail) {
 
-        val playersIn = game.players_in.map { player =>
-          "- " + User.findByPlayerId(player.id).get.first_name
+        val playersIn = game.players_in.map { playerId =>
+          "- " + User.findByPlayerId(playerId).get.first_name
         }
 
         val html = views.html.email.reminderEmail(team, game, userId, playersIn).toString()
@@ -143,7 +143,7 @@ class MailSender extends Loggable with Config {
   }
 
   class SMTPAuthenticator extends javax.mail.Authenticator {
-    override def getPasswordAuthentication(): PasswordAuthentication = {
+    override def getPasswordAuthentication: PasswordAuthentication = {
 
       val username = SMTP_AUTH_USER
       val password = SMTP_AUTH_PWD

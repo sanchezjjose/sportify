@@ -5,6 +5,12 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
 
 
+case class PlayerViewModel(id: Long,
+                           name: String,
+                           number: Int,
+                           position: Option[String])
+
+
 /**
  * A player is a registered user who is a part of a team.
  */

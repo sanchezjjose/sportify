@@ -1,9 +1,9 @@
-@(users: List[User], selectedTeam: Team, otherTeams: Set[Team])
+@(pVms: List[PlayerViewModel], tVm: TeamViewModel)(implicit  user: User)
 
 @import helper._
 @import models._
 
-@main(Html("Roster."), nav = "roster", selectedTeam, otherTeams) {
+@main(Html("Roster."), nav = "roster", tVm) {
 
 <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/roster.css")">
 
@@ -22,11 +22,11 @@
                     <td>Position</td>
                 </tr>
             </header>
-            @for(user <- users) {
+            @for(pVm <- pVms) {
             <tr>
-                <td>@user.player.get.number</td>
-                <td>@user.first_name @user.last_name</td>
-                <td>@user.player.get.position</td>
+                <td>@pVm.number</td>
+                <td>@pVm.name</td>
+                <td>@pVm.position</td>
             </tr>
             }
             </tbody>

@@ -5,6 +5,7 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
 import views._
+import scala.collection.mutable.{Set => MSet}
 
 
 
@@ -54,17 +55,17 @@ object SignUp extends Controller with Helper {
          Team.findById(data.teamId).map { team =>
 
            val player = Player(id = generateRandomId(),
-               number = data.jerseyNumber,
-               position = data.position)
+                               number = data.jerseyNumber,
+                               position = data.position)
 
            val user = User(_id = generateRandomId(),
                            email = data.email,
                            password = Some(data.password),
                            first_name = data.firstName,
                            last_name = data.lastName,
-                           player = Some(player))
+                           players = MSet(player))
 
-           team.players += player
+           team.player_ids += player.id
 
            // Save user and add to team
            User.create(user)

@@ -2,13 +2,11 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+
 GET     /                                                             controllers.Application.index
 
-# Teams
-GET     /team/:team_name                                              controllers.Teams.switch(team_name: String)
+GET     /team/:team_name                                              controllers.Application.team(team_name: String)
 
-# Other
 GET     /account                                                      controllers.Account.account
 POST    /account/submit                                               controllers.Account.submit
 GET     /account/delete                                               controllers.Account.delete
@@ -16,9 +14,9 @@ GET     /account/delete                                               controller
 GET     /home                                                         controllers.Application.home
 GET     /home/facebook/event/:game_id                                 controllers.Facebook.createEvent(game_id: Int)
 
-GET     /roster          				  	                                  controllers.Application.roster
+GET     /roster          				  	                          controllers.Application.roster
 
-GET     /schedule 				                                            controllers.Schedule.schedule
+GET     /schedule 				                                      controllers.Schedule.schedule
 GET     /schedule/rsvp                                                controllers.Schedule.changeRsvpStatus(game_id: Long, status: String)
 GET     /schedule/submit                                              controllers.Schedule.submit
 POST    /schedule/save/:season_id/:is_playoff_game                    controllers.Schedule.save(season_id: Long, is_playoff_game: String)
@@ -26,7 +24,7 @@ POST    /schedule/update/:game_id/:is_playoff_game                    controller
 GET     /schedule/edit                                                controllers.Schedule.edit(game_id: Long)
 GET     /schedule/delete/:season_id/:game_id                          controllers.Schedule.delete(season_id: Long, game_id: Long)
 
-GET     /signup 				  	                                          controllers.SignUp.signup
+GET     /signup 				  	                                  controllers.SignUp.signup
 POST    /signup/submit                                                controllers.SignUp.submit
 
 GET     /login                                                        controllers.Login.login
@@ -38,11 +36,13 @@ GET     /news                                                         controller
 
 GET     /game/rsvp                                                    controllers.Application.changeRsvpStatus(game_id: Long, status: String)
 
-# Endpoints returning JSON
+
+# JSON ENPOINTS
 GET     /json/games                                                   controllers.Endpoints.games
 GET     /json/game/:id                                                controllers.Endpoints.game(id: Long)
 GET     /json/nextgame                                                controllers.Endpoints.nextgame
 GET     /json/users                                                   controllers.Endpoints.users
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -3,11 +3,12 @@ package models
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import controllers.{UserForm, MongoManager}
+import controllers.{Helper, UserForm, MongoManager}
 import models.CustomPlaySalatContext._
 import org.mindrot.jbcrypt.BCrypt
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
+import scala.collection.mutable.{Set => MSet}
 
 
 /**
@@ -19,7 +20,7 @@ case class User (_id: Long,
                  password: Option[String],
                  first_name: String,
                  last_name: String,
-                 player: Option[Player] = None,
+                 players: MSet[Player] = MSet.empty[Player],
                  facebook_user: Option[FacebookUser] = None,
                  is_admin: Boolean = false) {
 
@@ -28,13 +29,11 @@ case class User (_id: Long,
   }
 
   def fullName: String = {
-    "%s %s".format(first_name, last_name.charAt(0))
+    "%s %s".format(first_name, last_name)
   }
 }
 
 object User extends Helper {
-
-  var loggedInUser: User = _
 
   implicit val userWrites: Writes[User] = (
     (JsPath \ "_id").write[Long] and
@@ -42,7 +41,7 @@ object User extends Helper {
     (JsPath \ "password").write[Option[String]] and
     (JsPath \ "first_name").write[String] and
     (JsPath \ "last_name").write[String] and
-    (JsPath \ "player").write[Option[Player]] and
+    (JsPath \ "player").write[MSet[Player]] and
     (JsPath \ "facebook_user").write[Option[FacebookUser]] and
     (JsPath \ "is_admin").write[Boolean]
   )(unlift(User.unapply))
@@ -55,8 +54,9 @@ object User extends Helper {
     BCrypt.hashpw(password, BCrypt.gensalt())
   }
 
+
   /*
-   * MONGO API (TODO: move to separate DB Trait)
+   * MONGO API -- TODO: move to separate DB Trait
    */
 
   def findById(id: Long): Option[User] = {
@@ -80,7 +80,7 @@ object User extends Helper {
   }
 
   def findByPlayerId(id: Long): Option[User] = {
-    val dbObject = MongoManager.users.findOne( MongoDBObject("player.id" -> id) )
+    val dbObject = MongoManager.users.findOne( MongoDBObject("players.id" -> id) )
     dbObject.map(o => grater[User].asObject(o))
   }
 
@@ -97,28 +97,34 @@ object User extends Helper {
     MongoManager.users += dbo
   }
 
-  def create(email: Option[String], password: Option[String], firstName: String, lastName: Option[String], player: Option[Player], facebookUser: Option[FacebookUser]) = {
+  def create(email: Option[String], password: Option[String], firstName: String, lastName: Option[String], players: MSet[Player], facebookUser: Option[FacebookUser]) = {
     val id = if (facebookUser.isDefined) {
       facebookUser.get.user_id.toLong
     } else {
       generateRandomId()
     }
 
-    val user = User(id, email.getOrElse(""), password, firstName, lastName.getOrElse(""), player, facebookUser)
+    val user = User(id, email.getOrElse(""), password, firstName, lastName.getOrElse(""), players, facebookUser)
     val dbo = grater[User].asDBObject(user)
     password.map(_ => dbo.put("password", user.hashPassword))
 
     MongoManager.users += dbo
   }
 
-  def update(data: UserForm) = {
-    MongoManager.users.update(MongoDBObject("_id" -> User.loggedInUser._id),
+  def update(user: User, data: UserForm) = {
+    MongoManager.users.update(MongoDBObject("_id" -> user._id),
       $set("email" -> data.email,
-           "password" -> data.password.filter(_.trim != "").map(hashPassword).getOrElse(User.loggedInUser.password),
+           "password" -> data.password.filter(_.trim != "").map(hashPassword).getOrElse(user.password),
            "first_name" -> data.firstName,
-           "last_name" -> data.lastName,
-           "player.position" -> data.position,
-           "player.number" -> data.number)
+           "last_name" -> data.lastName)
+    )
+  }
+
+  def updatePlayer(data: UserForm) = {
+    MongoManager.users.update(MongoDBObject("player.id" -> data.playerId),
+      $set(
+        "player.position" -> data.position,
+        "player.number" -> data.number)
     )
   }
 
@@ -152,6 +158,10 @@ object FacebookUser {
   )(unlift(FacebookUser.unapply))
 
 
+  /*
+   * MONGO API -- TODO: move to separate DB Trait
+   */
+
   def findByAccessToken(access_token: String): Option[FacebookUser] = {
   	val dbObject = MongoManager.facebookAuths.findOne( MongoDBObject("access_token" -> access_token) )
   	dbObject.map( o => grater[FacebookUser].asObject(o) )
@@ -162,7 +172,7 @@ object FacebookUser {
     dbObject.map( o => grater[FacebookUser].asObject(o) )
   }
 
-  def create(access_token: String, user_id: String, email: Option[String], firstName: String, lastName: Option[String], player: Option[Player]) = {
+  def create(access_token: String, user_id: String, email: Option[String], firstName: String, lastName: Option[String], player: MSet[Player]) = {
   	val facebookUser = FacebookUser(access_token, user_id)
     val dbo = grater[FacebookUser].asDBObject(facebookUser)
     MongoManager.facebookAuths += dbo
