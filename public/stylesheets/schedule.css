@@ -15,6 +15,14 @@
   min-width: 65px;
 }
 
+.result {
+  color: red;
+}
+
+.result.win {
+  color: green;
+}
+
 .game-modal-dialog {
   position: fixed;
   font-family: Arial, Helvetica, sans-serif;
@@ -67,8 +75,8 @@
   box-shadow: 1px 1px 3px #000;
 }
 
-.close:hover { 
-  background: #00d9ff; 
+.close:hover {
+  background: #00d9ff;
 }
 
 .game-modal-dialog label {
@@ -115,12 +123,12 @@
   margin-bottom: 10px;
 }
 
-@media screen and (max-width: 640px) { 
+@media screen and (max-width: 640px) {
 
   .game-modal-dialog > div {
     width: 90%;
   }
-  
+
   .game-modal-dialog label {
     text-align: left;
     width: auto;

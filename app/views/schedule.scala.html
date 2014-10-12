@@ -56,11 +56,11 @@
                     <i>@game.gym</i> <br>
                     vs. @game.opponent <br>
                     <b>
-                        @if(game.result.contains("W")){
-                          <font color="green">@game.result</font>
-                        }else{
-                          <font color="red">@game.result</font>
-                        }
+                      @game.result.map { res =>
+                        <div class="result @if(res.contains('W')){win}">
+                          @res
+                        </div>
+                      }
                     </b>
 
                     @if(user.is_admin) {
@@ -110,11 +110,11 @@
                     <i>@game.gym</i> <br>
                     vs. @game.opponent <br>
                     <b>
-                        @if(game.result.contains("W")) {
-                          <font color="green">@game.result</font>
-                        }else {
-                          <font color="red">@game.result</font>
-                        }
+                      @game.result.map { res =>
+                        <div class="result @if(res.contains('W')){win}">
+                          @res
+                        </div>
+                      }
                     </b>
 
                     @if(user.is_admin) {
