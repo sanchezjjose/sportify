@@ -3,45 +3,46 @@
 # ~~~~
 
 
-GET     /                                                             controllers.Application.index
+GET     /                                                            controllers.Application.index
 
-GET     /team/:team_name                                              controllers.Application.team(team_name: String)
+# ACCOUNT
+GET     /account                                                     controllers.Account.account(team_id: Long)
+POST    /account/submit                                              controllers.Account.submit(team_id: Long)
+GET     /account/delete                                              controllers.Account.delete
 
-GET     /account                                                      controllers.Account.account
-POST    /account/submit                                               controllers.Account.submit
-GET     /account/delete                                               controllers.Account.delete
+# APPLICATION
+GET     /team/:teamId                                                controllers.Application.home(teamId: Long)
+GET     /team/:teamId/news                                           controllers.Application.news(teamId: Long)
+GET     /team/:teamId/game/rsvp                                      controllers.Application.changeRsvpStatus(teamId: Long, game_id: Long, status: String)
+GET     /team/:teamId/roster                                         controllers.Application.roster(teamId: Long)
 
-GET     /home                                                         controllers.Application.home
-GET     /home/facebook/event/:game_id                                 controllers.Facebook.createEvent(game_id: Int)
+# SCHEDULE
+GET     /team/:teamId/schedule                                       controllers.Schedule.schedule(teamId: Long)
+GET     /team/:teamId/schedule/rsvp                                  controllers.Schedule.changeRsvpStatus(teamId: Long, game_id: Long, status: String)
+GET     /team/:teamId/schedule/submit                                controllers.Schedule.submit(teamId: Long)
+POST    /team/:teamId/schedule/save/:season_id/:is_playoff_game      controllers.Schedule.save(teamId: Long, season_id: Long, is_playoff_game: String)
+POST    /team/:teamId/schedule/update/:game_id/:is_playoff_game      controllers.Schedule.update(teamId: Long, game_id: Long, is_playoff_game: String)
+GET     /team/:teamId/schedule/edit                                  controllers.Schedule.edit(teamId: Long, game_id: Long)
+GET     /team/:teamId/schedule/delete/:season_id/:game_id            controllers.Schedule.delete(teamId: Long, season_id: Long, game_id: Long)
 
-GET     /roster          				  	                          controllers.Application.roster
+# SIGNUP
+GET     /signup                                                      controllers.SignUp.signup
+POST    /signup/submit                                               controllers.SignUp.submit
 
-GET     /schedule 				                                      controllers.Schedule.schedule
-GET     /schedule/rsvp                                                controllers.Schedule.changeRsvpStatus(game_id: Long, status: String)
-GET     /schedule/submit                                              controllers.Schedule.submit
-POST    /schedule/save/:season_id/:is_playoff_game                    controllers.Schedule.save(season_id: Long, is_playoff_game: String)
-POST    /schedule/update/:game_id/:is_playoff_game                    controllers.Schedule.update(game_id: Long, is_playoff_game: String)
-GET     /schedule/edit                                                controllers.Schedule.edit(game_id: Long)
-GET     /schedule/delete/:season_id/:game_id                          controllers.Schedule.delete(season_id: Long, game_id: Long)
+# LOGIN
+GET     /login                                                       controllers.Login.login
+GET     /logout                                                      controllers.Login.logout
+POST    /login/submit                                                controllers.Login.authenticate
 
-GET     /signup 				  	                                  controllers.SignUp.signup
-POST    /signup/submit                                                controllers.SignUp.submit
-
-GET     /login                                                        controllers.Login.login
-GET     /logout                                                       controllers.Login.logout
-POST    /login/submit                                                 controllers.Login.authenticate
-GET     /login/facebook/:access_token/:user_id                        controllers.Facebook.authenticate(access_token, user_id)
-
-GET     /news                                                         controllers.Application.news
-
-GET     /game/rsvp                                                    controllers.Application.changeRsvpStatus(game_id: Long, status: String)
-
+# FACEBOOK
+GET     /login/facebook/:access_token/:user_id                       controllers.Facebook.authenticate(access_token, user_id)
+GET     /home/facebook/event/:game_id                                controllers.Facebook.createEvent(game_id: Int)
 
 # JSON ENPOINTS
-GET     /json/games                                                   controllers.Endpoints.games
-GET     /json/game/:id                                                controllers.Endpoints.game(id: Long)
-GET     /json/nextgame                                                controllers.Endpoints.nextgame
-GET     /json/users                                                   controllers.Endpoints.users
+GET     /json/games                                                  controllers.Endpoints.games
+GET     /json/game/:id                                               controllers.Endpoints.game(id: Long)
+GET     /json/nextgame                                               controllers.Endpoints.nextgame
+GET     /json/users                                                  controllers.Endpoints.users
 
 
 # Map static resources from the /public folder to the /assets URL path

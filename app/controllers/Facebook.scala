@@ -37,7 +37,8 @@ object Facebook extends Controller with Secured with Loggable {
       }
     }
 
-    Redirect(routes.Application.home).withSession("user_info" -> user_id)
+    // TODO: fix me when facebook login is implemented again
+    Redirect(routes.Application.home(123L)).withSession("user_info" -> user_id)
   }
 
   def createEvent(gameId: Int) = IsAuthenticated { user => _ =>
@@ -75,6 +76,7 @@ object Facebook extends Controller with Secured with Loggable {
       }
     }
 
-    Redirect(routes.Application.home).flashing("success" -> "You will be reminded by facebook 1 day prior to your next game!")
+    // TODO: fix me when facebook login is implemented again
+    Redirect(routes.Application.home(123L)).flashing("success" -> "You will be reminded by facebook 1 day prior to your next game!")
   }
 }

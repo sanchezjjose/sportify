@@ -14,7 +14,7 @@
     }
 
     <div class="main">
-        @helper.form(action = routes.Account.submit) {
+        @helper.form(action = routes.Account.submit(tVm.current._id)) {
 
             <fieldset>
                 <legend>Account Information</legend>

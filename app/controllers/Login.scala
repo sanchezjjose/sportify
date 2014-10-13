@@ -6,7 +6,7 @@ import play.api.data._
 import play.api.mvc._
 import views._
 
-object Login extends Controller with Loggable with Config {
+object Login extends Controller with Loggable with Helper with Config {
 
   val loginForm = Form(
     tuple(
@@ -30,7 +30,10 @@ object Login extends Controller with Loggable with Config {
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(html.login(formWithErrors)),
-      user => Redirect(routes.Application.home).withSession("user_info" -> user._1)
+      credentials => {
+        implicit val user = User.findByEmail(credentials._1).get
+        Redirect(routes.Application.home(buildTeamView.current._id)).withSession("user_info" -> user.email)
+      }
     )
   }
 

@@ -2,6 +2,7 @@ $(document).ready(function () {
 
   function init () {
     var seasonId = $('.season.regular').attr('id');
+    var teamId = $('.main').attr('id');
 
     // rsvp for a game
     $('.schedule > .btn').click(function (ev) {
@@ -31,7 +32,7 @@ $(document).ready(function () {
       // clear inputs
       $('form input').val("")
 
-      $('#new-game form').get(0).setAttribute('action', '/schedule/save/' + seasonId + '/' + isPlayoffs);
+      $('#new-game form').get(0).setAttribute('action', '/team/' + teamId + '/schedule/save/' + seasonId + '/' + isPlayoffs);
       $('#new-game form').get(0).setAttribute('method', 'post');
 
       // open modal
@@ -64,7 +65,7 @@ $(document).ready(function () {
           $(".opponent input").val(data.opponent);
           $(".result input").val(data.result);
 
-          $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + false);
+          $('#edit-game form').get(0).setAttribute('action', '/team/' + data.team_id + '/schedule/update/' + data.game_id + '/' + false);
           $('#edit-game form').get(0).setAttribute('method', 'post');
 
           // open and fill form
@@ -87,7 +88,7 @@ $(document).ready(function () {
           $(".opponent input").val(data.opponent);
           $(".result input").val(data.result);
 
-          $('#edit-game form').get(0).setAttribute('action', '/schedule/update/' + data.game_id + '/' + true);
+          $('#edit-game form').get(0).setAttribute('action', '/team/' + data.team_id + '/schedule/update/' + data.game_id + '/' + true);
           $('#edit-game form').get(0).setAttribute('method', 'post');
 
           // open and fill form
@@ -100,9 +101,9 @@ $(document).ready(function () {
   init();
 });
 
-function deleteGame(seasonId, gameId) {
+function deleteGame(teamId, seasonId, gameId) {
   var shouldDelete = confirm('Are you sure you want to delete this game?');
   if (shouldDelete) {
-    window.location = "/schedule/delete/" + seasonId + "/" + gameId;
+    window.location = "/team/" + teamId + "/schedule/delete/" + seasonId + "/" + gameId;
   }
 };

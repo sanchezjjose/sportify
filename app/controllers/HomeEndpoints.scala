@@ -1,14 +1,14 @@
 package controllers
 
 import models.Game
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Controller
 
 
 trait HomeEndpoints extends Controller with Secured with Helper {
 
-  def changeRsvpStatus(gameId: Long, status: String) = IsAuthenticated { implicit user => implicit request =>
+  def changeRsvpStatus(teamId: Long, gameId: Long, status: String) = IsAuthenticated { implicit user => implicit request =>
     val game = Game.findById(gameId).get
-    val playerId = buildPlayerView.id
+    val playerId = buildPlayerView(teamId).id
 
     if (request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
       game.players_in += playerId
@@ -20,6 +20,6 @@ trait HomeEndpoints extends Controller with Secured with Helper {
 
     Game.update(game)
 
-    Redirect(routes.Application.home)
+    Redirect(routes.Application.home(buildTeamView(teamId).current._id))
   }
 }

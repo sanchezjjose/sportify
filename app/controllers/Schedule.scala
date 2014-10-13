@@ -11,8 +11,8 @@ import org.joda.time.DateTime
 
 object Schedule extends Controller with Helper with Loggable with Secured {
 
-  def schedule = IsAuthenticated { implicit user => implicit request =>
-    val tVm = buildTeamView
+  def schedule(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
+    val tVm = buildTeamView(teamId)
     val currentSeason = tVm.current.season_ids.flatMap(Season.findById).find(_.is_current_season)
     val games = currentSeason.map(_.game_ids.flatMap(Game.findById).toList.sortBy(_.number)).getOrElse(List.empty[Game])
     val nextGameInSeason = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
@@ -20,10 +20,10 @@ object Schedule extends Controller with Helper with Loggable with Secured {
     Ok(views.html.schedule(gameForm, currentSeason, nextGameInSeason, games, tVm))
   }
 
-	def submit = IsAuthenticated { implicit user => implicit request =>
+	def submit(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
     val gameId = request.rawQueryString.split("=")(2).toInt
     val game: Option[Game] = Game.findById(gameId)
-    val playerId = buildPlayerView.id
+    val playerId = buildPlayerView(teamId).id
 
     if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
 
@@ -87,9 +87,9 @@ object Schedule extends Controller with Helper with Loggable with Secured {
   )
 
   // TODO: move to Game controller
-  def changeRsvpStatus(game_id: Long, status: String) = IsAuthenticated { implicit user => implicit request =>
+  def changeRsvpStatus(teamId: Long, game_id: Long, status: String) = IsAuthenticated { implicit user => implicit request =>
     val game = Game.findById(game_id).get
-    val playerId = buildPlayerView.id
+    val playerId = buildPlayerView(teamId).id
 
     if (status == "in") {
       game.players_in += playerId
@@ -101,16 +101,16 @@ object Schedule extends Controller with Helper with Loggable with Secured {
 
     Game.update(game)
 
-    Redirect(routes.Application.home)
+    Redirect(routes.Application.home(buildTeamView(teamId).current._id))
   }
 
   // TODO: move to Game controller
-  def save(seasonId: Long, isPlayoffGame: String) = IsAuthenticated { implicit user => implicit request =>
+  def save(teamId: Long, seasonId: Long, isPlayoffGame: String) = IsAuthenticated { implicit user => implicit request =>
     gameForm.bindFromRequest.fold(
       errors => {
         log.error("There was a problem adding a new game", errors)
 
-        Redirect(routes.Schedule.schedule).flashing(
+        Redirect(routes.Schedule.schedule(teamId)).flashing(
         "failure" -> "There was a problem with adding a new game."
       )},
 
@@ -133,7 +133,7 @@ object Schedule extends Controller with Helper with Loggable with Secured {
             Team.findByName(gameForm.opponent).map { opponentTeam =>
               opponentTeam.season_ids.map { opponentSeasonId =>
                 Season.findById(opponentSeasonId).find(season => season.is_current_season).map { opponentSeason =>
-                  val tVm = buildTeamView
+                  val tVm = buildTeamView(teamId)
                   val oppNewGame = gameForm.toNewGame(opponentSeasonId, isPlayoffGame.toBoolean).copy(opponent = tVm.current.name)
                   Game.create(oppNewGame)
 
@@ -144,12 +144,12 @@ object Schedule extends Controller with Helper with Loggable with Secured {
             }
           }
 
-          Redirect(routes.Schedule.schedule)
+          Redirect(routes.Schedule.schedule(teamId))
         } catch {
           case e: Exception => {
             log.error("There was a problem with adding a new game", e)
 
-            Redirect(routes.Schedule.schedule).flashing(
+            Redirect(routes.Schedule.schedule(teamId)).flashing(
               "failure" -> "There was a problem with adding a new game. Make sure the date format is correct."
             )
           }
@@ -159,12 +159,13 @@ object Schedule extends Controller with Helper with Loggable with Secured {
   }
 
   // TODO: move to Game controller
-  def edit(gameId: Long) = IsAuthenticated { implicit user => implicit request =>
+  def edit(teamId: Long, gameId: Long) = IsAuthenticated { implicit user => implicit request =>
    val game = Game.findById(gameId).get
 
     Ok(Json.toJson(
       Map(
-        "game_id" -> Json.toJson(game._id),
+        "team_id" -> Json.toJson(teamId),
+        "game_id" -> Json.toJson(gameId),
         "number" -> Json.toJson(game.number),
         "start_time" -> Json.toJson(game.start_time),
         "address" -> Json.toJson(game.address),
@@ -177,12 +178,12 @@ object Schedule extends Controller with Helper with Loggable with Secured {
   }
 
   // TODO: move to Game controller
-  def update(gameId: Long, isPlayoffGame: String) = IsAuthenticated { implicit user => implicit request =>
+  def update(teamId: Long, gameId: Long, isPlayoffGame: String) = IsAuthenticated { implicit user => implicit request =>
     gameForm.bindFromRequest.fold(
       errors => {
         log.error(errors.toString)
 
-        Redirect(routes.Schedule.schedule).flashing(
+        Redirect(routes.Schedule.schedule(teamId)).flashing(
           "failure" -> "There was a problem with adding a new game."
         )},
 
@@ -195,12 +196,12 @@ object Schedule extends Controller with Helper with Loggable with Secured {
 
           Game.update(game)
 
-          Redirect(routes.Schedule.schedule)
+          Redirect(routes.Schedule.schedule(teamId))
         } catch {
           case e: Exception => {
             log.error("There was a problem with adding a new game", e)
 
-            Redirect(routes.Schedule.schedule).flashing(
+            Redirect(routes.Schedule.schedule(teamId)).flashing(
               "failure" -> "There was a problem with adding a new game. Make sure the date format is correct."
             )
           }
@@ -210,7 +211,7 @@ object Schedule extends Controller with Helper with Loggable with Secured {
   }
 
   // TODO: move to Game controller
-  def delete(seasonId: Long, gameId: Long) = IsAuthenticated { user => implicit request =>
+  def delete(teamId: Long, seasonId: Long, gameId: Long) = IsAuthenticated { user => implicit request =>
     val season = Season.findById(seasonId).get
 
     // remove from season first
@@ -220,6 +221,6 @@ object Schedule extends Controller with Helper with Loggable with Secured {
     // remove game
     Game.remove(gameId)
 
-    Redirect(routes.Schedule.schedule)
+    Redirect(routes.Schedule.schedule(teamId))
   }
 }

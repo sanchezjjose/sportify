@@ -15,11 +15,11 @@
   min-width: 65px;
 }
 
-.result {
+.season .result {
   color: red;
 }
 
-.result.win {
+.season .result.win {
   color: green;
 }
 

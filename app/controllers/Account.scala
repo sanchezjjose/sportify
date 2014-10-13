@@ -46,9 +46,9 @@ object Account extends Controller with Helper with Secured {
    * NOTE: why flash and 'implicit request' is needed here.
    * http://stackoverflow.com/questions/18560327/could-not-find-implicit-value-for-parameter-flash-play-api-mvc-flash
    */
-  def account = IsAuthenticated { implicit user => implicit request =>
-    tVm = buildTeamView
-    pVm = buildPlayerView
+  def account(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
+    tVm = buildTeamView(teamId)
+    pVm = buildPlayerView(teamId)
 
     val form = UserForm(playerId = pVm.id,
                         email = user.email,
@@ -72,8 +72,8 @@ object Account extends Controller with Helper with Secured {
     )
   }
 
-  def submit = IsAuthenticated { implicit user => implicit request =>
-    tVm = buildTeamView
+  def submit(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
+    tVm = buildTeamView(teamId)
 
     userForm.bindFromRequest.fold(
 
@@ -81,9 +81,10 @@ object Account extends Controller with Helper with Secured {
        errors => BadRequest(html.account(errors, user.is_admin, tVm)),
 
        userFormData => {
-         User.updatePlayer(userFormData)
+         User.update(user, userFormData)
+         User.updatePlayer(user, userFormData)
 
-         Redirect(routes.Account.account()).flashing(
+         Redirect(routes.Account.account(teamId)).flashing(
             "success" -> "Your account information has been successfully updated."
          )
        }

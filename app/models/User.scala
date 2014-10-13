@@ -120,11 +120,11 @@ object User extends Helper {
     )
   }
 
-  def updatePlayer(data: UserForm) = {
-    MongoManager.users.update(MongoDBObject("player.id" -> data.playerId),
+  def updatePlayer(user: User, data: UserForm) = {
+    MongoManager.users.update(MongoDBObject("_id" -> user._id, "players.id" -> data.playerId),
       $set(
-        "player.position" -> data.position,
-        "player.number" -> data.number)
+        "players.$.position" -> data.position,
+        "players.$.number" -> data.number)
     )
   }
 
