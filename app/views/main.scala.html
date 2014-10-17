@@ -3,7 +3,7 @@
 @import controllers._
 
 <!DOCTYPE html>
-<html lang="en" class="@tVm.current.sport.name.toLowerCase.trim.replace(' ','-')">
+<html lang="en">
     <head>
         <meta name="viewport" content="width=device-width, user-scalable=0, initial-scale=1.0">
         <title>@title</title>
@@ -16,6 +16,14 @@
         <script src="@routes.Assets.at("javascripts/main.js")" type="text/javascript"></script>
     </head>
     <body>
+
+      @if(tVm.current.sport.name == "Basketball") {
+        <img src="@routes.Assets.at("images/nyc-court.jpg")" class="bg basketball">
+      }
+      @if(tVm.current.sport.name == "Ping Pong") {
+        <img src="@routes.Assets.at("images/ping-pong-balls.jpg")" class="bg ping-pong">
+      }
+
       <nav class="navbar-inverse navbar-default" role="navigation">
         <div class="container">
           <div class="navbar-header">

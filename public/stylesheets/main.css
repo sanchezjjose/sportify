@@ -1,20 +1,21 @@
-html {
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-}
+img.bg {
+  /* Set rules to fill background */
+  min-height: 100%;
+  min-width: 1280px;
 
-html.basketball {
-  background: url(/assets/images/nyc-court.jpg) no-repeat center center fixed;
-}
+  /* Set up proportionate scaling */
+  width: 100%;
+  height: auto;
 
-html.ping-pong {
-  background: url(/assets/images/ping-pong-2.jpg) no-repeat center center fixed;
+  /* Set up positioning */
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  z-index: -1;
 }
 
 body {
-  background: none;
   padding-bottom: 20px;
 }
 
@@ -95,6 +96,13 @@ body {
     overflow: hidden;
     font-size: auto;
     white-space:nowrap;
+  }
+}
+
+@media screen and (max-width: 1280px) { /* Specific to this particular image */
+  img.ping-pong {
+    left: 50%;
+    margin-left: -640px;   /* 50% */
   }
 }
 
