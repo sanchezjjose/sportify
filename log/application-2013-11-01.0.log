@@ -225,8 +225,8 @@ Application started (Dev)
 Application started (Dev)
 
 2013-11-01 14:27:34,925 - [ERROR] - from play.core.ActionInvoker in play-akka.actor.default-dispatcher-10 
-Read operation to server ***REMOVED***/54.226.71.234:***REMOVED*** failed on database ***REMOVED***
-com.mongodb.MongoException$Network: Read operation to server ***REMOVED***/54.226.71.234:***REMOVED*** failed on database ***REMOVED***
+Read operation to server paulo.mongohq.com/54.226.71.234:10048 failed on database app18602579
+com.mongodb.MongoException$Network: Read operation to server paulo.mongohq.com/54.226.71.234:10048 failed on database app18602579
 	at com.mongodb.DBTCPConnector.innerCall(DBTCPConnector.java:253) ~[mongo-java-driver-2.11.2.jar:na]
 	at com.mongodb.DBTCPConnector.call(DBTCPConnector.java:216) ~[mongo-java-driver-2.11.2.jar:na]
 	at com.mongodb.DBApiLayer$MyCollection.__find(DBApiLayer.java:288) ~[mongo-java-driver-2.11.2.jar:na]
@@ -272,8 +272,8 @@ Caused by: java.net.SocketException: Connection reset
 	... 29 common frames omitted
 
 2013-11-01 14:27:34,933 - [ERROR] - from akka.routing.RouterConfig$$anon$1 in play-akka.actor.default-dispatcher-10 
-Read operation to server ***REMOVED***/54.226.71.234:***REMOVED*** failed on database ***REMOVED***
-com.mongodb.MongoException$Network: Read operation to server ***REMOVED***/54.226.71.234:***REMOVED*** failed on database ***REMOVED***
+Read operation to server paulo.mongohq.com/54.226.71.234:10048 failed on database app18602579
+com.mongodb.MongoException$Network: Read operation to server paulo.mongohq.com/54.226.71.234:10048 failed on database app18602579
 	at com.mongodb.DBTCPConnector.innerCall(DBTCPConnector.java:253) ~[mongo-java-driver-2.11.2.jar:na]
 	at com.mongodb.DBTCPConnector.call(DBTCPConnector.java:216) ~[mongo-java-driver-2.11.2.jar:na]
 	at com.mongodb.DBApiLayer$MyCollection.__find(DBApiLayer.java:288) ~[mongo-java-driver-2.11.2.jar:na]

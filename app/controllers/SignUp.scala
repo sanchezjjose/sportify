@@ -15,6 +15,7 @@ case class PlayerData(email: String,
                       lastName: String,
                       jerseyNumber: Int,
                       position: Option[String],
+                      phoneNumber: Option[String],
                       teamId: Long)
 
 
@@ -28,6 +29,7 @@ object SignUp extends Controller with Helper {
 			"last_name" -> nonEmptyText,
 			"number" -> number,
       "position" -> optional(text),
+      "phone_number" -> optional(text),
       "team_id" -> longNumber
 		)(PlayerData.apply)(PlayerData.unapply)
 	)
@@ -63,7 +65,8 @@ object SignUp extends Controller with Helper {
                            password = Some(data.password),
                            first_name = data.firstName,
                            last_name = data.lastName,
-                           players = MSet(player))
+                           players = MSet(player),
+                           phone_number = data.phoneNumber)
 
            team.player_ids += player.id
 

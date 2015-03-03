@@ -9,7 +9,7 @@ object MongoManager extends Config with Loggable {
 
   // Setup
   val mongoConn = MongoClient(new MongoClientURI(Config.mongoUrl))
-  val dbName = "***REMOVED***"
+  val dbName = "app18602579"
 
   // Collections
   val users = mongoConn(dbName)("users")

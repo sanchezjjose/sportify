@@ -308,8 +308,8 @@ Application started (Dev)
 Cannot invoke the action, eventually got an error: Thrown(akka.pattern.AskTimeoutException: Timed out)
 
 2013-11-02 20:51:42,616 - [ERROR] - from play.core.ActionInvoker in play-akka.actor.default-dispatcher-9 
-Read operation to server ***REMOVED***/54.226.71.234:***REMOVED*** failed on database ***REMOVED***
-com.mongodb.MongoException$Network: Read operation to server ***REMOVED***/54.226.71.234:***REMOVED*** failed on database ***REMOVED***
+Read operation to server paulo.mongohq.com/54.226.71.234:10048 failed on database app18602579
+com.mongodb.MongoException$Network: Read operation to server paulo.mongohq.com/54.226.71.234:10048 failed on database app18602579
 	at com.mongodb.DBTCPConnector.innerCall(DBTCPConnector.java:253) ~[mongo-java-driver-2.11.2.jar:na]
 	at com.mongodb.DBTCPConnector.call(DBTCPConnector.java:216) ~[mongo-java-driver-2.11.2.jar:na]
 	at com.mongodb.DBApiLayer$MyCollection.__find(DBApiLayer.java:288) ~[mongo-java-driver-2.11.2.jar:na]
@@ -356,8 +356,8 @@ Caused by: java.net.SocketException: Operation timed out
 	... 29 common frames omitted
 
 2013-11-02 20:51:42,617 - [ERROR] - from akka.routing.RouterConfig$$anon$1 in play-akka.actor.default-dispatcher-9 
-Read operation to server ***REMOVED***/54.226.71.234:***REMOVED*** failed on database ***REMOVED***
-com.mongodb.MongoException$Network: Read operation to server ***REMOVED***/54.226.71.234:***REMOVED*** failed on database ***REMOVED***
+Read operation to server paulo.mongohq.com/54.226.71.234:10048 failed on database app18602579
+com.mongodb.MongoException$Network: Read operation to server paulo.mongohq.com/54.226.71.234:10048 failed on database app18602579
 	at com.mongodb.DBTCPConnector.innerCall(DBTCPConnector.java:253) ~[mongo-java-driver-2.11.2.jar:na]
 	at com.mongodb.DBTCPConnector.call(DBTCPConnector.java:216) ~[mongo-java-driver-2.11.2.jar:na]
 	at com.mongodb.DBApiLayer$MyCollection.__find(DBApiLayer.java:288) ~[mongo-java-driver-2.11.2.jar:na]

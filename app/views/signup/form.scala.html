@@ -60,6 +60,13 @@
                     )
 
                     @inputText(
+                        signupForm("phone_number"),
+                        '_label -> "Phone Number",
+                        '_help -> "This will only be used by our team if we need to contact each other.",
+                        '_error -> signupForm.globalError
+                    )
+
+                    @inputText(
                         signupForm("team_id"),
                         '_label -> "Team ID",
                         '_help -> "If you don't have a team id, please request it from your team captain.",
