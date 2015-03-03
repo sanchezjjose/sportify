@@ -13,6 +13,7 @@ case class UserForm (playerId: Long,
                      firstName: String,
                      lastName: String,
                      number: Int,
+                     phoneNumber: Option[String],
                      position: Option[String],
                      isAdmin: Boolean)
 
@@ -28,17 +29,18 @@ object Account extends Controller with Helper with Secured {
 			"first_name" -> text,
 			"last_name" -> text,
 			"number" -> number,
+			"phone_number" -> optional(text),
       "position" -> optional(nonEmptyText),
       "is_admin" -> boolean
 		) {
       // Data Binding
-      (email, password, firstName, lastName, number, position, isAdmin) =>
-        UserForm(pVm.id, email, password, firstName, lastName, number, position, isAdmin)
+      (email, password, firstName, lastName, number, phoneNumber, position, isAdmin) =>
+        UserForm(pVm.id, email, password, firstName, lastName, number, phoneNumber, position, isAdmin)
     } {
       // Data Unbinding
       userForm =>
         Some((userForm.email, userForm.password, userForm.firstName, userForm.lastName,
-              userForm.number, userForm.position, userForm.isAdmin))
+              userForm.number, userForm.phoneNumber, userForm.position, userForm.isAdmin))
     }
 	)
 
@@ -56,6 +58,7 @@ object Account extends Controller with Helper with Secured {
                         firstName = user.first_name,
                         lastName = user.last_name,
                         number = pVm.number,
+                        phoneNumber = pVm.phoneNumber,
                         position = pVm.position,
                         isAdmin = user.is_admin)
 

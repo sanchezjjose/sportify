@@ -1,3 +1,30 @@
+
+// http://appendto.com/2010/10/how-good-c-habits-can-encourage-bad-javascript-habits-part-1/
+(function( Sportify, $, undefined ) {
+
+    //Private Property
+    var isHot = true;
+
+    //Public Property
+    Sportify.user = "Bacon Strips";
+
+    //Public Method
+    Sportify.fry = function() {
+        var oliveOil;
+
+        addItem( "\t\n Butter \n\t" );
+        addItem( oliveOil );
+        console.log( "Frying " + Sportify.ingredient );
+    };
+
+    //Private Method
+    function addItem( item ) {
+        if ( item !== undefined ) {
+            console.log( "Adding " + $.trim(item) );
+        }
+    }
+}( window.Sportify = window.Sportify || {}, jQuery ));
+
 // window.fbAsyncInit = function() {
 
 //   FB.init({

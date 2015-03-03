@@ -54,6 +54,13 @@
                     '_error -> userForm.globalError
                 )
 
+                @inputText(
+                userForm("phone_number"),
+                  '_label -> "Phone Number",
+                  '_help -> "",
+                  '_error -> userForm.globalError
+                )
+
                 <!-- TODO: use partial templates and render server side -->
                 @if(tVm.current.sport.name == "Basketball") {
                     <dl id="position_field">

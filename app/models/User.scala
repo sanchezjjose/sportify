@@ -22,7 +22,8 @@ case class User (_id: Long,
                  last_name: String,
                  players: MSet[Player] = MSet.empty[Player],
                  facebook_user: Option[FacebookUser] = None,
-                 is_admin: Boolean = false) {
+                 is_admin: Boolean = false,
+                 phone_number: Option[String] = None) {
 
   def hashPassword: String = {
     User.hashPassword(password.get)
@@ -43,7 +44,8 @@ object User extends Helper {
     (JsPath \ "last_name").write[String] and
     (JsPath \ "player").write[MSet[Player]] and
     (JsPath \ "facebook_user").write[Option[FacebookUser]] and
-    (JsPath \ "is_admin").write[Boolean]
+    (JsPath \ "is_admin").write[Boolean] and
+    (JsPath \ "phone_number").write[Option[String]]
   )(unlift(User.unapply))
 
   def authenticate(email: String, password: String): Option[User] = {
@@ -116,7 +118,8 @@ object User extends Helper {
       $set("email" -> data.email,
            "password" -> data.password.filter(_.trim != "").map(hashPassword).getOrElse(user.password),
            "first_name" -> data.firstName,
-           "last_name" -> data.lastName)
+           "last_name" -> data.lastName,
+           "phone_number" -> data.phoneNumber)
     )
   }
 

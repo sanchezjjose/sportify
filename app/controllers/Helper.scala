@@ -10,7 +10,7 @@ trait Helper {
 
   private[controllers]
   def buildTeamView(implicit user: User, request: Request[AnyContent]): TeamViewModel = {
-    val teams = Team.findAllByUser(user)
+    val teams = Team.findAllByUser(user).toList.sortBy(_.sport.name) // TODO: this should be either last visited or user preference
 
     TeamViewModel(teams.head, teams.tail)
   }
@@ -30,7 +30,7 @@ trait Helper {
          user <- User.findByPlayerId(playerId);
          player <- user.players.find(_.id == playerId)) yield {
 
-      PlayerViewModel(player.id, user.fullName, player.number, player.position)
+      PlayerViewModel(player.id, user.fullName, player.number, user.phone_number, player.position)
     }).toSet
   }
 
