@@ -7,17 +7,18 @@ trait Config {
 }
 
 object Config extends Config {
-  lazy val msg = config.getString("msg").getOrElse("We're good to go. Let's get this W!")
-  lazy val emailMsg = config.getString("email-msg").getOrElse("Are you ready!? Let's get this W!")
-  lazy val mongoUrl = config.getString("mongo_url").get
-  lazy val environment = config.getString("environment").get
-  lazy val fbAppId = config.getString("facebook_app_id").get
-  lazy val fbAppSecret = config.getString("facebook_app_secret").get
-  lazy val sendGridUsername = config.getString("sendgrid_username").get
-  lazy val sendGridPassword = config.getString("sendgrid_password").get
-  lazy val sendGridHost = config.getString("sendgrid_host").get
-  lazy val fromEmail = config.getString("from_email").get
-  lazy val testEmail = config.getString("test_email").get
+  val msg = config.getString("msg").getOrElse("We're good to go. Let's get this W!")
+  val emailMsg = config.getString("email-msg").getOrElse("Are you ready!? Let's get this W!")
+  val mongoUrl = config.getString("mongo_url").get
+  val dbName = config.getString("db_name").get
+  val environment = config.getString("environment").get
+  val fbAppId = config.getString("facebook_app_id").get
+  val fbAppSecret = config.getString("facebook_app_secret").get
+  val sendGridUsername = config.getString("sendgrid_username").get
+  val sendGridPassword = config.getString("sendgrid_password").get
+  val sendGridHost = config.getString("sendgrid_host").get
+  val fromEmail = config.getString("from_email").get
+  val testEmail = config.getString("test_email").get
 }
 
 object Environment {
