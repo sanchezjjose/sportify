@@ -1,3 +1,5 @@
+conf/application.conf
+conf/application.dev.conf
 log
 log/application.log
 log/*

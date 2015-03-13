@@ -62,8 +62,7 @@ class MailScheduler extends Loggable with Helper {
    * TODO: create subscription model to represent emailable users.
    */
   private def shouldEmail(user: User): Boolean = {
-    user.email.trim != "" &&
-    user.email.toLowerCase != "irosa8621@yahoo.com"
+    user.email.trim != ""
   }
 }
 
@@ -72,9 +71,9 @@ class MailScheduler extends Loggable with Helper {
  */
 class MailSender extends Loggable with Config {
 
-  private val SMTP_HOST_NAME = "smtp.sendgrid.net";
-  private val SMTP_AUTH_USER = System.getenv("SENDGRID_USERNAME");
-  private val SMTP_AUTH_PWD  = System.getenv("SENDGRID_PASSWORD");
+  private val SMTP_HOST_NAME = Config.sendGridHost;
+  private val SMTP_AUTH_USER = Config.sendGridUsername;
+  private val SMTP_AUTH_PWD  = Config.sendGridPassword;
 
   def sendNextGameReminderEmail(emailMessage: EmailMessage, team: Team, game: Game) {
 
@@ -96,7 +95,7 @@ class MailSender extends Loggable with Config {
       val recipient = emailMessage.recipient
 
       val shouldSendEmail = {
-        (Config.environment == Environment.DEVELOPMENT && recipient == "***REMOVED***") ||
+        (Config.environment == Environment.DEVELOPMENT && recipient == Config.testEmail) ||
          Config.environment == Environment.PRODUCTION
       }
 
@@ -117,7 +116,7 @@ class MailSender extends Loggable with Config {
         multipart.addBodyPart(part)
 
         message.setContent(multipart)
-        message.setFrom(new InternetAddress("sportify@email.heroku.com"))
+        message.setFrom(new InternetAddress(Config.fromEmail))
         message.setSubject("You have an upcoming game on " + game.start_time)
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient))
 
