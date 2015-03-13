@@ -6,7 +6,7 @@
 { "_id" : "a679de07-993d-446e-a345-3178fc28e0dd", "email" : "bthomas@gilt.com", "firstName" : "Bernard", "lastName" : "Thomas", "number" : 30, "password" : "giltunit", "position" : "C" }
 { "_id" : "b4aa904b-9fa3-4153-848d-4e8bf1ce6f66", "email" : "mporter@gilt.com", "firstName" : "Marshall", "lastName" : "Porter", "number" : 10, "password" : "giltunit", "position" : "SG" }
 { "_id" : "bf711225-fcb9-4f31-8a2e-01af20dadd7c", "email" : "ahodge@gilt.com", "firstName" : "AJ", "lastName" : "Hodge", "number" : 87, "position" : "F", "password" : "giltunit" }
-{ "_id" : "c37bc3a0-8362-4a5a-993b-0d0162b0ac7c", "email" : "***REMOVED***", "firstName" : "Jose", "lastName" : "Sanchez", "number" : 20, "position" : "SG", "isAdmin" : true, "password" : "giltunit" }
+{ "_id" : "c37bc3a0-8362-4a5a-993b-0d0162b0ac7c", "email" : "jsanchez@gilt.com", "firstName" : "Jose", "lastName" : "Sanchez", "number" : 20, "position" : "SG", "isAdmin" : true, "password" : "giltunit" }
 { "_id" : "de047939-bfe9-4e91-a781-8d9d39d40ea0", "email" : "tfisher@gilt.com", "firstName" : "Tymour", "lastName" : "Fisher", "number" : 6, "position" : "SF", "password" : "giltunit" }
 { "_id" : "f6e43981-d740-4f42-9cf2-b4239c6e22a4", "email" : "kvanasse@gilt.com", "firstName" : "Kevin", "lastName" : "Vanasse", "number" : 0, "position" : "F", "password" : "giltunit" }
 { "_id" : "ff5ee25d-325e-4b47-9c37-97d492a52e50", "email" : "mherrero@gilt.com", "firstName" : "Michael", "lastName" : "Herrero", "number" : 24, "position" : "PG", "password" : "giltunit", "isAdmin" : true }
