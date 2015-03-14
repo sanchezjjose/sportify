@@ -1,2 +1,4 @@
-.target/
-db_backups/
+/log
+/.settings
+/.target
+/db_backups
