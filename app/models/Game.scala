@@ -4,7 +4,7 @@ import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
 import models.CustomPlaySalatContext._
-import controllers.{Helper, MongoManager, Loggable}
+import controllers.{MongoManagerFactory, Helper, MongoManager, Loggable}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import scala.collection.mutable.{Set => MSet}
@@ -55,13 +55,15 @@ object Game {
    * MONGO API -- TODO: move to separate DB Trait
    */
 
+  private val mongoManager = MongoManagerFactory.instance
+
   def findById(id: Long): Option[Game] = {
-    val dbObject = MongoManager.games.findOne(MongoDBObject("_id" -> id))
+    val dbObject = mongoManager.games.findOne(MongoDBObject("_id" -> id))
     dbObject.map(o => grater[Game].asObject(o))
   }
 
   def findByStartTime(startTime: String): Iterator[Game] = {
-    val dbObject = MongoManager.games.find(MongoDBObject("start_time" -> startTime))
+    val dbObject = mongoManager.games.find(MongoDBObject("start_time" -> startTime))
     dbObject.map(o => grater[Game].asObject(o))
   }
 
@@ -72,7 +74,7 @@ object Game {
   }
 
   def findAll: Iterator[Game] = {
-    val dbObjects = MongoManager.games.find().sort(MongoDBObject("_id" -> 1))
+    val dbObjects = mongoManager.games.find().sort(MongoDBObject("_id" -> 1))
     for (x <- dbObjects) yield grater[Game].asObject(x)
   }
 
@@ -88,16 +90,16 @@ object Game {
 
   def create(game: Game): Unit = {
     val dbo = grater[Game].asDBObject(game)
-    MongoManager.games += dbo
+    mongoManager.games += dbo
   }
 
   def remove(id: Long): Unit = {
-    MongoManager.games.remove(MongoDBObject("_id" -> id))
+    mongoManager.games.remove(MongoDBObject("_id" -> id))
   }
 
   def update(game: Game): Unit = {
     val dbo = grater[Game].asDBObject(game)
-    MongoManager.games.update(MongoDBObject("_id" -> game._id), dbo)
+    mongoManager.games.update(MongoDBObject("_id" -> game._id), dbo)
   }
 }
 

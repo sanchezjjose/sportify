@@ -3,7 +3,7 @@ package models
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import controllers.MongoManager
+import controllers.{MongoManagerFactory, MongoManager}
 import models.CustomPlaySalatContext._
 import scala.collection.mutable.{Set => MSet}
 
@@ -55,36 +55,38 @@ object Team {
    * MONGO API -- TODO: move to separate DB Trait
    */
 
+  private val mongoManager = MongoManagerFactory.instance
+
   def findById(id: Long): Option[Team] = {
-    val dbObject = MongoManager.teams.findOne( MongoDBObject("_id" -> id) )
+    val dbObject = mongoManager.teams.findOne( MongoDBObject("_id" -> id) )
     dbObject.map(o => grater[Team].asObject(o))
   }
 
   def findByName(name: String): Option[Team] = {
-    val dbObject = MongoManager.teams.findOne( MongoDBObject("name" -> name) )
+    val dbObject = mongoManager.teams.findOne( MongoDBObject("name" -> name) )
     dbObject.map(o => grater[Team].asObject(o))
   }
 
   def findAll: Set[Team] = {
-    val dbObjects = MongoManager.teams.find().sort(MongoDBObject("_id" -> 1))
+    val dbObjects = mongoManager.teams.find().sort(MongoDBObject("_id" -> 1))
     (for (x <- dbObjects) yield grater[Team].asObject(x)).toSet[Team]
   }
 
   def findAllByPlayerId(playerId: Long): Iterator[Team] = {
-    val dbObject = MongoManager.teams.find( MongoDBObject("player_ids" -> playerId) )
+    val dbObject = mongoManager.teams.find( MongoDBObject("player_ids" -> playerId) )
     dbObject.map(o => grater[Team].asObject(o))
   }
 
   def findAllByUser(user: User): Set[Team] = {
     user.players.flatMap { player =>
-      val dbObject = MongoManager.teams.find( MongoDBObject("player_ids" -> player.id) )
+      val dbObject = mongoManager.teams.find( MongoDBObject("player_ids" -> player.id) )
       dbObject.map(o => grater[Team].asObject(o))
     }.toSet
   }
 
   def update(team: Team): Unit = {
     val dbo = grater[Team].asDBObject(team)
-    MongoManager.teams.update(MongoDBObject("_id" -> team._id), dbo)
+    mongoManager.teams.update(MongoDBObject("_id" -> team._id), dbo)
   }
 
 }

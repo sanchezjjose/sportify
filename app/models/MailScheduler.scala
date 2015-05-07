@@ -130,23 +130,25 @@ case class EmailMessage(_id: Long,
 
 object EmailMessage {
 
+  private val mongoManager = MongoManagerFactory.instance
+
   def insert(message: EmailMessage) = {
     val dbo = grater[EmailMessage].asDBObject(message)
-    MongoManager.emailMessages += dbo
+    mongoManager.emailMessages += dbo
   }
 
   def findByGameId(game_id: Int): Option[EmailMessage] = {
-    val dbObject = MongoManager.emailMessages.findOne(MongoDBObject("game_id" -> game_id))
+    val dbObject = mongoManager.emailMessages.findOne(MongoDBObject("game_id" -> game_id))
     dbObject.map(o => grater[EmailMessage].asObject(o))
   }
 
   def findByGameIdAndRecipient(game_id: Long, recipient: String): Option[EmailMessage] = {
-    val dbObject = MongoManager.emailMessages.findOne(MongoDBObject("game_id" -> game_id, "recipient" -> recipient))
+    val dbObject = mongoManager.emailMessages.findOne(MongoDBObject("game_id" -> game_id, "recipient" -> recipient))
     dbObject.map(o => grater[EmailMessage].asObject(o))
   }
 
   def findUnsent(game_id: Long): Iterator[EmailMessage] = {
-    val dbObjects = MongoManager.emailMessages.find(
+    val dbObjects = mongoManager.emailMessages.find(
       MongoDBObject("game_id" -> game_id,
                     "status" -> "unsent",
                     "send_at" -> MongoDBObject("$lt" -> DateTime.now().getMillis),
@@ -156,7 +158,7 @@ object EmailMessage {
   }
 
   def markAsSent(message: EmailMessage) = {
-    MongoManager.emailMessages.update(MongoDBObject("_id" -> message._id),
+    mongoManager.emailMessages.update(MongoDBObject("_id" -> message._id),
       $set("sent_at" -> Some(DateTime.now().getMillis),
         "status" -> "sent"
       )
@@ -164,7 +166,7 @@ object EmailMessage {
   }
 
   def updateNumAttempts(message: EmailMessage) = {
-    MongoManager.emailMessages.update(MongoDBObject("_id" -> message._id),
+    mongoManager.emailMessages.update(MongoDBObject("_id" -> message._id),
       $set("num_attempts" -> (message.num_attempts + 1))
     )
   }

@@ -3,7 +3,7 @@ package models
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import controllers.MongoManager
+import controllers.{MongoManagerFactory, MongoManager}
 import models.CustomPlaySalatContext._
 import scala.collection.mutable.{Set => MSet}
 
@@ -37,8 +37,10 @@ object Season {
    * MONGO API -- TODO: move to separate DB Trait
    */
 
+  private val mongoManager = MongoManagerFactory.instance
+
   def findById(id: Long): Option[Season] = {
-    val dbObject = MongoManager.seasons.findOne(MongoDBObject("_id" -> id))
+    val dbObject = mongoManager.seasons.findOne(MongoDBObject("_id" -> id))
     dbObject.map(o => grater[Season].asObject(o))
   }
 
@@ -48,6 +50,6 @@ object Season {
 
   def update(season: Season): Unit = {
     val dbo = grater[Season].asDBObject(season)
-    MongoManager.seasons.update(MongoDBObject("_id" -> season._id), dbo)
+    mongoManager.seasons.update(MongoDBObject("_id" -> season._id), dbo)
   }
 }

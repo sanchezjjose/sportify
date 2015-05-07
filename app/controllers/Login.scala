@@ -68,7 +68,7 @@ trait Secured extends Loggable {
    */
   def IsAuthenticated(f: => User => Request[AnyContent] => Result) = Security.Authenticated(sessionKey, onUnauthorized) { email =>
 
-
+    println(email)
 
     // TODO: add to some sort of session to avoid hitting DB with each request
     User.findByEmail(email).map { user =>

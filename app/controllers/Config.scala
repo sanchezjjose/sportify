@@ -16,7 +16,6 @@ object Config extends Config {
   val fbAppSecret = config.getString("facebook_app_secret").get
   val sendGridUsername = config.getString("sendgrid_username").get
   val sendGridPassword = config.getString("sendgrid_password").get
-  val sendGridHost = config.getString("sendgrid_host").get
   val fromEmail = config.getString("from_email").get
   val testEmail = config.getString("test_email").get
 }
