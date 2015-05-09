@@ -1,5 +1,5 @@
 
-import models.MailScheduler
+import com.sportify.jobs.MailScheduler
 import play.api.{Application, GlobalSettings, Logger}
 
 object Global extends GlobalSettings {

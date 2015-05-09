@@ -1,22 +1,17 @@
 package controllers
 
-import models._
-import org.slf4j.LoggerFactory
-import play.api.mvc._
+import models.{Game, Season, Team, User}
+import play.api.mvc.Controller
+import utils.Helper
 
-object Application
-  extends Controller
-  with HomeEndpoints
-  with Helper
-  with Config
+
+object Homepage extends Controller
   with Secured
-  with Loggable {
-
-  val logger = LoggerFactory.getLogger(getClass.getName)
+  with Helper {
 
   def index = IsAuthenticated { implicit user => implicit request =>
     val tVm = buildTeamView
-    Redirect(routes.Application.home(tVm.current._id))
+    Redirect(routes.Homepage.home(tVm.current._id))
   }
 
   def home(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
@@ -29,20 +24,20 @@ object Application
     Ok(views.html.index("Next Game", nextGameInSeason, playersIn, playersOut, tVm))
   }
 
-  def roster(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
-    val tVm = buildTeamView(teamId)
-    val pVm = buildPlayerViews(teamId).toList.sortBy(p => p.name)
+  def changeRsvpStatus(teamId: Long, gameId: Long, status: String) = IsAuthenticated { implicit user => implicit request =>
+    val game = Game.findById(gameId).get
+    val playerId = buildPlayerView(teamId).id
 
-    Ok(views.html.roster(pVm, tVm))
-  }
+    if (request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
+      game.players_in += playerId
+      game.players_out -= playerId
+    } else {
+      game.players_in -= playerId
+      game.players_out += playerId
+    }
 
-  def news(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
-    val tVm = buildTeamView(teamId)
+    Game.update(game)
 
-    Ok(views.html.news("News & Highlights", tVm))
+    Redirect(routes.Homepage.home(buildTeamView(teamId).current._id))
   }
 }
-
-
-
-

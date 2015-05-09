@@ -1,4 +1,4 @@
-package controllers
+package utils
 
 import models._
 import play.api.mvc._
@@ -8,14 +8,12 @@ import scala.util.Random
 
 trait Helper {
 
-  private[controllers]
   def buildTeamView(implicit user: User, request: Request[AnyContent]): TeamViewModel = {
     val teams = Team.findAllByUser(user).toList.sortBy(_.sport.name) // TODO: this should be either last visited or user preference
 
     TeamViewModel(teams.head, teams.tail)
   }
 
-  private[controllers]
   def buildTeamView(teamId: Long)(implicit user: User, request: Request[AnyContent]): TeamViewModel = {
     val teams = Team.findAllByUser(user)
 
@@ -24,7 +22,6 @@ trait Helper {
     }.get
   }
 
-  private[controllers]
   def buildPlayerViews(teamId: Long)(implicit user: User, request: Request[AnyContent]): Set[PlayerViewModel] = {
     (for(playerId <- buildTeamView(teamId).current.player_ids;
          user <- User.findByPlayerId(playerId);

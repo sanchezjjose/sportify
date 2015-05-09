@@ -1,4 +1,4 @@
-package models
+package utils
 
 import com.novus.salat.Context
 import play.api.Play

@@ -1,4 +1,4 @@
-package controllers
+package com.sportify.config
 
 import play.api.Play.current
 

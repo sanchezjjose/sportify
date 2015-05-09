@@ -3,8 +3,10 @@ package models
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import controllers.{MongoManagerFactory, MongoManager}
-import models.CustomPlaySalatContext._
+import com.sportify.db.MongoManagerFactory
+import utils.CustomPlaySalatContext
+import CustomPlaySalatContext._
+
 import scala.collection.mutable.{Set => MSet}
 
 

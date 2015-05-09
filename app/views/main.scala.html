@@ -35,7 +35,7 @@
               <span class="icon-bar"></span>
             </button>
             @if(tVm.other.size == 0){
-              <a class="navbar-brand" href="@routes.Application.home(tVm.current._id)">
+              <a class="navbar-brand" href="@routes.Homepage.home(tVm.current._id)">
                 @tVm.current.name
               </a>
             } else {
@@ -51,7 +51,7 @@
                   </a>
                   <ul class="dropdown-menu">
                     @for(team <- tVm.other){
-                      <li><a href="@routes.Application.home(team._id)">@team.name</a></li>
+                      <li><a href="@routes.Homepage.home(team._id)">@team.name</a></li>
                     }
                   </ul>
                 </li>
@@ -61,13 +61,13 @@
           <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav">
               <li class="@("active".when(nav == "home"))">
-              <a href="@routes.Application.home(tVm.current._id)">Home</a>
+              <a href="@routes.Homepage.home(tVm.current._id)">Home</a>
               </li>
               <li class="@("active".when(nav == "schedule"))">
               <a href="@routes.Schedule.schedule(tVm.current._id)">Schedule</a>
               </li>
               <li class="@("active".when(nav == "roster"))">
-              <a href="@routes.Application.roster(tVm.current._id)">Roster</a>
+              <a href="@routes.Roster.roster(tVm.current._id)">Roster</a>
               </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">

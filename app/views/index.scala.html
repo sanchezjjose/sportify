@@ -1,6 +1,7 @@
 @(header: String, gameOpt: Option[Game], playersIn: Iterable[User], playersOut: Iterable[User], tVm: TeamViewModel)(implicit user: User, flash: Flash)
 
 @import helper._
+@import com.sportify.config.Config
 
 @main(Html("Next Game."), nav = "home", tVm) {
 
@@ -40,12 +41,6 @@
       <div class="next-game">
 
           <h3>Game @game.number</h3> <br>
-
-          <div class="facebook-event">
-            @if(user.facebook_user.isDefined) {
-              <a class="btn btn-primary" id="create-fb-event" class="btn">Create Facebook Event</a> <br><br>
-            }
-          </div>
 
           <div class="game-rsvp">
               <a href="/team/@tVm.current._id/game/rsvp?status=in&game_id=@game._id" class="btn btn-primary">In</a>

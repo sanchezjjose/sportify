@@ -1,12 +1,13 @@
-package controllers
+package com.sportify.db
 
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.MongoClient
 import com.mongodb.casbah.commons.MongoDBObject
-import controllers.MongoManagerFactory._
+import com.sportify.config.Config
+import utils.Loggable
 
 
-class MongoManager(dbName: String, mongoUrl: String) {
+class MongoManager(dbName: String, mongoUrl: String) extends Loggable {
 
   val mongoConn = MongoClient(new MongoClientURI(Config.mongoUrl))
 

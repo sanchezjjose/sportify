@@ -7,6 +7,7 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.data.Forms.text
 import org.joda.time.DateTime
+import utils.{Loggable, Helper}
 
 
 object Schedule extends Controller with Helper with Loggable with Secured {
@@ -17,7 +18,10 @@ object Schedule extends Controller with Helper with Loggable with Secured {
     val games = currentSeason.map(_.game_ids.flatMap(Game.findById).toList.sortBy(_.number)).getOrElse(List.empty[Game])
     val nextGameInSeason = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
 
-    Ok(views.html.schedule(gameForm, currentSeason, nextGameInSeason, games, tVm))
+    render {
+      case Accepts.Html() => Ok(views.html.schedule(gameForm, currentSeason, nextGameInSeason, games, tVm))
+      case Accepts.Json() => Ok(Json.toJson("{\"game_id\":1}"))
+    }
   }
 
 	def submit(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
@@ -101,7 +105,7 @@ object Schedule extends Controller with Helper with Loggable with Secured {
 
     Game.update(game)
 
-    Redirect(routes.Application.home(buildTeamView(teamId).current._id))
+    Redirect(routes.Homepage.home(buildTeamView(teamId).current._id))
   }
 
   // TODO: move to Game controller

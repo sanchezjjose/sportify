@@ -1,8 +1,10 @@
 package controllers
 
+import com.sportify.config.Config
 import models.{Game, User}
 import play.api.libs.json._
 import play.api.mvc._
+import utils.Loggable
 
 object Endpoints extends Controller with Config with Secured with Loggable {
 

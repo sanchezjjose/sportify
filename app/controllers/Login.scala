@@ -1,9 +1,11 @@
 package controllers
 
+import com.sportify.config.Config
 import models._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
+import utils.{Loggable, Helper}
 import views._
 
 object Login extends Controller with Loggable with Helper with Config {
@@ -32,7 +34,7 @@ object Login extends Controller with Loggable with Helper with Config {
       formWithErrors => BadRequest(html.login(formWithErrors)),
       credentials => {
         implicit val user = User.findByEmail(credentials._1).get
-        Redirect(routes.Application.home(buildTeamView.current._id)).withSession("user_info" -> user.email)
+        Redirect(routes.Homepage.home(buildTeamView.current._id)).withSession("user_info" -> user.email)
       }
     )
   }
@@ -68,8 +70,6 @@ trait Secured extends Loggable {
    */
   def IsAuthenticated(f: => User => Request[AnyContent] => Result) = Security.Authenticated(sessionKey, onUnauthorized) { email =>
 
-    println(email)
-
     // TODO: add to some sort of session to avoid hitting DB with each request
     User.findByEmail(email).map { user =>
       Action(request => f(user)(request))
@@ -77,5 +77,4 @@ trait Secured extends Loggable {
       Action(request => onUnauthorized(request))
     }
   }
-
 }

@@ -3,10 +3,12 @@ package models
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
-import models.CustomPlaySalatContext._
-import controllers.{MongoManagerFactory, Helper, MongoManager, Loggable}
+import com.sportify.db.MongoManagerFactory
+import utils.{CustomPlaySalatContext, Loggable, Helper}
+import CustomPlaySalatContext._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
+import utils.{Loggable, Helper}
 import scala.collection.mutable.{Set => MSet}
 
 
