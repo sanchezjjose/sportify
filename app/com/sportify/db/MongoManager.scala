@@ -7,9 +7,11 @@ import com.sportify.config.Config
 import utils.Loggable
 
 
-class MongoManager(dbName: String, mongoUrl: String) extends Loggable {
+class MongoManager extends Loggable {
 
-  val mongoConn = MongoClient(new MongoClientURI(Config.mongoUrl))
+  val dbName = Config.dbName
+  val mongoUrl = Config.mongoUrl
+  val mongoConn = MongoClient(new MongoClientURI(mongoUrl))
 
   // Collections
   lazy val users = mongoConn(dbName)("users")
@@ -28,5 +30,5 @@ class MongoManager(dbName: String, mongoUrl: String) extends Loggable {
 
 object MongoManagerFactory extends Loggable {
 
-  def instance: MongoManager = new MongoManager(Config.dbName, Config.mongoUrl)
+  lazy val instance: MongoManager = new MongoManager
 }

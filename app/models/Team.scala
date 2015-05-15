@@ -4,6 +4,8 @@ import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
 import com.sportify.db.MongoManagerFactory
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Writes}
 import utils.CustomPlaySalatContext
 import CustomPlaySalatContext._
 
@@ -11,6 +13,14 @@ import scala.collection.mutable.{Set => MSet}
 
 
 case class TeamViewModel(current: Team, other: Iterable[Team])
+
+object TeamViewModel {
+
+  implicit val tvmWrites: Writes[TeamViewModel] = (
+    (JsPath \ "current").write[Team] and
+      (JsPath \ "other").write[Iterable[Team]]
+    )(unlift(TeamViewModel.unapply))
+}
 
 /**
  * Model of a team, which is made up of players and a specific sport.

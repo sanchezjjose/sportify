@@ -16,19 +16,9 @@ object Roster extends Controller
     val tVm = buildTeamView(teamId)
     val pVm = buildPlayerViews(teamId).toList.sortBy(p => p.name)
 
-
-    Ok(views.html.roster(pVm, tVm))
-
-//    render {
-//      case Accepts.Html() => Ok(views.html.roster(pVm, tVm))
-//      case Accepts.Json() => Ok(Json.toJson(pVm))
-//    }
+    render {
+      case Accepts.Html() => Ok(views.html.roster(pVm, tVm))
+      case Accepts.Json() => Ok(Json.toJson(tVm))
+    }
   }
-
-//  def rosterApi(teamId: Long) = Action { implicit request =>
-//    val tVm = buildTeamView(teamId)
-//    val pVm = buildPlayerViews(teamId).toList.sortBy(p => p.name)
-//
-//    Ok(Json.toJson(tVm, pVm))
-//  }
 }

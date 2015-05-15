@@ -14,7 +14,7 @@ class EmailClient extends Loggable with Config {
 
    private val sendGrid = new SendGrid(SMTP_AUTH_USER, SMTP_AUTH_PWD)
 
-   def sendNextGameReminderEmail(emailMessage: EmailMessage, team: Team, game: Game) {
+   def sendNextGameReminder(emailMessage: EmailMessage, team: Team, game: Game) {
 
      try {
        val recipient = emailMessage.recipient

@@ -21,20 +21,18 @@ class MailScheduler extends Loggable with Helper {
       def run() {
         log.info("checking for next game to create email messages...")
 
-        Team.getNextGameByTeam.foreach {
+        Team.getNextGameByTeam.foreach { case (team, nextGame) =>
+          team.player_ids.foreach { playerId =>
+            User.findByPlayerId(playerId).foreach { user =>
+              val sendAt = format.parseDateTime(nextGame.start_time).minusHours(20).getMillis
 
-          case (team, nextGame) =>
-            team.player_ids.foreach { playerId =>
-              User.findByPlayerId(playerId).foreach { user =>
-                val sendAt = format.parseDateTime(nextGame.start_time).minusHours(20).getMillis
-
-                // This is pretty bad. Look into how to use unique index on game id and recipient instead.
-                if (!EmailMessage.findByGameIdAndRecipient(nextGame._id, user.email).isDefined) {
-                  val newMessage = EmailMessage(generateRandomId(), user._id, nextGame._id, sendAt, None, 0, user.email)
-                  EmailMessage.insert(newMessage)
-                }
+              // This is pretty bad. Look into how to use unique index on game id and recipient instead.
+              if (!EmailMessage.findByGameIdAndRecipient(nextGame._id, user.email).isDefined) {
+                val newMessage = EmailMessage(generateRandomId(), user._id, nextGame._id, sendAt, None, 0, user.email)
+                EmailMessage.insert(newMessage)
               }
             }
+          }
         }
       }
     }, 0, 2, TimeUnit.HOURS)
@@ -48,7 +46,7 @@ class MailScheduler extends Loggable with Helper {
 
         Team.getNextGameByTeam.foreach { case (team, nextGame) =>
           EmailMessage.findUnsent(nextGame._id).foreach { message =>
-            new EmailClient().sendNextGameReminderEmail(message, team, nextGame)
+            new EmailClient().sendNextGameReminder(message, team, nextGame)
           }
         }
       }
