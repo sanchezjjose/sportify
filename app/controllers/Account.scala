@@ -4,6 +4,7 @@ import models._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
+import play.api.libs.json.Json
 import utils.Helper
 import views._
 
@@ -64,8 +65,11 @@ object Account extends Controller with Helper with Secured {
                         isAdmin = user.is_admin)
 
     val filledForm = userForm.fill(form)
-
-    Ok(views.html.account(filledForm, user.is_admin, tVm))
+   
+    render {
+      case Accepts.Html() => Ok(views.html.account(filledForm, user.is_admin, tVm))
+      case Accepts.Json() => Ok(Json.toJson(tVm))
+    }
   }
 
   def delete = IsAuthenticated { user => implicit request =>

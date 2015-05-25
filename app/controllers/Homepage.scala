@@ -2,6 +2,7 @@ package controllers
 
 import models.{Game, Season, Team, User}
 import play.api.mvc.Controller
+import play.api.libs.json.Json
 import utils.Helper
 
 
@@ -21,7 +22,10 @@ object Homepage extends Controller
     val playersIn = nextGameInSeason.map(game => game.players_in.flatMap(id => User.findByPlayerId(id))).getOrElse(Set.empty[User])
     val playersOut = nextGameInSeason.map(game => game.players_out.flatMap(id => User.findByPlayerId(id))).getOrElse(Set.empty[User])
 
-    Ok(views.html.index("Next Game", nextGameInSeason, playersIn, playersOut, tVm))
+    render {
+      case Accepts.Html() => Ok(views.html.index("Next Game", nextGameInSeason, playersIn, playersOut, tVm))
+      case Accepts.Json() => Ok(Json.toJson(tVm))
+    }
   }
 
   def changeRsvpStatus(teamId: Long, gameId: Long, status: String) = IsAuthenticated { implicit user => implicit request =>

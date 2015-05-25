@@ -20,7 +20,7 @@ object Schedule extends Controller with Helper with Loggable with Secured {
 
     render {
       case Accepts.Html() => Ok(views.html.schedule(gameForm, currentSeason, nextGameInSeason, games, tVm))
-      case Accepts.Json() => Ok(Json.toJson("{\"game_id\":1}"))
+      case Accepts.Json() => Ok(Json.toJson(tVm))
     }
   }
 
