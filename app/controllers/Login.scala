@@ -36,7 +36,8 @@ object Login extends Controller with Loggable with Helper with Config {
       },
       credentials => {
         implicit val user = User.findByEmail(credentials._1).get
-        Redirect(routes.Homepage.home(buildTeamView.current._id)).withSession("user_info" -> user.email)
+        val defaultTeamId = buildTeamView.current._id
+        Redirect(routes.Homepage.home(defaultTeamId)).flashing("team_id" -> s"$defaultTeamId").withSession("user_info" -> user.email)
       }
     )
   }

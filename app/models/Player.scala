@@ -11,6 +11,17 @@ case class PlayerViewModel(id: Long,
                            phoneNumber: Option[String],
                            position: Option[String])
 
+object PlayerViewModel {
+
+  implicit val tvmWrites: Writes[PlayerViewModel] = (
+    (JsPath \ "id").write[Long] and
+    (JsPath \ "name").write[String] and
+    (JsPath \ "number").write[Int] and
+    (JsPath \ "phoneNumber").write[Option[String]] and
+    (JsPath \ "position").write[Option[String]]
+  )(unlift(PlayerViewModel.unapply))
+}
+
 
 /**
  * A player is a registered user who is a part of a team.
