@@ -12,12 +12,13 @@ import CustomPlaySalatContext._
 import scala.collection.mutable.{Set => MSet}
 
 
-case class TeamViewModel(current: Team, other: Iterable[Team])
+case class TeamViewModel(selected_team_id: Long, current: Team, other: Iterable[Team])
 
 object TeamViewModel {
 
   implicit val tvmWrites: Writes[TeamViewModel] = (
-    (JsPath \ "current").write[Team] and
+      (JsPath \ "selected_team_id").write[Long] and
+      (JsPath \ "current").write[Team] and
       (JsPath \ "other").write[Iterable[Team]]
     )(unlift(TeamViewModel.unapply))
 }
@@ -29,7 +30,8 @@ case class Team (_id: Long,
                  name: String,
                  player_ids: MSet[Long],
                  season_ids: Set[Long],
-                 sport: Sport) {
+                 sport: Sport,
+                 selected: Boolean = false) {
 
   def playersRequired: Int = {
 
@@ -51,7 +53,8 @@ object Team {
     (JsPath \ "name").write[String] and
     (JsPath \ "player_ids").write[MSet[Long]] and
     (JsPath \ "seasons").write[Set[Long]] and
-    (JsPath \ "sport").write[Sport]
+    (JsPath \ "sport").write[Sport] and
+    (JsPath \ "selected").write[Boolean]
   )(unlift(Team.unapply))
 
 

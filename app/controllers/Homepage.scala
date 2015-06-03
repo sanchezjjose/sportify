@@ -1,14 +1,16 @@
 package controllers
 
-import models.{Game, Season, Team, User}
-import play.api.mvc.Controller
+import models._
 import play.api.libs.json.Json
-import utils.Helper
+import play.api.mvc.Controller
+import utils.{Helper, RequestHelper}
 
+import scala.collection.mutable.{Set => MSet}
 
 object Homepage extends Controller
   with Secured
-  with Helper {
+  with Helper
+  with RequestHelper {
 
   def index = IsAuthenticated { implicit user => implicit request =>
     val tVm = buildTeamView
@@ -16,15 +18,11 @@ object Homepage extends Controller
   }
 
   def home(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
-    val tVm = buildTeamView(teamId)
-    val currentSeason = Team.findById(teamId).get.season_ids.flatMap(Season.findById).find(_.is_current_season)
-    val nextGameInSeason = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
-    val playersIn = nextGameInSeason.map(game => game.players_in.flatMap(id => User.findByPlayerId(id))).getOrElse(Set.empty[User])
-    val playersOut = nextGameInSeason.map(game => game.players_out.flatMap(id => User.findByPlayerId(id))).getOrElse(Set.empty[User])
-
-    render {
-      case Accepts.Html() => Ok(views.html.index("Next Game", nextGameInSeason, playersIn, playersOut, tVm))
-      case Accepts.Json() => Ok(Json.toJson(tVm))
+    withContext(request, user, teamId) { (teams: Set[Team], nextGame: Option[Game], playersIn: MSet[User], playersOut: MSet[User]) =>
+      render {
+        case Accepts.Html() => Ok(views.html.index("Next Game", nextGame, playersIn, playersOut, buildTeamView(teamId)))
+        case Accepts.Json() => Ok(Json.toJson(HomepageView(teamId, teams, nextGame, playersIn, playersOut)))
+      }
     }
   }
 
