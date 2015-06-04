@@ -6,7 +6,7 @@ import play.api.libs.json.{JsPath, Writes}
 
 import scala.collection.mutable.{Set => MSet}
 
-case class HomepageView(selected_team_id: Long,
+case class HomepageView(selectedTeamId: Long,
                         teams: Set[Team],
                         nextGameInSeason: Option[Game],
                         playersIn: MSet[User],

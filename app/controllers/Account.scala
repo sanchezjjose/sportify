@@ -5,26 +5,19 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
 import play.api.libs.json.Json
-import utils.Helper
+import utils.{RequestHelper, Helper}
 import views._
 
 
-case class UserForm (playerId: Long,
-                     email: String,
-                     password: Option[String],
-                     firstName: String,
-                     lastName: String,
-                     number: Int,
-                     phoneNumber: Option[String],
-                     position: Option[String],
-                     isAdmin: Boolean)
-
-object Account extends Controller with Helper with Secured {
+object Account extends Controller
+  with Helper
+  with RequestHelper
+  with Secured {
 
   private var tVm: TeamViewModel = _
   private var pVm: PlayerViewModel = _
 
-	val userForm: Form[UserForm] = Form(
+	val userForm: Form[AccountView] = Form(
 		mapping(
       "email" -> email,
       "password" -> optional(text),
@@ -37,7 +30,7 @@ object Account extends Controller with Helper with Secured {
 		) {
       // Data Binding
       (email, password, firstName, lastName, number, phoneNumber, position, isAdmin) =>
-        UserForm(pVm.id, email, password, firstName, lastName, number, phoneNumber, position, isAdmin)
+        AccountView(999, pVm.id, email, password, firstName, lastName, number, phoneNumber, position, isAdmin)
     } {
       // Data Unbinding
       userForm =>
@@ -51,24 +44,11 @@ object Account extends Controller with Helper with Secured {
    * http://stackoverflow.com/questions/18560327/could-not-find-implicit-value-for-parameter-flash-play-api-mvc-flash
    */
   def account(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
-    tVm = buildTeamView(teamId)
-    pVm = buildPlayerView(teamId)
-
-    val form = UserForm(playerId = pVm.id,
-                        email = user.email,
-                        password = user.password,
-                        firstName = user.first_name,
-                        lastName = user.last_name,
-                        number = pVm.number,
-                        phoneNumber = pVm.phoneNumber,
-                        position = pVm.position,
-                        isAdmin = user.is_admin)
-
-    val filledForm = userForm.fill(form)
-   
-    render {
-      case Accepts.Html() => Ok(views.html.account(filledForm, user.is_admin, tVm))
-      case Accepts.Json() => Ok(Json.toJson(tVm))
+    withAccountContext(request, user, teamId) { accountView: AccountView =>
+      render {
+        case Accepts.Html() => Ok(views.html.account(userForm.fill(accountView), user.is_admin, buildTeamView(teamId)))
+        case Accepts.Json() => Ok(Json.toJson(accountView))
+      }
     }
   }
 

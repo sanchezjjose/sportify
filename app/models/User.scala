@@ -4,8 +4,7 @@ import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
 import com.sportify.db.MongoManagerFactory
-import controllers.UserForm
-import utils.{CustomPlaySalatContext, Helper}
+import utils.CustomPlaySalatContext
 import CustomPlaySalatContext._
 import org.mindrot.jbcrypt.BCrypt
 import play.api.libs.functional.syntax._
@@ -106,7 +105,7 @@ object User extends Helper {
     mongoManager.users += dbo
   }
 
-  def update(user: User, data: UserForm) = {
+  def update(user: User, data: AccountView) = {
     mongoManager.users.update(MongoDBObject("_id" -> user._id),
       $set("email" -> data.email,
            "password" -> data.password.filter(_.trim != "").map(hashPassword).getOrElse(user.password),
@@ -116,7 +115,7 @@ object User extends Helper {
     )
   }
 
-  def updatePlayer(user: User, data: UserForm) = {
+  def updatePlayer(user: User, data: AccountView) = {
     mongoManager.users.update(MongoDBObject("_id" -> user._id, "players.id" -> data.playerId),
       $set(
         "players.$.position" -> data.position,

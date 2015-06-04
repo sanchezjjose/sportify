@@ -7,20 +7,21 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.data.Forms.text
 import org.joda.time.DateTime
-import utils.{Loggable, Helper}
+import utils.{RequestHelper, Loggable, Helper}
 
 
-object Schedule extends Controller with Helper with Loggable with Secured {
+object Schedule extends Controller
+  with Helper
+  with RequestHelper
+  with Loggable
+  with Secured {
 
   def schedule(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
-    val tVm = buildTeamView(teamId)
-    val currentSeason = tVm.current.season_ids.flatMap(Season.findById).find(_.is_current_season)
-    val games = currentSeason.map(_.game_ids.flatMap(Game.findById).toList.sortBy(_.number)).getOrElse(List.empty[Game])
-    val nextGameInSeason = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
-
-    render {
-      case Accepts.Html() => Ok(views.html.schedule(gameForm, currentSeason, nextGameInSeason, games, tVm))
-      case Accepts.Json() => Ok(Json.toJson(tVm))
+    withScheduleContext(request, user, teamId) { (scheduleView: ScheduleView) =>
+      render {
+        case Accepts.Html() => Ok(views.html.schedule(gameForm, scheduleView.currentSeason, scheduleView.nextGame, scheduleView.games, buildTeamView(teamId)))
+        case Accepts.Json() => Ok(Json.toJson(scheduleView))
+      }
     }
   }
 

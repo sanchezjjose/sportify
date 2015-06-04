@@ -18,10 +18,10 @@ object Homepage extends Controller
   }
 
   def home(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
-    withContext(request, user, teamId) { (teams: Set[Team], nextGame: Option[Game], playersIn: MSet[User], playersOut: MSet[User]) =>
+    withHomepageContext(request, user, teamId) { homepageView: HomepageView =>
       render {
-        case Accepts.Html() => Ok(views.html.index("Next Game", nextGame, playersIn, playersOut, buildTeamView(teamId)))
-        case Accepts.Json() => Ok(Json.toJson(HomepageView(teamId, teams, nextGame, playersIn, playersOut)))
+        case Accepts.Html() => Ok(views.html.index("Next Game", homepageView.nextGameInSeason, homepageView.playersIn, homepageView.playersOut, buildTeamView(teamId)))
+        case Accepts.Json() => Ok(Json.toJson(homepageView))
       }
     }
   }
