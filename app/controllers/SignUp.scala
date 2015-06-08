@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.Login._
 import models._
 import play.api.data.Forms._
 import play.api.data._
@@ -75,9 +76,8 @@ object SignUp extends Controller with Helper {
            User.create(user)
            Team.update(team)
 
-           Ok(html.signup.summary(data)).discardingCookies(DiscardingCookie("team_name")).withNewSession.flashing(
-             "success" -> "Your account has been created. Please login."
-           )
+           Redirect(routes.Homepage.home(data.teamId)).flashing("team_id" -> s"$data.teamId").withSession("user_info" -> user.email)
+
          }.getOrElse {
 
            Redirect(routes.SignUp.signup).withNewSession.flashing(

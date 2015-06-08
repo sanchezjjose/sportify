@@ -32,7 +32,7 @@ trait RequestHelper {
     process(ScheduleView(teamId, currentSeason, games, nextGame))
   }
 
-  def withAccountContext(request: Request[AnyContent], user: User, teamId: Long)(process: (AccountView) => Result): Result = {
+  def withAccountContext(request: Request[AnyContent], user: User, teamId: Long)(process: (AccountView, PlayerViewModel) => Result): Result = {
     val pVm = buildPlayerView(teamId)(user, request)
     val accountView = AccountView(selectedTeamId = teamId,
                                   playerId = pVm.id,
@@ -45,6 +45,6 @@ trait RequestHelper {
                                   position = pVm.position,
                                   isAdmin = user.is_admin)
 
-    process(accountView)
+    process(accountView, pVm)
   }
 }

@@ -24,7 +24,7 @@ object AccountView {
       (JsPath \ "password").write[Option[String]] and
       (JsPath \ "first_name").write[String] and
       (JsPath \ "last_name").write[String] and
-      (JsPath \ "jersey_number").write[Int] and
+      (JsPath \ "number").write[Int] and
       (JsPath \ "phone_number").write[Option[String]] and
       (JsPath \ "position").write[Option[String]] and
       (JsPath \ "is_admin").write[Boolean]

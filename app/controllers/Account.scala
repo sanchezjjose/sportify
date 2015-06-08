@@ -30,7 +30,7 @@ object Account extends Controller
 		) {
       // Data Binding
       (email, password, firstName, lastName, number, phoneNumber, position, isAdmin) =>
-        AccountView(999, pVm.id, email, password, firstName, lastName, number, phoneNumber, position, isAdmin)
+        AccountView(tVm.selected_team_id, pVm.id, email, password, firstName, lastName, number, phoneNumber, position, isAdmin)
     } {
       // Data Unbinding
       userForm =>
@@ -44,7 +44,10 @@ object Account extends Controller
    * http://stackoverflow.com/questions/18560327/could-not-find-implicit-value-for-parameter-flash-play-api-mvc-flash
    */
   def account(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
-    withAccountContext(request, user, teamId) { accountView: AccountView =>
+
+    withAccountContext(request, user, teamId) { (accountView: AccountView, playerViewModel: PlayerViewModel) =>
+      pVm = playerViewModel // TODO: remove this awful hack
+
       render {
         case Accepts.Html() => Ok(views.html.account(userForm.fill(accountView), user.is_admin, buildTeamView(teamId)))
         case Accepts.Json() => Ok(Json.toJson(accountView))
