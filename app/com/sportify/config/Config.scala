@@ -12,8 +12,6 @@ object Config extends Config {
   val mongoUrl = config.getString("mongo_url").get
   val dbName = config.getString("db_name").get
   val environment = config.getString("environment").get
-  val fbAppId = config.getString("facebook_app_id").get
-  val fbAppSecret = config.getString("facebook_app_secret").get
   val sendGridUsername = config.getString("sendgrid_username").get
   val sendGridPassword = config.getString("sendgrid_password").get
   val fromEmail = config.getString("from_email").get
