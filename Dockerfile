@@ -13,4 +13,7 @@ EXPOSE 9000
 WORKDIR /src
 
 
-CMD ["activator", "start"]
+RUN activator clean stage
+
+
+CMD ["target/universal/stage/bin/sportify"]
