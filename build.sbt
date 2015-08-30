@@ -17,3 +17,5 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies += ws
+
+resolvers += Resolver.mavenLocal
