@@ -30,7 +30,7 @@ object Account extends Controller
 		) {
       // Data Binding
       (email, password, firstName, lastName, number, phoneNumber, position, isAdmin) =>
-        AccountView(tVm.selected_team_id, pVm.id, email, password, firstName, lastName, number, phoneNumber, position, isAdmin)
+        AccountView(tVm.selected_team_id, Set.empty[Team], pVm.id, email, password, firstName, lastName, number, phoneNumber, position, isAdmin)
     } {
       // Data Unbinding
       userForm =>

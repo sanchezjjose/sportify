@@ -19,3 +19,6 @@ libraryDependencies ++= Seq(
 libraryDependencies += ws
 
 resolvers += Resolver.mavenLocal
+
+// https://github.com/playframework/playframework/issues/3246
+PlayKeys.playWatchService := play.sbtplugin.run.PlayWatchService.sbt(pollInterval.value)
