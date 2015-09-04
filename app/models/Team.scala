@@ -12,12 +12,11 @@ import CustomPlaySalatContext._
 import scala.collection.mutable.{Set => MSet}
 
 
-case class TeamViewModel(selected_team_id: Long, current: Team, other: Iterable[Team])
+case class TeamViewModel(current: Team, other: Iterable[Team])
 
 object TeamViewModel {
 
   implicit val tvmWrites: Writes[TeamViewModel] = (
-      (JsPath \ "selected_team_id").write[Long] and
       (JsPath \ "current").write[Team] and
       (JsPath \ "other").write[Iterable[Team]]
     )(unlift(TeamViewModel.unapply))

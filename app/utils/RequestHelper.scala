@@ -15,14 +15,14 @@ trait RequestHelper {
     val playersIn = nextGame.map(game => game.players_in.flatMap(id => User.findByPlayerId(id))).getOrElse(MSet.empty[User])
     val playersOut = nextGame.map(game => game.players_out.flatMap(id => User.findByPlayerId(id))).getOrElse(MSet.empty[User])
 
-    process(HomepageView(teamId, teams, nextGame, playersIn, playersOut))
+    process(HomepageView(teams, nextGame, playersIn, playersOut))
   }
 
   def withRosterContext(request: Request[AnyContent], user: User, teamId: Long)(process: (RosterView) => Result): Result = {
     val teams = buildTeams(teamId)(user, request)
     val pVms = buildPlayerViews(teamId)(user, request).toList.sortBy(p => p.name)
 
-    process(RosterView(teamId, teams, pVms))
+    process(RosterView(teams, pVms))
   }
 
   def withScheduleContext(request: Request[AnyContent], user: User, teamId: Long)(process: (ScheduleView) => Result): Result = {
@@ -31,14 +31,13 @@ trait RequestHelper {
     val games = currentSeason.map(_.game_ids.flatMap(Game.findById).toList.sortBy(_.number)).getOrElse(List.empty[Game])
     val nextGame = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
 
-    process(ScheduleView(teamId, teams, currentSeason, games, nextGame))
+    process(ScheduleView(teams, currentSeason, games, nextGame))
   }
 
   def withAccountContext(request: Request[AnyContent], user: User, teamId: Long)(process: (AccountView, PlayerViewModel) => Result): Result = {
     val teams = buildTeams(teamId)(user, request)
     val pVm = buildPlayerView(teamId)(user, request)
-    val accountView = AccountView(selectedTeamId = teamId,
-                                  teams = teams,
+    val accountView = AccountView(teams = teams,
                                   playerId = pVm.id,
                                   email = user.email,
                                   password = user.password,

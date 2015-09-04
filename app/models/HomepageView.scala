@@ -6,8 +6,7 @@ import play.api.libs.json.{JsPath, Writes}
 
 import scala.collection.mutable.{Set => MSet}
 
-case class HomepageView(selectedTeamId: Long,
-                        teams: Set[Team],
+case class HomepageView(teams: TeamViewModel,
                         nextGameInSeason: Option[Game],
                         playersIn: MSet[User],
                         playersOut: MSet[User])
@@ -15,8 +14,7 @@ case class HomepageView(selectedTeamId: Long,
 object HomepageView {
 
   implicit val writes: Writes[HomepageView] = (
-      (JsPath \ "selected_team_id").write[Long] and
-      (JsPath \ "teams").write[Set[Team]] and
+      (JsPath \ "teams").write[TeamViewModel] and
       (JsPath \ "next_game").write[Option[Game]] and
       (JsPath \ "players_in").write[MSet[User]] and
       (JsPath \ "players_out").write[MSet[User]]

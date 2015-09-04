@@ -4,8 +4,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
 
 
-case class ScheduleView(selectedTeamId: Long,
-                        teams: Set[Team],
+case class ScheduleView(teams: TeamViewModel,
                         currentSeason: Option[Season],
                         games: List[Game],
                         nextGame: Option[Game])
@@ -13,8 +12,7 @@ case class ScheduleView(selectedTeamId: Long,
 object ScheduleView {
 
   implicit val writes: Writes[ScheduleView] = (
-      (JsPath \ "selected_team_id").write[Long] and
-      (JsPath \ "teams").write[Set[Team]] and
+      (JsPath \ "teams").write[TeamViewModel] and
       (JsPath \ "current_season").write[Option[Season]] and
       (JsPath \ "games").write[List[Game]] and
       (JsPath \ "next_game").write[Option[Game]]

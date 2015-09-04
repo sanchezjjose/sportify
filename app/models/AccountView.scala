@@ -4,8 +4,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
 
 
-case class AccountView(selectedTeamId: Long,
-                       teams: Set[Team],
+case class AccountView(teams: TeamViewModel,
                        playerId: Long,
                        email: String,
                        password: Option[String],
@@ -19,8 +18,7 @@ case class AccountView(selectedTeamId: Long,
 object AccountView {
 
   implicit val writes: Writes[AccountView] = (
-      (JsPath \ "selected_team_id").write[Long] and
-      (JsPath \ "teams").write[Set[Team]] and
+      (JsPath \ "teams").write[TeamViewModel] and
       (JsPath \ "player_id").write[Long] and
       (JsPath \ "email").write[String] and
       (JsPath \ "password").write[Option[String]] and

@@ -8,13 +8,13 @@ import scala.util.Random
 
 trait Helper {
 
-  def buildTeams(teamId: Long)(implicit user: User, request: Request[AnyContent]): Set[Team] = {
+  def buildTeams(teamId: Long)(implicit user: User, request: Request[AnyContent]): TeamViewModel = {
     (for {
       selectedTeam <- Team.findById(teamId)
       teams = Team.findAllByUser(user)
       otherTeams = teams.filter(team => team._id != selectedTeam._id)
     } yield {
-      otherTeams + selectedTeam.copy(selected = true)
+      TeamViewModel(selectedTeam.copy(selected = true), otherTeams)
     }).get
   }
 
@@ -42,14 +42,14 @@ trait Helper {
   def buildTeamView(implicit user: User, request: Request[AnyContent]): TeamViewModel = {
     val teams = Team.findAllByUser(user).toList.sortBy(_.sport.name) // TODO: this should be either last visited or user preference
 
-    TeamViewModel(teams.head._id, teams.head, teams.tail)
+    TeamViewModel(teams.head, teams.tail)
   }
 
   def buildTeamView(teamId: Long)(implicit user: User, request: Request[AnyContent]): TeamViewModel = {
     val teams = Team.findAllByUser(user)
 
     Team.findById(teamId).map { currentTeam =>
-      TeamViewModel(currentTeam._id, currentTeam, teams.filter(team => team._id != currentTeam._id))
+      TeamViewModel(currentTeam, teams.filter(team => team._id != currentTeam._id))
     }.get
   }
 }
