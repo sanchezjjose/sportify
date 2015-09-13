@@ -9,8 +9,6 @@ import play.api.libs.json.{JsPath, Writes}
 import utils.CustomPlaySalatContext
 import CustomPlaySalatContext._
 
-import scala.collection.mutable.{Set => MSet}
-
 
 case class TeamViewModel(current: Team, other: Iterable[Team])
 
@@ -27,7 +25,7 @@ object TeamViewModel {
  */
 case class Team (_id: Long,
                  name: String,
-                 player_ids: MSet[Long],
+                 player_ids: Set[Long],
                  season_ids: Set[Long],
                  sport: Sport,
                  selected: Boolean = false) {
@@ -50,7 +48,7 @@ object Team {
   implicit val teamWrites: Writes[Team] = (
     (JsPath \ "_id").write[Long] and
     (JsPath \ "name").write[String] and
-    (JsPath \ "player_ids").write[MSet[Long]] and
+    (JsPath \ "player_ids").write[Set[Long]] and
     (JsPath \ "seasons").write[Set[Long]] and
     (JsPath \ "sport").write[Sport] and
     (JsPath \ "selected").write[Boolean]

@@ -4,12 +4,11 @@ import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.novus.salat._
 import com.sportify.db.MongoManagerFactory
-import utils.{CustomPlaySalatContext, Loggable, Helper}
+import utils.CustomPlaySalatContext
 import CustomPlaySalatContext._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import utils.{Loggable, Helper}
-import scala.collection.mutable.{Set => MSet}
 
 
 case class Game (_id: Long, // TODO: change from Long to Int for all '_id' variables
@@ -20,8 +19,8 @@ case class Game (_id: Long, // TODO: change from Long to Int for all '_id' varia
                  location_details: Option[String],
                  opponent: String,
                  result: Option[String],
-                 players_in: MSet[Long] = MSet.empty[Long], // corresponds to player id's
-                 players_out: MSet[Long] = MSet.empty[Long], // corresponds to player id's
+                 players_in: Set[Long] = Set.empty[Long], // corresponds to player id's
+                 players_out: Set[Long] = Set.empty[Long], // corresponds to player id's
                  is_playoff_game: Boolean = false)
 
 object Game {
@@ -38,15 +37,15 @@ object Game {
     (JsPath \ "location_details").write[Option[String]] and
     (JsPath \ "opponent").write[String] and
     (JsPath \ "result").write[Option[String]] and
-    (JsPath \ "players_in").write[MSet[Long]] and
-    (JsPath \ "players_out").write[MSet[Long]] and
+    (JsPath \ "players_in").write[Set[Long]] and
+    (JsPath \ "players_out").write[Set[Long]] and
     (JsPath \ "is_playoff_game").write[Boolean]
   )(unlift(Game.unapply))
 
 
   val gameDateFormat = DateTimeFormat.forPattern("E MM/dd/yyyy, H:mm a")
 
-  def getNextGame(gameIds: MSet[Long]): Option[Game] = {
+  def getNextGame(gameIds: Set[Long]): Option[Game] = {
     gameIds.flatMap(findById).filter { game =>
       DateTime.now().getMillis < gameDateFormat.parseDateTime(game.start_time).plusDays(1).getMillis
     }.toList.sortBy(g => gameDateFormat.parseDateTime(g.start_time).plusDays(1).getMillis).headOption
@@ -87,7 +86,7 @@ object Game {
   def findAllUpcomingGames: Iterator[Game] = {
     findAll.filter { game =>
       DateTime.now().getMillis < gameDateFormat.parseDateTime(game.start_time).getMillis
-    }.toIterator
+    }
   }
 
   def create(game: Game): Unit = {
@@ -99,9 +98,10 @@ object Game {
     mongoManager.games.remove(MongoDBObject("_id" -> id))
   }
 
-  def update(game: Game): Unit = {
+  def update(game: Game): Game = {
     val dbo = grater[Game].asDBObject(game)
     mongoManager.games.update(MongoDBObject("_id" -> game._id), dbo)
+    game
   }
 }
 
@@ -129,8 +129,8 @@ case class GameForm(number: Option[String],
          location_details = locationDetails,
          opponent = opponent,
          result = result,
-         players_in = MSet.empty[Long],
-         players_out = MSet.empty[Long],
+         players_in = Set.empty[Long],
+         players_out = Set.empty[Long],
          is_playoff_game = isPlayoffGame)
   }
 

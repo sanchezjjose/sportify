@@ -7,8 +7,6 @@ import com.sportify.db.MongoManagerFactory
 import utils.CustomPlaySalatContext
 import CustomPlaySalatContext._
 
-import scala.collection.mutable.{Set => MSet}
-
 /**
  * Model for a season. This can hold any value that represents a season for a sport.
  *
@@ -19,7 +17,7 @@ import scala.collection.mutable.{Set => MSet}
  */
 case class Season (_id: Long,
                    title: String,
-                   game_ids: MSet[Long],
+                   game_ids: Set[Long],
                    is_current_season: Boolean)
 
 object Season {
@@ -30,7 +28,7 @@ object Season {
   implicit val seasonWrites: Writes[Season] = (
     (JsPath \ "_id").write[Long] and
     (JsPath \ "title").write[String] and
-    (JsPath \ "game_ids").write[MSet[Long]] and
+    (JsPath \ "game_ids").write[Set[Long]] and
     (JsPath \ "is_current_season").write[Boolean]
   )(unlift(Season.unapply))
 

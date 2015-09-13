@@ -30,12 +30,14 @@ object Schedule extends Controller
     val game: Option[Game] = Game.findById(gameId)
     val playerId = buildPlayerView(teamId).id
 
-    if(request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
 
-      // Add user to game.
-      game.get.players_in += playerId
-      game.get.players_out -= playerId
-      Game.update(game.get)
+    if (request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
+      val updatedGame = game.get.copy(
+        players_in = game.get.players_in + playerId,
+        players_out = game.get.players_out - playerId
+      )
+
+      Game.update(updatedGame)
 
       Ok(Json.toJson(
         Map(
@@ -43,12 +45,14 @@ object Schedule extends Controller
           "msg" -> Json.toJson("You are playing. See you there!")
         )
       ))
-    } else {
 
-      // Remove user from game.
-      game.get.players_in -= playerId
-      game.get.players_out += playerId
-      Game.update(game.get)
+    } else {
+      val updatedGame = game.get.copy(
+        players_in = game.get.players_in - playerId,
+        players_out = game.get.players_out + playerId
+      )
+
+      Game.update(updatedGame)
 
       Ok(Json.toJson(
         Map(
@@ -96,15 +100,20 @@ object Schedule extends Controller
     val game = Game.findById(game_id).get
     val playerId = buildPlayerView(teamId).id
 
-    if (status == "in") {
-      game.players_in += playerId
-      game.players_out -= playerId
-    } else if (status == "out") {
-      game.players_in -= playerId
-      game.players_out += playerId
+    val updatedGame = if (status == "in") {
+      game.copy(
+        players_in = game.players_in + playerId,
+        players_out = game.players_out - playerId
+      )
+
+    } else {
+      game.copy(
+        players_in = game.players_in - playerId,
+        players_out = game.players_out + playerId
+      )
     }
 
-    Game.update(game)
+    Game.update(updatedGame)
 
     Redirect(routes.Homepage.home(buildTeamView(teamId).current._id))
   }
@@ -131,8 +140,9 @@ object Schedule extends Controller
             Game.create(newGame)
 
             // Add game to season and update
-            season.game_ids += newGame._id
-            Season.update(season)
+            val updatedSeason = season.copy(game_ids = season.game_ids + newGame._id)
+
+            Season.update(updatedSeason)
 
             // Also add the game to opponent's season if opponent has a team
             Team.findByName(gameForm.opponent).map { opponentTeam =>
@@ -140,10 +150,10 @@ object Schedule extends Controller
                 Season.findById(opponentSeasonId).find(season => season.is_current_season).map { opponentSeason =>
                   val tVm = buildTeamView(teamId)
                   val oppNewGame = gameForm.toNewGame(opponentSeasonId, isPlayoffGame.toBoolean).copy(opponent = tVm.current.name)
-                  Game.create(oppNewGame)
+                  val updatedSeason = opponentSeason.copy(game_ids = opponentSeason.game_ids + oppNewGame._id)
 
-                  opponentSeason.game_ids += oppNewGame._id
-                  Season.update(opponentSeason)
+                  Game.create(oppNewGame)
+                  Season.update(updatedSeason)
                 }
               }
             }
@@ -218,10 +228,9 @@ object Schedule extends Controller
   // TODO: move to Game controller
   def delete(teamId: Long, seasonId: Long, gameId: Long) = IsAuthenticated { user => implicit request =>
     val season = Season.findById(seasonId).get
+    val updatedSeason = season.copy(game_ids = season.game_ids - gameId)
 
-    // remove from season first
-    season.game_ids -= gameId
-    Season.update(season)
+    Season.update(updatedSeason)
 
     // remove game
     Game.remove(gameId)

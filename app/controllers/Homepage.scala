@@ -30,15 +30,20 @@ object Homepage extends Controller
     val game = Game.findById(gameId).get
     val playerId = buildPlayerView(teamId).id
 
-    if (request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
-      game.players_in += playerId
-      game.players_out -= playerId
+    val updatedGame = if (request.queryString.get("status").flatMap(_.headOption).get.contains("in")) {
+      game.copy(
+        players_in = game.players_in + playerId,
+        players_out = game.players_out - playerId
+      )
+
     } else {
-      game.players_in -= playerId
-      game.players_out += playerId
+      game.copy(
+        players_in = game.players_in - playerId,
+        players_out = game.players_out + playerId
+      )
     }
 
-    Game.update(game)
+    Game.update(updatedGame)
 
     Redirect(routes.Homepage.home(buildTeamView(teamId).current._id))
   }

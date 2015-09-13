@@ -70,11 +70,11 @@ object SignUp extends Controller with Helper {
                            players = MSet(player),
                            phone_number = data.phoneNumber)
 
-           team.player_ids += player.id
+           val updatedTeam = team.copy(player_ids = team.player_ids + player.id)
 
            // Save user and add to team
            User.create(user)
-           Team.update(team)
+           Team.update(updatedTeam)
 
            Redirect(routes.Homepage.home(data.teamId)).flashing("team_id" -> s"$data.teamId").withSession("user_info" -> user.email)
 

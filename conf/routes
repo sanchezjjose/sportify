@@ -5,6 +5,9 @@
 
 GET     /                                                            controllers.Homepage.index
 
+# GAME
+PUT     /v2/games/:id                                                controllers.v2.Game.update(id: Long)
+
 # ACCOUNT
 GET     /account                                                     controllers.Account.account(team_id: Long)
 GET     /account/delete                                              controllers.Account.delete
