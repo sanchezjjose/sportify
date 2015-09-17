@@ -32,7 +32,7 @@ object Login extends Controller with Loggable with Helper with Config {
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => {
-        BadRequest(html.login(formWithErrors))
+        Unauthorized(html.login(formWithErrors))
       },
       credentials => {
         implicit val user = User.findByEmail(credentials._1).get
