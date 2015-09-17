@@ -29,15 +29,18 @@ object SignUp extends Controller with Helper {
       "phone_number" -> optional(text),
       "team_id" -> longNumber
 		)(PlayerData.apply)(PlayerData.unapply)
-	)
+  )
 
   def submit = Action { implicit request =>
    signupForm.bindFromRequest.fold(
      errors => {
-       BadRequest("An error has occurred")
+       BadRequest
      },
      data => {
-       Team.findById(data.teamId).map { team =>
+       val teamId = data.teamId
+
+       Team.findById(teamId).map { team =>
+
          val player = Player(id = generateRandomId(),
                              number = data.jerseyNumber,
                              position = data.position)
@@ -53,11 +56,12 @@ object SignUp extends Controller with Helper {
          val updatedTeam = team.copy(player_ids = team.player_ids + player.id)
 
          User.create(user)
+
          Team.update(updatedTeam)
 
-         Redirect(routes.Homepage.home(data.teamId))
-           .flashing("team_id" -> s"$data.teamId")
+         Redirect(routes.Homepage.home(teamId))
            .withSession("user_info" -> user.email)
+           .flashing("team_id" -> s"$teamId")
 
        }.getOrElse(BadRequest)
      })
