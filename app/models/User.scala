@@ -10,7 +10,6 @@ import org.mindrot.jbcrypt.BCrypt
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
 import utils.Helper
-import scala.collection.mutable.{Set => MSet}
 
 
 /**
@@ -22,7 +21,7 @@ case class User (_id: Long,
                  password: Option[String],
                  first_name: String,
                  last_name: String,
-                 players: MSet[Player] = MSet.empty[Player],
+                 players: Set[Player] = Set.empty[Player],
                  is_admin: Boolean = false,
                  phone_number: Option[String] = None) {
 
@@ -43,7 +42,7 @@ object User extends Helper {
     (JsPath \ "password").write[Option[String]] and
     (JsPath \ "first_name").write[String] and
     (JsPath \ "last_name").write[String] and
-    (JsPath \ "player").write[MSet[Player]] and
+    (JsPath \ "player").write[Set[Player]] and
     (JsPath \ "is_admin").write[Boolean] and
     (JsPath \ "phone_number").write[Option[String]]
   )(unlift(User.unapply))
@@ -96,7 +95,7 @@ object User extends Helper {
     mongoManager.users += dbo
   }
 
-  def create(email: Option[String], password: Option[String], firstName: String, lastName: Option[String], players: MSet[Player]) = {
+  def create(email: Option[String], password: Option[String], firstName: String, lastName: Option[String], players: Set[Player]) = {
     val id = generateRandomId()
     val user = User(id, email.getOrElse(""), password, firstName, lastName.getOrElse(""), players)
     val dbo = grater[User].asDBObject(user)

@@ -5,79 +5,51 @@ import models._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
-import utils.{Loggable, Helper}
-import views._
+import utils.{Helper, Loggable}
 
 object Login extends Controller with Loggable with Helper with Config {
 
-  val loginForm = Form(
-    tuple(
-      "email" -> text,
-      "password" -> text
-    ) verifying ("Invalid email or password.", result => result  match {
-      case (email: String, password: String) => User.authenticate(email, password).isDefined
-    })
-  )
-
-  /**
-   * Login page.
-   */
-  def login = Action { implicit request =>
-    Ok(html.login(loginForm))
+  val loginForm: Form[(String, String)] = {
+    Form {
+      tuple(
+        "email" -> text,
+        "password" -> text
+      ) verifying("Invalid email or password.", result => result match {
+        case (email: String, password: String) => User.authenticate(email, password).isDefined
+      })
+    }
   }
 
-  /**
-   * Handle login form submission.
-   */
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => {
-        Unauthorized(html.login(formWithErrors))
+        Unauthorized("Invalid credentials")
       },
       credentials => {
         implicit val user = User.findByEmail(credentials._1).get
         val defaultTeamId = buildTeamView.current._id
-        Redirect(routes.Homepage.home(defaultTeamId)).flashing("team_id" -> s"$defaultTeamId").withSession("user_info" -> user.email)
+        Redirect(routes.Homepage.home(defaultTeamId))
+          .withSession("user_info" -> user.email)
+          .flashing("team_id" -> s"$defaultTeamId")
       }
     )
   }
-
-  /**
-   * Logout and clean the session.
-   */
-  def logout = Action {
-    Redirect(routes.Login.login).withNewSession.flashing(
-      "success" -> "You've been successfully logged out."
-    )
-  }
-
 }
 
-/**
- * Provide security features
- */
 trait Secured extends Loggable {
-  
-  /**
-   * Retrieve the connected user session variable.
-   */
-  private def sessionKey(request: RequestHeader) = request.session.get("user_info")
 
-  /**
-   * Redirect to login if the user in not authorized.
-   */
-  private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Login.login)
-  
-  /** 
-   * Action for authenticated users.
-   */
-  def IsAuthenticated(f: => User => Request[AnyContent] => Result) = Security.Authenticated(sessionKey, onUnauthorized) { email =>
+  private def sessionKey(request: RequestHeader): Option[String] = request.session.get("user_info")
 
-    // TODO: add to some sort of session to avoid hitting DB with each request
-    User.findByEmail(email).map { user =>
-      Action(request => f(user)(request))
-    }.getOrElse {
-      Action(request => onUnauthorized(request))
+  private def onUnauthorized(request: RequestHeader): Result = Results.Unauthorized
+
+  // TODO: add to some sort of session to avoid hitting DB with each request
+  def IsAuthenticated(f: => User => Request[AnyContent] => Result): EssentialAction = {
+    Security.Authenticated(sessionKey, onUnauthorized) { email =>
+      User.findByEmail(email).map { user =>
+        Action(request => f(user)(request))
+      }.getOrElse {
+        Action(request => onUnauthorized(request))
+      }
     }
   }
 }

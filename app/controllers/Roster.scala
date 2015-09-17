@@ -1,10 +1,10 @@
 package controllers
 
 import com.sportify.config.Config
-import models.{RosterView, PlayerViewModel}
+import models.RosterView
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Controller}
-import utils.{RequestHelper, Loggable, Helper}
+import play.api.mvc.Controller
+import utils.{Helper, Loggable, RequestHelper}
 
 object Roster extends Controller
   with Helper
@@ -15,10 +15,7 @@ object Roster extends Controller
 
   def roster(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
     withRosterContext(request, user, teamId) { rosterView: RosterView =>
-      render {
-        case Accepts.Html() => Ok(views.html.roster(rosterView.players, buildTeamView(teamId)))
-        case Accepts.Json() => Ok(Json.toJson(rosterView))
-      }
+      Ok(Json.toJson(rosterView))
     }
   }
 }

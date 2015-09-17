@@ -3,10 +3,9 @@ package controllers
 import models._
 import play.api.data.Forms._
 import play.api.data._
-import play.api.mvc._
 import play.api.libs.json.Json
-import utils.{RequestHelper, Helper}
-import views._
+import play.api.mvc._
+import utils.{Helper, RequestHelper}
 
 
 object Account extends Controller
@@ -39,38 +38,25 @@ object Account extends Controller
     }
 	)
 
-  /*
-   * NOTE: why flash and 'implicit request' is needed here.
-   * http://stackoverflow.com/questions/18560327/could-not-find-implicit-value-for-parameter-flash-play-api-mvc-flash
-   */
   def account(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
-
     withAccountContext(request, user, teamId) { (accountView: AccountView, playerViewModel: PlayerViewModel) =>
-      pVm = playerViewModel // TODO: remove this awful hack
+      pVm = playerViewModel // TODO: REMOVE THIS HACK
 
-      render {
-        case Accepts.Html() => Ok(views.html.account(userForm.fill(accountView), user.is_admin, buildTeamView(teamId)))
-        case Accepts.Json() => Ok(Json.toJson(accountView))
-      }
+      Ok(Json.toJson(accountView))
     }
   }
 
   def delete = IsAuthenticated { user => implicit request =>
     User.delete(user)
 
-    Redirect(routes.Login.logout()).flashing(
-      "deleted" -> "Your account has been permanently deleted."
-    )
+    NoContent
   }
 
   def submit(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
     tVm = buildTeamView(teamId)
 
     userForm.bindFromRequest.fold(
-
-       // Form has errors, re-display it
-       errors => BadRequest(html.account(errors, user.is_admin, tVm)),
-
+       errors => BadRequest("An error has occurred"),
        userFormData => {
          User.update(user, userFormData)
          User.updatePlayer(user, userFormData)

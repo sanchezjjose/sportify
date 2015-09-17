@@ -7,14 +7,7 @@ import com.sportify.db.MongoManagerFactory
 import utils.CustomPlaySalatContext
 import CustomPlaySalatContext._
 
-/**
- * Model for a season. This can hold any value that represents a season for a sport.
- *
- * i.e.,
- * Basketball might have 'Summer 2014', 'Fall 2014', 'Winter 2014-2015'.
- * Softball on the other hand might only have '2014' as the season name.
- *
- */
+
 case class Season (_id: Long,
                    title: String,
                    game_ids: Set[Long],

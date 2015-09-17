@@ -1,15 +1,10 @@
 package controllers
 
-import controllers.Login._
 import models._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
 import utils.Helper
-import views._
-import scala.collection.mutable.{Set => MSet}
-
-
 
 case class PlayerData(email: String,
                       password: String,
@@ -36,55 +31,35 @@ object SignUp extends Controller with Helper {
 		)(PlayerData.apply)(PlayerData.unapply)
 	)
 
-	/**
-   	* Display an empty form.
-    */
-  def signup = Action { implicit request =>
- 	  Ok(html.signup.form(signupForm))
-	}
-
-  /**
-  * Handle form submission.
-  */
   def submit = Action { implicit request =>
+   signupForm.bindFromRequest.fold(
+     errors => {
+       BadRequest("An error has occurred")
+     },
+     data => {
+       Team.findById(data.teamId).map { team =>
+         val player = Player(id = generateRandomId(),
+                             number = data.jerseyNumber,
+                             position = data.position)
 
-     signupForm.bindFromRequest.fold(
+         val user = User(_id = generateRandomId(),
+                         email = data.email,
+                         password = Some(data.password),
+                         first_name = data.firstName,
+                         last_name = data.lastName,
+                         players = Set(player),
+                         phone_number = data.phoneNumber)
 
-       errors => {
-         BadRequest(html.signup.form(errors))
-       },
+         val updatedTeam = team.copy(player_ids = team.player_ids + player.id)
 
-       data => {
+         User.create(user)
+         Team.update(updatedTeam)
 
-         Team.findById(data.teamId).map { team =>
+         Redirect(routes.Homepage.home(data.teamId))
+           .flashing("team_id" -> s"$data.teamId")
+           .withSession("user_info" -> user.email)
 
-           val player = Player(id = generateRandomId(),
-                               number = data.jerseyNumber,
-                               position = data.position)
-
-           val user = User(_id = generateRandomId(),
-                           email = data.email,
-                           password = Some(data.password),
-                           first_name = data.firstName,
-                           last_name = data.lastName,
-                           players = MSet(player),
-                           phone_number = data.phoneNumber)
-
-           val updatedTeam = team.copy(player_ids = team.player_ids + player.id)
-
-           // Save user and add to team
-           User.create(user)
-           Team.update(updatedTeam)
-
-           Redirect(routes.Homepage.home(data.teamId)).flashing("team_id" -> s"$data.teamId").withSession("user_info" -> user.email)
-
-         }.getOrElse {
-
-           Redirect(routes.SignUp.signup).withNewSession.flashing(
-             "failure" -> "Sorry, the team id you entered does not exist."
-           )
-         }
-       }
-    )
+       }.getOrElse(BadRequest)
+     })
   }
 }

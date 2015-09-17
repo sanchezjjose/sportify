@@ -19,13 +19,13 @@ trait Helper {
   }
 
   def buildPlayerViews(teamId: Long)(implicit user: User, request: Request[AnyContent]): Set[PlayerViewModel] = {
-    (for {
+    for {
       playerId <- buildTeamView(teamId).current.player_ids
       user <- User.findByPlayerId(playerId)
       player <- user.players.find(_.id == playerId)
     } yield {
-        PlayerViewModel(player.id, user.fullName, player.number, user.phone_number, player.position)
-      }).toSet
+      PlayerViewModel(player.id, user.fullName, player.number, user.phone_number, player.position)
+    }
   }
 
   def buildPlayerView(teamId: Long)(implicit user: User, request: Request[AnyContent]): PlayerViewModel = {

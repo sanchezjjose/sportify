@@ -1,12 +1,11 @@
-package controllers.v2
+package controllers
 
-import controllers.Secured
-import models.{Game => GameModel}
+import models.Game
 import play.api.libs.json.Json
 import play.api.mvc.{Controller, Cookie}
 import utils.{Helper, Loggable, RequestHelper}
 
-object Game extends Controller
+object Rsvp extends Controller
   with Helper
   with RequestHelper
   with Loggable
@@ -17,7 +16,7 @@ object Game extends Controller
        rsvp: Cookie <- request.cookies.get("rsvp")
        teamId: Cookie <- request.cookies.get("team_id")
        playerId: Long = buildPlayerView(teamId.value.toLong).id
-       game: GameModel <- GameModel.findById(id)
+       game: Game <- Game.findById(id)
 
      } yield {
        val updatedGame = if (rsvp.value == "in") {
@@ -33,7 +32,7 @@ object Game extends Controller
          )
        }
 
-       GameModel.update(updatedGame)
+        Game.update(updatedGame)
 
      }).map { updatedGame =>
        Ok(Json.toJson(updatedGame))
