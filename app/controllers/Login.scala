@@ -1,11 +1,11 @@
 package controllers
 
-import com.sportify.config.Config
+import api.UserDb
 import models._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
-import utils.{Helper, Loggable}
+import util.{Config, Helper, Loggable}
 
 object Login extends Controller with Loggable with Helper with Config {
 
@@ -42,7 +42,6 @@ trait Secured extends Loggable {
 
   private def onUnauthorized(request: RequestHeader): Result = Results.Unauthorized
 
-  // TODO: add to some sort of session to avoid hitting DB with each request
   def IsAuthenticated(f: => User => Request[AnyContent] => Result): EssentialAction = {
     Security.Authenticated(sessionKey, onUnauthorized) { email =>
       User.findByEmail(email).map { user =>

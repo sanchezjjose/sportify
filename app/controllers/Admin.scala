@@ -1,13 +1,12 @@
 package controllers
 
-import play.api.mvc._
 import models._
-import play.api.libs.json._
-import play.api.data._
-import play.api.data.Forms._
-import play.api.data.Forms.text
 import org.joda.time.DateTime
-import utils.{RequestHelper, Loggable, Helper}
+import play.api.data.Forms._
+import play.api.data._
+import play.api.libs.json.Json
+import play.api.mvc._
+import util.{Loggable, Helper, RequestHelper}
 
 
 object Admin extends Controller
@@ -27,17 +26,20 @@ object Admin extends Controller
       "result" -> optional(text)
     ) { (number, startTime, address, gym, locationDetails, opponent, result) =>
 
-      GameForm(number,
+      GameForm(
+        number,
         startTime,
         address,
         gym,
         locationDetails,
         opponent,
-        result)
+        result
+      )
 
     } { (game: GameForm) =>
 
-      Some((game.number,
+      Some((
+        game.number,
         game.startTime,
         game.address,
         game.gym,
@@ -47,7 +49,7 @@ object Admin extends Controller
     }
   )
 
-  def save(teamId: Long, seasonId: Long, isPlayoffGame: String) = IsAuthenticated { implicit user => implicit request =>
+  def save(teamId: Long, seasonId: Long, isPlayoffGame: String) = Action { /*implicit user =>*/ implicit request =>
     gameForm.bindFromRequest.fold(
       errors => {
         log.error("There was a problem adding a new game", errors)
@@ -88,7 +90,10 @@ object Admin extends Controller
           }
 
           Redirect(routes.Schedule.schedule(teamId))
+
+
         } catch {
+
           case e: Exception => {
             log.error("There was a problem with adding a new game", e)
 
@@ -101,7 +106,7 @@ object Admin extends Controller
     )
   }
 
-  def edit(teamId: Long, gameId: Long) = IsAuthenticated { implicit user => implicit request =>
+  def edit(teamId: Long, gameId: Long) = Action { /*implicit user =>*/ implicit request =>
     val game = Game.findById(gameId).get
 
     Ok(Json.toJson(
@@ -115,49 +120,48 @@ object Admin extends Controller
         "location_details" -> Json.toJson(game.location_details),
         "opponent" -> Json.toJson(game.opponent),
         "result" -> Json.toJson(game.result)
-      )
-    ))
-  }
-
-  def update(teamId: Long, gameId: Long, isPlayoffGame: String) = IsAuthenticated { implicit user => implicit request =>
-    gameForm.bindFromRequest.fold(
-      errors => {
-        log.error(errors.toString)
-
-        Redirect(routes.Schedule.schedule(teamId)).flashing(
-          "failure" -> "There was a problem with adding a new game."
-        )},
-
-      gameForm => {
-
-        try {
-          // Validate date format was correct
-          DateTime.parse(gameForm.startTime, Game.gameDateFormat)
-          val game = gameForm.toGame(gameId, isPlayoffGame.toBoolean)
-
-          Game.update(game)
-
-          Redirect(routes.Schedule.schedule(teamId))
-        } catch {
-          case e: Exception => {
-            log.error("There was a problem with adding a new game", e)
-
-            Redirect(routes.Schedule.schedule(teamId)).flashing(
-              "failure" -> "There was a problem with adding a new game. Make sure the date format is correct."
-            )
-          }
-        }
-      }
+      ))
     )
   }
 
-  def delete(teamId: Long, seasonId: Long, gameId: Long) = IsAuthenticated { user => implicit request =>
+  def update(teamId: Long, gameId: Long, isPlayoffGame: String) = Action { /*implicit user =>*/ implicit request =>
+   gameForm.bindFromRequest.fold(
+     errors => {
+       log.error(errors.toString)
+
+       Redirect(routes.Schedule.schedule(teamId)).flashing(
+         "failure" -> "There was a problem with adding a new game."
+       )},
+
+
+     gameForm => {
+
+       try {
+         // Validate date format was correct
+         DateTime.parse(gameForm.startTime, Game.gameDateFormat)
+         val game = gameForm.toGame(gameId, isPlayoffGame.toBoolean)
+
+         Game.update(game)
+
+         Redirect(routes.Schedule.schedule(teamId))
+       } catch {
+         case e: Exception => {
+           log.error("There was a problem with adding a new game", e)
+
+           Redirect(routes.Schedule.schedule(teamId)).flashing(
+             "failure" -> "There was a problem with adding a new game. Make sure the date format is correct."
+           )
+         }
+       }
+     }
+   )
+  }
+
+  def delete(teamId: Long, seasonId: Long, gameId: Long) = Action { /*implicit user =>*/ implicit request =>
     val season = Season.findById(seasonId).get
     val updatedSeason = season.copy(game_ids = season.game_ids - gameId)
 
     Season.update(updatedSeason)
-
-    // remove game
     Game.remove(gameId)
 
     Redirect(routes.Schedule.schedule(teamId))

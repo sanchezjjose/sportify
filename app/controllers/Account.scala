@@ -5,7 +5,7 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.libs.json.Json
 import play.api.mvc._
-import utils.{Helper, RequestHelper}
+import util.{Helper, RequestHelper}
 
 
 object Account extends Controller
@@ -16,17 +16,17 @@ object Account extends Controller
   private var tVm: TeamViewModel = _
   private var pVm: PlayerViewModel = _
 
-	val userForm: Form[AccountView] = Form(
-		mapping(
+  val userForm: Form[AccountView] = Form(
+    mapping(
       "email" -> email,
       "password" -> optional(text),
-			"first_name" -> text,
-			"last_name" -> text,
-			"number" -> number,
-			"phone_number" -> optional(text),
+      "first_name" -> text,
+      "last_name" -> text,
+      "number" -> number,
+      "phone_number" -> optional(text),
       "position" -> optional(nonEmptyText),
       "is_admin" -> boolean
-		) {
+    ) {
       // Data Binding
       (email, password, firstName, lastName, number, phoneNumber, position, isAdmin) =>
         AccountView(tVm, pVm.id, email, password, firstName, lastName, number, phoneNumber, position, isAdmin)
@@ -34,11 +34,11 @@ object Account extends Controller
       // Data Unbinding
       userForm =>
         Some((userForm.email, userForm.password, userForm.firstName, userForm.lastName,
-              userForm.number, userForm.phoneNumber, userForm.position, userForm.isAdmin))
+          userForm.number, userForm.phoneNumber, userForm.position, userForm.isAdmin))
     }
-	)
+  )
 
-  def account(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
+  def account(teamId: Long) = Action { /*implicit user =>*/ implicit request =>
     withAccountContext(request, user, teamId) { (accountView: AccountView, playerViewModel: PlayerViewModel) =>
       pVm = playerViewModel // TODO: REMOVE THIS HACK
 
@@ -46,26 +46,25 @@ object Account extends Controller
     }
   }
 
-  def delete = IsAuthenticated { user => implicit request =>
+  def delete = Action { /*implicit user =>*/ implicit request =>
     User.delete(user)
 
     NoContent
   }
 
-  def submit(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
+  def submit(teamId: Long) = Action { /*implicit user =>*/ implicit request =>
     tVm = buildTeamView(teamId)
 
     userForm.bindFromRequest.fold(
-       errors => BadRequest("An error has occurred"),
-       userFormData => {
-         User.update(user, userFormData)
-         User.updatePlayer(user, userFormData)
+      errors => BadRequest("An error has occurred"),
+      userFormData => {
+        User.update(user, userFormData)
+        User.updatePlayer(user, userFormData)
 
-         Redirect(routes.Account.account(teamId)).flashing(
-            "success" -> "Your account information has been successfully updated."
-         )
-       }
+        Redirect(routes.Account.account(teamId)).flashing(
+          "success" -> "Your account information has been successfully updated."
+        )
+      }
     )
   }
-  
 }

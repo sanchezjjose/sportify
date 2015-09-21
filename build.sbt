@@ -1,24 +1,24 @@
-name := """sportify"""
+name := """PlayReactiveMongoPolymer"""
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+scalaVersion := "2.11.6"
 
-scalaVersion := "2.11.1"
+routesGenerator := InjectedRoutesGenerator
 
 libraryDependencies ++= Seq(
-  "com.novus" %% "salat" % "1.9.8",
+  "org.reactivemongo" %% "play2-reactivemongo" % "0.11.0.play24",
+  "org.specs2" %% "specs2-core" % "2.4.9" % "test",
+  "org.specs2" %% "specs2-junit" % "2.4.9" % "test",
   "javax.activation" % "activation" % "1.1",
   "javax.mail" % "mail" % "1.4",
   "com.google.oauth-client" % "google-oauth-client" % "1.17.0-rc",
-  "com.newrelic.agent.java" % "newrelic-agent" % "2.21.4",
   "org.mindrot" % "jbcrypt" % "0.3m",
   "com.sendgrid" % "sendgrid-java" % "2.2.0"
 )
 
-libraryDependencies += ws
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-resolvers += Resolver.mavenLocal
+PlayKeys.fileWatchService := play.runsupport.FileWatchService.sbt(2000)
 
-// https://github.com/playframework/playframework/issues/3246
-PlayKeys.playWatchService := play.sbtplugin.run.PlayWatchService.sbt(pollInterval.value)
+fork in run := true

@@ -1,13 +1,7 @@
 package models
 
-import com.mongodb.casbah.Imports._
-import com.mongodb.casbah.commons.MongoDBObject
-import com.novus.salat._
-import com.sportify.db.MongoManagerFactory
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
-import utils.CustomPlaySalatContext
-import CustomPlaySalatContext._
 
 
 case class TeamViewModel(current: Team, other: Iterable[Team])
@@ -15,7 +9,7 @@ case class TeamViewModel(current: Team, other: Iterable[Team])
 object TeamViewModel {
 
   implicit val tvmWrites: Writes[TeamViewModel] = (
-      (JsPath \ "current").write[Team] and
+    (JsPath \ "current").write[Team] and
       (JsPath \ "other").write[Iterable[Team]]
     )(unlift(TeamViewModel.unapply))
 }
@@ -47,12 +41,12 @@ object Team {
 
   implicit val teamWrites: Writes[Team] = (
     (JsPath \ "_id").write[Long] and
-    (JsPath \ "name").write[String] and
-    (JsPath \ "player_ids").write[Set[Long]] and
-    (JsPath \ "seasons").write[Set[Long]] and
-    (JsPath \ "sport").write[Sport] and
-    (JsPath \ "selected").write[Boolean]
-  )(unlift(Team.unapply))
+      (JsPath \ "name").write[String] and
+      (JsPath \ "player_ids").write[Set[Long]] and
+      (JsPath \ "seasons").write[Set[Long]] and
+      (JsPath \ "sport").write[Sport] and
+      (JsPath \ "selected").write[Boolean]
+    )(unlift(Team.unapply))
 
 
   def getNextGameByTeam: Set[(Team, Game)] = {

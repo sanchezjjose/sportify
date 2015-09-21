@@ -1,9 +1,6 @@
 package models
 
 
-/**
- * Model for the currently supported sports.
- */
 case class Sport(_id: Long,
                  name: String,
                  logo_image_url: String)

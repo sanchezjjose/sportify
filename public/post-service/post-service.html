@@ -1,0 +1,92 @@
+<link rel="import" href="../components/polymer/polymer.html">
+<link rel="import" href="../components/iron-ajax/iron-ajax.html">
+
+<dom-module id="post-service">
+  <style>
+
+  </style>
+  <template>
+    <iron-ajax id="ajax"
+               url="/api/posts"
+               handle-as="json"
+               last-response="{{posts}}">
+    </iron-ajax>
+    <iron-ajax id="likeCall"
+               method="PATCH"
+               content-type="application/json"
+               handle-as="json"
+               on-response="refresh">
+    </iron-ajax>
+    <iron-ajax id="updatePostCall"
+               method="PATCH"
+               content-type="application/json"
+               handle-as="json"
+               on-response="postUpdated">
+    </iron-ajax>
+    <iron-ajax id="removeCall"
+               method="DELETE"
+               body='{}'
+               content-type="application/json"
+               on-response="postRemoved"
+               handle-as="json">
+    </iron-ajax>
+    <iron-ajax id="addPost"
+               method="POST"
+               url="/api/post"
+               content-type="application/json"
+               on-response="postAdded"
+               handle-as="json">
+    </iron-ajax>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: 'post-service',
+    properties: {
+      posts: {
+        type: Array,
+        notify: true
+      }
+    },
+    refresh: function () {
+      this.$.ajax.generateRequest();
+    },
+    /**
+     * Update the service with the current favorite value.
+     * (Two-way data binding updates the favorite value
+     * stored locally.) If this was a real service, this
+     * method would do something useful.
+     *
+     * @method setFavorite
+     * @param id {Number} Unique ID for post.
+     * @param isFavorite {Boolean} True if the user marked this post as a favorite.
+     */
+    setFavorite: function(id, isFavorite) {
+      this.$.likeCall.url = '/api/post/' + id + '/like';
+      this.$.likeCall.body = JSON.stringify({ "favorite": isFavorite });
+      this.$.likeCall.generateRequest();
+    },
+    remove: function(id) {
+        this.$.removeCall.url = "/api/post/" + id;
+        this.$.removeCall.generateRequest();
+    },
+    update: function(id, post) {
+        this.$.updatePostCall.url = "/api/post/" + id;
+        this.$.updatePostCall.body = JSON.stringify({ "text": post.text });
+        this.$.updatePostCall.generateRequest();
+    },
+    addNew: function(post) {
+      this.$.addPost.body=JSON.stringify(post);
+      this.$.addPost.generateRequest();
+    },
+    postAdded: function() {
+      this.fire('post-added');
+    },
+    postRemoved: function() {
+      this.fire('post-removed');
+    },
+    postUpdated: function() {
+      this.fire('post-updated');
+    }
+  });
+</script>

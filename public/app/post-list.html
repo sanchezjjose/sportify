@@ -1,0 +1,134 @@
+<link rel="import" href="../components/polymer/polymer.html">
+<link rel="import" href="../components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../components/paper-button/paper-button.html">
+<link rel="import" href="../components/paper-input/paper-input.html">
+<link rel="import" href="../components/paper-toast/paper-toast.html">
+<link rel="import" href="../components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../components/iron-input/iron-input.html">
+<link rel="import" href="../post-service/post-service.html">
+<link rel="import" href="post-card.html">
+<link rel="import" href="post-elements.html">
+
+<dom-module id="post-list">
+  <style>
+  post-list {
+    display: block;
+    width: 100%;
+  }
+  post-card {
+    margin-bottom: 30px;
+  }
+  #main {
+    width: 900px;
+    margin: 0 auto;
+  }
+  </style>
+  <template>
+  <post-service id="service" posts="{{posts}}" on-post-added="postAdded" on-post-removed="postRemoved" on-post-updated="postUpdated"></post-service>
+
+    <div id="main">
+
+      <add-post-form id="newPostForm" hidden$="{{hideAddForm}}" on-add-post="handleAddPost" on-hide-adding-form="hideAddingForm"></add-post-form>
+
+      <template id="repeater" is="dom-repeat" observe="favorite" items="[[posts]]">
+        <post-card
+          favorite="[[item.favorite]]"
+          on-favorite-tap="handleFavorite"
+          text = "[[item.text]]"
+          on-delete-tap="confirmDelete"
+          on-update-post="handleUpdate">
+          <img src="[[item.avatar]]" width="70" height="70">
+          <h2>[[item.username]]</h2>
+        </post-card>
+      </template>
+
+    </div>
+    <add-post-button on-show-add-post-form="showAddForm"></add-post-button>
+
+    <paper-toast id="toastPostAdded" class="capsule"  text="Post added"></paper-toast>
+    <paper-toast id="toastPostRemoved" class="capsule"  text="Post removed"></paper-toast>
+    <paper-toast id="toastPostUpdated" class="capsule"  text="Post updated"></paper-toast>
+
+    <paper-spinner id="spinner"></paper-spinner>
+
+    <remove-post-confirm-dialog id="confirmDialog" on-delete-post="handleDelete"></remove-post-confirm-dialog>
+
+  </template>
+</dom-module>
+  <script>
+  Polymer({
+    is: "post-list",
+    properties: {
+      show: {
+        type: String,
+        observer: 'showChanged'
+      },
+      hideAddForm: {
+        type: Boolean,
+        value: true
+      },
+      addPostValue: {
+        type: String,
+        notify: true
+      }
+    },
+    ready: function () {
+      this.$.service.refresh();
+    },
+    handleFavorite: function(ev, detail) {
+      var post = this.$.repeater.itemForElement(ev.target);
+      this.$.service.setFavorite(post['_id']['$oid'], detail.favorite);
+    },
+    confirmDelete: function(ev, detail) {
+      var post = this.$.repeater.itemForElement(ev.target);
+      this.$.confirmDialog.toggle(post);
+    },
+    handleDelete: function(ev, post) {
+      this.$.spinner.active = true;
+      this.$.service.remove(post['_id']['$oid']);
+    },
+    handleUpdate: function(ev, text) {
+      var post = this.$.repeater.itemForElement(ev.target);
+      post.text = text;
+      this.$.spinner.active = true;
+      this.$.service.update(post['_id']['$oid'], post);
+    },
+    showChanged: function() {
+      this.$.repeater.filter = (this.show == 'favorites' ? this.favFilter : undefined)
+    },
+    favFilter: function(input) {
+      return input.favorite;
+    },
+    handleAddPost: function(event, detail, sender) {
+      this.$.spinner.active = true;
+      this.$.service.addNew(detail);
+      this.hideAddForm = !this.hideAddForm;
+    },
+    showAddForm: function(event, detail, sender) {
+      this.hideAddForm = !this.hideAddForm;
+
+      if (!this.hideAddForm) {
+        this.$.newPostForm.focus();
+      }
+    },
+    hideAddingForm: function(event, detail, sender) {
+      this.hideAddForm = !this.hideAddForm;
+    },
+    postAdded: function () {
+      this.$.newPostForm.resetForm();
+      this.$.toastPostAdded.toggle();
+      this.$.service.refresh();
+      this.$.spinner.active = false;
+    },
+    postRemoved: function () {
+      this.$.toastPostRemoved.toggle();
+      this.$.service.refresh();
+      this.$.spinner.active = false;
+    },
+    postUpdated: function () {
+      this.$.toastPostUpdated.toggle();
+      this.$.service.refresh();
+      this.$.spinner.active = false;
+    }
+  });
+  </script>

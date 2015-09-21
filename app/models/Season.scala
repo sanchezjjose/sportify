@@ -1,17 +1,11 @@
 package models
 
-import com.mongodb.casbah.Imports._
-import com.mongodb.casbah.commons.MongoDBObject
-import com.novus.salat._
-import com.sportify.db.MongoManagerFactory
-import utils.CustomPlaySalatContext
-import CustomPlaySalatContext._
 
 
-case class Season (_id: Long,
-                   title: String,
-                   game_ids: Set[Long],
-                   is_current_season: Boolean)
+ case class Season (_id: Long,
+                    title: String,
+                    game_ids: Set[Long],
+                    is_current_season: Boolean)
 
 object Season {
 
@@ -26,9 +20,6 @@ object Season {
   )(unlift(Season.unapply))
 
 
-  /*
-   * MONGO API -- TODO: move to separate DB Trait
-   */
 
   private val mongoManager = MongoManagerFactory.instance
 

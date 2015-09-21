@@ -1,20 +1,17 @@
 package models
 
-import com.mongodb.casbah.Imports._
-import com.mongodb.casbah.commons.MongoDBObject
-import com.novus.salat._
-import com.sportify.db.MongoManagerFactory
 import org.joda.time.DateTime
-import utils.CustomPlaySalatContext._
 
-case class EmailMessage(_id: Long,
-                        user_id: Long,
-                        game_id: Long,
-                        send_at: Long,
-                        sent_at: Option[Long],
-                        num_attempts: Int,
-                        recipient: String,
-                        status: String = "unsent")
+case class EmailMessage(
+  _id: Long,
+  user_id: Long,
+  game_id: Long,
+  send_at: Long,
+  sent_at: Option[Long],
+  num_attempts: Int,
+  recipient: String,
+  status: String = "unsent"
+)
 
 object EmailMessage {
 

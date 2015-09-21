@@ -1,0 +1,126 @@
+<link rel="import" href="../components/polymer/polymer.html">
+<link rel="import" href="../components/paper-fab/paper-fab.html">
+<link rel="import" href="../components/paper-dialog/paper-dialog.html">
+
+<dom-module id="add-post-button">
+    <template>
+        <style>
+            paper-fab {
+                position: fixed; bottom:20px; right:20px;
+            }
+        </style>
+        <paper-fab icon="add" on-tap="showAddPostForm"></paper-fab>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'add-post-button',
+        showAddPostForm: function(event, detail, sender) {
+            this.fire('show-add-post-form');
+        }
+    });
+</script>
+
+
+<dom-module id="add-post-form">
+    <style>
+        post-card {
+            margin-bottom: 30px;
+        }
+    </style>
+    <template>
+        <post-card nobuttons>
+            <img src="../images/avatar-02.svg" width="70" height="70">
+            <h2>Rob</h2>
+            <paper-input id="newPost" value="{{addPostValue}}" label="What's on your mind?" on-keydown="keydownHandler" autofocus></paper-input>
+        </post-card>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'add-post-form',
+        properties: {
+            addPostValue: {
+                type: String,
+                notify: true
+            }
+        },
+        resetForm: function() {
+            this.addPostValue = '';
+        },
+        focus: function() {
+            this.$.newPost.$.input.focus();
+        },
+        handlePostAdd: function () {
+            var post = {};
+            post.username = 'Rob';
+            post.avatar = '../images/avatar-02.svg';
+            post.favorite = false;
+            post.text = this.addPostValue;
+
+            this.fire('add-post', post);
+        },
+        keydownHandler: function (event, detail, sender) {
+            var key_enter = 13;
+            var key_escape = 27;
+            if (event.keyCode == key_enter) {
+                this.handlePostAdd();
+            }
+            if (event.keyCode == key_escape) {
+                this.resetForm();
+                this.fire('hide-adding-form');
+            }
+        }
+    });
+</script>
+
+
+
+<dom-module id="remove-post-confirm-dialog">
+    <style>
+        paper-dialog {
+            background: #C0C0C0;
+            border: 2px solid black;
+            color: rgba(0, 0, 0, 0.87);
+            margin: 32px;
+        }
+        post-card {
+            margin-bottom: 30px;
+        }
+    </style>
+    <template>
+        <paper-dialog id="confirmDialog">
+            <h2>Confirm</h2>
+            <paper-dialog-scrollable>
+                Are you sure to delete this post from <span>{{post.username}}</span>?
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button on-tap="handleAccept" dialog-confirm>Accept</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'remove-post-confirm-dialog',
+        properties: {
+            post: {
+                type: Object
+            }
+        },
+        handleAccept: function() {
+            this.fire('delete-post', this.post);
+        },
+        toggle: function (post) {
+            this.post = post;
+            this.$.confirmDialog.toggle();
+        }
+    });
+</script>
+
+
+

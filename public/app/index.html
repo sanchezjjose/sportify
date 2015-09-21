@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+
+<head>
+
+  <title>Posts</title>
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+  <script src="../components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../components/polymer/polymer.html">
+  <link rel="import" href="../components/paper-tabs/paper-tabs.html">
+  <link rel="import" href="../components/paper-tabs/paper-tab.html">
+
+  <link rel="import" href="../app/post-list.html">
+  <style>
+    html,body {
+      height: 100%;
+      margin: 0;
+      background-color: #E5E5E5;
+      font-family: 'RobotoDraft', sans-serif;
+    }
+
+
+    paper-tabs, core-toolbar {
+      background-color: #00bcd4;
+      color: #fff;
+      box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    core-toolbar paper-tabs {
+      box-shadow: none;
+    }
+
+    paper-tabs[noink][nobar] paper-tab.core-selected {
+      color: #ffff8d;
+    }
+
+    paper-tabs[alignBottom] {
+      box-shadow: 0px -2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .container {
+      margin-top:30px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<paper-tabs id="tabs" selected="0" tabindex="0" noink>
+  <paper-tab name="all">All</paper-tab>
+  <paper-tab name="favorites">Favorites</paper-tab>
+</paper-tabs>
+
+<div class="container layout vertical center">
+  <post-list show="all"></post-list>
+</div>
+
+<script>
+  var tabs = document.querySelector('paper-tabs');
+  var list = document.querySelector('post-list');
+
+  tabs.addEventListener('iron-select', function() {
+    list.show = tabs.selected == 0 ? "all" : "favorites";
+  });
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,156 @@
+<link rel="import" href="../components/polymer/polymer.html">
+<link rel="import" href="../components/iron-icon/iron-icon.html">
+<link rel="import" href="../components/iron-icons/iron-icons.html">
+<link rel="import" href="../components/paper-icon-button/paper-icon-button.html">
+
+<dom-module id="post-card">
+  <style>
+    :host {
+      display: block;
+      position: relative;
+      background-color: white;
+      padding: 20px;
+      width: 100%;
+      font-size: 1.2rem;
+      font-weight: 300;
+    }
+
+    :host .card-header {
+      margin-bottom: 10px;
+    }
+
+    :host ::content .card-header  h2 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 300;
+    }
+
+    :host ::content .card-header img {
+      width: 70px;
+      border-radius: 50%;
+      margin: 10px;
+    }
+
+    paper-icon-button {
+      position: absolute;
+      top: 3px;
+      color: #636363;
+    }
+
+    paper-icon-button[icon="create"] {
+      right: 57px;
+    }
+
+    paper-icon-button[icon="favorite"] {
+      right: 30px;
+    }
+
+    paper-icon-button[icon="delete"] {
+      right: 4px;
+    }
+
+    :host([favorite]) paper-icon-button[icon="favorite"] {
+      color: #da4336;
+    }
+
+    paper-input /deep/ .floated-label-placeholder {
+      display: none;
+    }
+
+    paper-input /deep/ .paper-input {
+      font-size: 1.2rem !important;
+      font-weight: 300 !important;
+      padding: 0;
+    }
+  </style>
+  <template>
+
+    <div class="card-header layout horizontal center">
+      <content select="img"></content>
+      <content select="h2"></content>
+
+    </div>
+
+    <div hidden$="{{nobuttons}}">
+      <paper-icon-button
+              id="create"
+              icon="create"
+              on-tap="editTapped">
+      </paper-icon-button>
+
+      <paper-icon-button
+              id="favicon"
+              icon="favorite"
+              on-tap="favoriteTapped">
+      </paper-icon-button>
+
+      <paper-icon-button
+              id="delete"
+              icon="delete"
+              on-tap="deleteTapped">
+      </paper-icon-button>
+    </div>
+
+    <content></content>
+
+    <p hidden$="{{viewMode}}"><paper-input id="postText" on-keydown="keydownHandler" value="{{text}}" /></p>
+    <p hidden$="{{!viewMode}}">[[text]]</p>
+
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: 'post-card',
+    properties: {
+      viewMode: {
+        type: Boolean,
+        value: true
+      },
+      favorite: {
+        type: Boolean,
+        notify: true,
+        reflectToAttribute: true
+      },
+      text: {
+        type:String
+      },
+      nobuttons: {
+        type: Boolean,
+        value: false
+      }
+    },
+    handleUpdate: function () {
+      this.fire('update-post', this.text);
+      this.view();
+      this.nobuttons = false;
+    },
+    keydownHandler: function (event, detail, sender) {
+      var key_enter = 13;
+      var key_escape = 27;
+      if (event.keyCode == key_enter) {
+        this.handleUpdate();
+      }
+      if (event.keyCode == key_escape) {
+        this.view();
+        this.nobuttons = false;
+      }
+    },
+    edit: function () {
+      this.viewMode = false;
+    },
+    view: function () {
+      this.viewMode = true;
+    },
+    favoriteTapped: function(event, detail, sender) {
+      this.fire('favorite-tap', {favorite: !this.favorite} );
+    },
+    deleteTapped: function(event, detail, sender) {
+      this.fire('delete-tap');
+    },
+    editTapped: function () {
+      this.edit();
+      this.nobuttons = true;
+      this.$.postText.$.input.focus();
+    }
+  });
+</script>

@@ -3,12 +3,9 @@ package controllers
 import models._
 import play.api.libs.json.Json
 import play.api.mvc.Controller
-import utils.{Helper, RequestHelper}
+import util.{Helper, RequestHelper}
 
-object Homepage extends Controller
-  with Secured
-  with Helper
-  with RequestHelper {
+object Homepage extends Controller with Secured with Helper with RequestHelper {
 
   def index = IsAuthenticated { implicit user => implicit request =>
     val tVm = buildTeamView

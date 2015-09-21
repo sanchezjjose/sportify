@@ -1,4 +1,4 @@
-FROM ingensi/play-framework:2.3.8
+FROM ingensi/play-framework:2.4.0
 MAINTAINER Jose Sanchez <sanchezjjose@gmail.com>
 
 

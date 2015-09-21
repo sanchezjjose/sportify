@@ -2,23 +2,23 @@ package controllers
 
 import models.Game
 import play.api.libs.json.Json
-import play.api.mvc.{Controller, Cookie}
-import utils.{Helper, Loggable, RequestHelper}
+import play.api.mvc.{Action, Controller, Cookie}
+import util.{Helper, Loggable, RequestHelper}
 
 object Rsvp extends Controller
-  with Helper
-  with RequestHelper
-  with Loggable
-  with Secured {
+ with Helper
+ with RequestHelper
+ with Loggable
+ with Secured {
 
-  def update(id: Long) = IsAuthenticated { implicit user => implicit request =>
-    (for {
-       rsvp: Cookie <- request.cookies.get("rsvp")
-       teamId: Cookie <- request.cookies.get("team_id")
-       playerId: Long = buildPlayerView(teamId.value.toLong).id
-       game: Game <- Game.findById(id)
+ def update(id: Long) = Action { /*implicit user*/ => implicit request =>
+   (for {
+     rsvp: Cookie <- request.cookies.get("rsvp")
+     teamId: Cookie <- request.cookies.get("team_id")
+     playerId: Long = buildPlayerView(teamId.value.toLong).id
+     game: Game <- Game.findById(id)
 
-     } yield {
+   } yield {
        val updatedGame = if (rsvp.value == "in") {
          game.copy(
            players_in = game.players_in + playerId,
@@ -32,13 +32,13 @@ object Rsvp extends Controller
          )
        }
 
-        Game.update(updatedGame)
+       Game.update(updatedGame)
 
-     }).map { updatedGame =>
-       Ok(Json.toJson(updatedGame))
+    }).map { updatedGame =>
+      Ok(Json.toJson(updatedGame))
 
-     }.getOrElse {
-       BadRequest("The expected content type was not received, or the data provided was invalid.")
-     }
+    }.getOrElse {
+      BadRequest("The expected content type was not received, or the data provided was invalid.")
+    }
   }
 }
