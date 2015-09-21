@@ -6,13 +6,12 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.libs.json.Json
 import play.api.mvc._
-import util.{Loggable, Helper, RequestHelper}
+import util.{Helper, RequestHelper}
 
 
 object Admin extends Controller
   with Helper
   with RequestHelper
-  with Loggable
   with Secured {
 
   val gameForm: Form[GameForm] = Form(

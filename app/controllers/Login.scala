@@ -5,9 +5,9 @@ import models._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
-import util.{Config, Helper, Loggable}
+import util.{Config, Helper}
 
-object Login extends Controller with Loggable with Helper with Config {
+object Login extends Controller with Helper with Config {
 
   val loginForm: Form[(String, String)] = {
     Form {
@@ -36,7 +36,7 @@ object Login extends Controller with Loggable with Helper with Config {
   }
 }
 
-trait Secured extends Loggable {
+trait Secured {
 
   private def sessionKey(request: RequestHeader): Option[String] = request.session.get("user_info")
 

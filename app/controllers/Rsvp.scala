@@ -3,12 +3,11 @@ package controllers
 import models.Game
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller, Cookie}
-import util.{Helper, Loggable, RequestHelper}
+import util.{Helper, RequestHelper}
 
 object Rsvp extends Controller
  with Helper
  with RequestHelper
- with Loggable
  with Secured {
 
  def update(id: Long) = Action { /*implicit user*/ => implicit request =>

@@ -2,7 +2,7 @@ package models
 
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import util.{Loggable, Helper}
+import util.Helper
 
 
 case class Game (_id: Long, // TODO: change from Long to Int for all '_id' variables
@@ -105,7 +105,7 @@ case class GameForm(number: Option[String],
                    gym: String,
                    locationDetails: Option[String],
                    opponent: String,
-                   result: Option[String]) extends Loggable with Helper {
+                   result: Option[String]) extends Helper {
 
  /**
   * Create new game from the add game form.

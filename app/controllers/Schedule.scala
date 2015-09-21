@@ -3,12 +3,11 @@ package controllers
 import models.ScheduleView
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
-import util.{Helper, Loggable, RequestHelper}
+import util.{Helper, RequestHelper}
 
 object Schedule extends Controller
   with Helper
   with RequestHelper
-  with Loggable
   with Secured {
 
   def schedule(teamId: Long) = Action { /*implicit user =>*/ implicit request =>

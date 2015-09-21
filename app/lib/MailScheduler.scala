@@ -3,10 +3,11 @@ package lib
 import java.util.concurrent.{Executors, TimeUnit}
 import models.{EmailMessage, Team, User}
 import org.joda.time.format.DateTimeFormat
-import util.{Helper, Loggable}
+import play.api.Logger
+import util.{Helper}
 
 
-class MailScheduler extends Loggable with Helper {
+class MailScheduler extends Helper {
 
   private val emailScheduler = Executors.newScheduledThreadPool(2)
 
@@ -17,7 +18,7 @@ class MailScheduler extends Loggable with Helper {
     emailScheduler.scheduleAtFixedRate(new Runnable {
 
       def run() {
-        log.info("checking for next game to create email messages...")
+        Logger.info("checking for next game to create email messages...")
 
         Team.getNextGameByTeam.foreach { case (team, nextGame) =>
           team.player_ids.foreach { playerId =>
@@ -40,7 +41,7 @@ class MailScheduler extends Loggable with Helper {
 
     emailScheduler.scheduleAtFixedRate(new Runnable {
       def run() {
-        log.info("checking for new emails to send...")
+        Logger.info("checking for new emails to send...")
 
         Team.getNextGameByTeam.foreach { case (team, nextGame) =>
           EmailMessage.findUnsent(nextGame._id).foreach { message =>
