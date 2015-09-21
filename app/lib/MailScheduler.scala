@@ -4,10 +4,10 @@ import java.util.concurrent.{Executors, TimeUnit}
 import models.{EmailMessage, Team, User}
 import org.joda.time.format.DateTimeFormat
 import play.api.Logger
-import util.{Helper}
+import util.{RequestHelper, Helper}
 
 
-class MailScheduler extends Helper {
+class MailScheduler extends RequestHelper {
 
   private val emailScheduler = Executors.newScheduledThreadPool(2)
 
@@ -27,7 +27,7 @@ class MailScheduler extends Helper {
 
               // This is pretty bad. Look into how to use unique index on game id and recipient instead.
               if (!EmailMessage.findByGameIdAndRecipient(nextGame._id, user.email).isDefined) {
-                val newMessage = EmailMessage(generateRandomId(), user._id, nextGame._id, sendAt, None, 0, user.email)
+                val newMessage = EmailMessage(Helper.generateRandomId(), user._id, nextGame._id, sendAt, None, 0, user.email)
                 EmailMessage.insert(newMessage)
               }
             }

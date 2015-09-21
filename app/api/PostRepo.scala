@@ -12,6 +12,7 @@ import play.modules.reactivemongo.ReactiveMongoApi
 import play.modules.reactivemongo.json.collection.JSONCollection
 
 trait PostRepo {
+
   def find()(implicit ec: ExecutionContext): Future[List[JsObject]]
 
   def update(selector: BSONDocument, update: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]

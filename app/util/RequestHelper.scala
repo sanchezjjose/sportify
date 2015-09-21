@@ -1,71 +1,47 @@
 package util
 
-import javax.inject.Inject
-
+import api.UserDb
 import models._
 import play.api.mvc._
-import play.modules.reactivemongo.{MongoController, ReactiveMongoComponents, ReactiveMongoApi}
-import reactivemongo.bson.{BSONObjectID, BSONDocument}
-import api.UserMongoDb
+import reactivemongo.bson.{BSONDocument, BSONObjectID}
 
 import scala.concurrent.Future
 
-class RequestHelper @Inject() (val reactiveMongoApi: ReactiveMongoApi)
-  extends MongoController
-  with ReactiveMongoComponents
-  with Helper {
+trait RequestHelper {
 
-  def userDb = new UserMongoDb(reactiveMongoApi)
+  val userDb: UserDb
 
-  def IsAuthenticated(f: => User => Request[AnyContent] => Future[Result]): EssentialAction = {
+  def isAuthenticatedAsync(f: => User => Request[AnyContent] => Future[Result]): EssentialAction = {
 
     def sessionKey(request: RequestHeader): Option[String] = request.session.get("user_info")
 
     def onUnauthorized(request: RequestHeader): Result = Results.Unauthorized
 
     Security.Authenticated(sessionKey, onUnauthorized) { email =>
-      val x: EssentialAction = userDb.findOne(BSONDocument("email" -> email)).map {
-        case None => Action(request => onUnauthorized(request))
-        case Some(user) => Action(request => f(user)(request))
-      }
-
-      x
-    }
-
-    def isAuthenticatedAsync(f: => User => Request[AnyContent] => Future[Result]) = {
-      val x = Security.Authenticated(sessionKey, onUnauthorized) { email =>
-        val y = userDb.findOne(BSONDocument("email" -> email)).map { _ =>
-          Action.async(request => Future successful onUnauthorized(request))
-        }
-
-        y
-      }
-
-      x
+      val user = User(111111L, "sanchezjjose@gmail.com", None, "Jose", "Sanchez")
+      Action.async(request => f(user)(request))
     }
   }
 
-  def withHomepageContext(request: Request[AnyContent], user: User, teamId: Long)(process: (HomepageView) => Result): Result = {
-    val teams = buildTeams(teamId)(user, request)
+  def withHomepageContext(request: Request[AnyContent], user: User, teamId: Long)(process: (HomepageView) => Result): Future[Result] = {
+    val teams = buildTeamView(Some(teamId))(user, request)
     val currentSeason = Team.findById(teamId).get.season_ids.flatMap(Season.findById).find(_.is_current_season)
     val nextGame = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
-
     val playersIn = nextGame.map(game => game.players_in.flatMap(id => userDb.find(BSONDocument("_id" -> BSONObjectID(id.toString)))))
-
     val playersOut = nextGame.map(game => game.players_out.flatMap(id => User.findByPlayerId(id))).getOrElse(Set.empty[User])
 
     process(HomepageView(teams, nextGame, playersIn, playersOut))
   }
 
-  def withRosterContext(request: Request[AnyContent], user: User, teamId: Long)(process: (RosterView) => Result): Result = {
-    val teams = buildTeams(teamId)(user, request)
-    val pVms = buildPlayerViews(teamId)(user, request).toList.sortBy(p => p.name)
+  def withRosterContext(request: Request[AnyContent], user: User, teamId: Long)(process: (RosterView) => Result): Future[Result] = {
+    val teams = buildTeamView(Some(teamId))(user, request)
+    val pVms = buildPlayerViews(Some(teamId))(user, request).toList.sortBy(p => p.name)
 
     process(RosterView(teams, pVms))
   }
 
-  def withScheduleContext(request: Request[AnyContent], user: User, teamId: Long)(process: (ScheduleView) => Result): Result = {
-    val teams = buildTeams(teamId)(user, request)
+  def withScheduleContext(request: Request[AnyContent], user: User, teamId: Long)(process: (ScheduleView) => Result): Future[Result] = {
+    val teams = buildTeamView(Some(teamId))(user, request)
     val currentSeason = Team.findById(teamId).get.season_ids.flatMap(Season.findById).find(_.is_current_season)
     val games = currentSeason.map(_.game_ids.flatMap(Game.findById).toList.sortBy(_.number)).getOrElse(List.empty[Game])
     val nextGame = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
@@ -73,9 +49,9 @@ class RequestHelper @Inject() (val reactiveMongoApi: ReactiveMongoApi)
     process(ScheduleView(teams, currentSeason, games, nextGame))
   }
 
-  def withAccountContext(request: Request[AnyContent], user: User, teamId: Long)(process: (AccountView, PlayerViewModel) => Result): Result = {
-    val teams = buildTeams(teamId)(user, request)
-    val pVm = buildPlayerView(teamId)(user, request)
+  def withAccountContext(request: Request[AnyContent], user: User, teamId: Long)(process: (AccountView, PlayerViewModel) => Result): Future[Result] = {
+    val teams = buildTeamView(Some(teamId))(user, request)
+    val pVm = buildPlayerView(Some(teamId))(user, request)
     val accountView = AccountView(
       teams = teams,
       playerId = pVm.id,
@@ -90,5 +66,35 @@ class RequestHelper @Inject() (val reactiveMongoApi: ReactiveMongoApi)
     )
 
     process(accountView, pVm)
+  }
+
+  def buildTeamView(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): TeamViewModel = {
+    (for {
+      selectedTeam <- Team.findById( getTeamId(user, teamIdOpt) )
+      teams = Team.findAllByUser(user)
+      otherTeams = teams.filter(team => team._id != selectedTeam._id)
+
+    } yield {
+        TeamViewModel(selectedTeam.copy(selected = true), otherTeams)
+      }).get
+  }
+
+  def buildPlayerView(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): PlayerViewModel = {
+    buildPlayerViews(teamIdOpt).find(pVm => user.players.exists(_.id == pVm.id)).get
+  }
+
+  def buildPlayerViews(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Set[PlayerViewModel] = {
+    for {
+      playerId <- buildTeamView(teamIdOpt).current.player_ids
+      user <- userDb.findByPlayerId(playerId)
+      player <- user.players.find(_.id == playerId)
+
+    } yield {
+      PlayerViewModel(player.id, user.fullName, player.number, user.phone_number, player.position)
+    }
+  }
+
+  private[util] def getTeamId(user: User, teamIdOpt: Option[Long]): Long = {
+    teamIdOpt.getOrElse(Team.findAllByUser(user).head._id)
   }
 }

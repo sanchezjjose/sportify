@@ -1,16 +1,20 @@
 package controllers
 
+import javax.inject.Inject
+
+import api.UserMongoDb
 import models.ScheduleView
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Controller}
-import util.{Helper, RequestHelper}
+import play.api.mvc.Controller
+import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
+import util.RequestHelper
 
-object Schedule extends Controller
-  with Helper
-  with RequestHelper
-  with Secured {
+class Schedule @Inject() (val reactiveMongoApi: ReactiveMongoApi)
+  extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  def schedule(teamId: Long) = Action { /*implicit user =>*/ implicit request =>
+  override val userDb = new UserMongoDb(reactiveMongoApi)
+
+  def schedule(teamId: Long) = isAuthenticatedAsync { user => implicit request =>
     withScheduleContext(request, user, teamId) { scheduleView: ScheduleView =>
       Ok(Json.toJson(scheduleView))
     }

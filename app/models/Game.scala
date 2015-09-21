@@ -105,9 +105,9 @@ case class GameForm(number: Option[String],
                    gym: String,
                    locationDetails: Option[String],
                    opponent: String,
-                   result: Option[String]) extends Helper {
+                   result: Option[String]) {
 
- /**
+ /*
   * Create new game from the add game form.
   */
  def toNewGame(seasonId: Long, isPlayoffGame: Boolean): Game = {
@@ -115,7 +115,7 @@ case class GameForm(number: Option[String],
    val gameNumberOpt = for (gameId <- Season.findLastGameIdInSeason(seasonId);
                             game <- Game.findById(gameId)) yield game.number
 
-   Game(_id = generateRandomId(),
+   Game(_id = Helper.generateRandomId(),
         number = gameNumberOpt.getOrElse(0) + 1, // Determine game number
         start_time = startTime,
         address = address,
@@ -128,7 +128,7 @@ case class GameForm(number: Option[String],
         is_playoff_game = isPlayoffGame)
  }
 
- /**
+ /*
   * Create a new game from existing game with values from the edit game form.
   */
  def toGame(gameId: Long, isPlayoffGame: Boolean): Game = {

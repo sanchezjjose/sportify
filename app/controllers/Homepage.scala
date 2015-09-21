@@ -1,18 +1,28 @@
 package controllers
 
-import models._
+import javax.inject.Inject
+
+import api.UserMongoDb
+import models.HomepageView
 import play.api.libs.json.Json
 import play.api.mvc.Controller
-import util.{Helper, RequestHelper}
+import play.modules.reactivemongo.{ReactiveMongoComponents, MongoController, ReactiveMongoApi}
+import util.RequestHelper
 
-object Homepage extends Controller with Secured with Helper with RequestHelper {
+import scala.concurrent.Future
 
-  def index = IsAuthenticated { implicit user => implicit request =>
-    val tVm = buildTeamView
-    Redirect(routes.Homepage.home(tVm.current._id))
+class Homepage @Inject() (val reactiveMongoApi: ReactiveMongoApi)
+  extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
+
+  override val userDb = new UserMongoDb(reactiveMongoApi)
+
+  def index = isAuthenticatedAsync { implicit user => implicit request =>
+    Future {
+      Redirect(routes.Homepage.home(buildTeamView().current._id))
+    }
   }
 
-  def home(teamId: Long) = IsAuthenticated { implicit user => implicit request =>
+  def home(teamId: Long) = isAuthenticatedAsync { implicit user => implicit request =>
     withHomepageContext(request, user, teamId) { homepageView: HomepageView =>
       Ok(Json.toJson(homepageView))
     }

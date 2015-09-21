@@ -1,4 +1,4 @@
-name := """PlayReactiveMongoPolymer"""
+name := """Sportify"""
 
 version := "1.0-SNAPSHOT"
 

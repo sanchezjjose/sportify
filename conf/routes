@@ -5,39 +5,29 @@
 # Home page
 GET     /                           controllers.Assets.at(path="/public", file="app/index.html")
 
+GET     /team/:teamId               controllers.Homepage.home(teamId: Long)
+GET     /team/:teamId/roster        controllers.Roster.roster(teamId: Long)
+GET     /team/:teamId/schedule      controllers.Schedule.schedule(teamId: Long)
+
+#GET     /team/:teamId/schedule/edit                                  controllers.Admin.edit(teamId: Long, game_id: Long)
+#GET     /team/:teamId/schedule/delete/:season_id/:game_id            controllers.Admin.delete(teamId: Long, season_id: Long, game_id: Long)
+#POST    /team/:teamId/schedule/save/:season_id/:is_playoff_game      controllers.Admin.save(teamId: Long, season_id: Long, is_playoff_game: String)
+#POST    /team/:teamId/schedule/update/:game_id/:is_playoff_game      controllers.Admin.update(teamId: Long, game_id: Long, is_playoff_game: String)
+
+GET     /account                                                     controllers.Account.account(team_id: Long)
+GET     /account/delete                                              controllers.Account.delete
+POST    /account/submit                                              controllers.Account.submit(team_id: Long)
+
+POST    /login/submit                                                controllers.Login.authenticate
+
+POST    /signup/submit                                               controllers.SignUp.submit
+
+PUT     /games/:id                  controllers.Rsvp.update(id: Long)
+
 GET     /api/posts                  controllers.Posts.list
 PATCH   /api/post/:id/like          controllers.Posts.like(id: String)
 PATCH   /api/post/:id               controllers.Posts.update(id: String)
 POST    /api/post                   controllers.Posts.add
 DELETE  /api/post/:id               controllers.Posts.delete(id : String)
-
-# RSVP
-#PUT     /games/:id                                                controllers.Rsvp.update(id: Long)
-
-# HOMEPAGE
-GET     /team/:teamId                                                controllers.Homepage.home(teamId: Long)
-
-# ROSTER
-G#ET     /team/:teamId/roster                                         controllers.Roster.roster(teamId: Long)
-
-# SCHEDULE
-#GET     /team/:teamId/schedule                                       controllers.Schedule.schedule(teamId: Long)
-
-# ADMIN
-#GET     /team/:teamId/schedule/edit                                  controllers.Admin.edit(teamId: Long, game_id: Long)
-#GET     /team/:teamId/schedule/delete/:season_id/:game_id            controllers.Admin.delete(teamId: Long, season_id: Long, game_id: Long)
-#POST    /team/:teamId/schedule/save/:season_id/:is_playoff_game      controllers.Admin.save(teamId: Long, season_id: Long, is_playoff_game: String)
-P#OST    /team/:teamId/schedule/update/:game_id/:is_playoff_game      controllers.Admin.update(teamId: Long, game_id: Long, is_playoff_game: String)
-
-# ACCOUNT
-#GET     /account                                                     controllers.Account.account(team_id: Long)
-#GET     /account/delete                                              controllers.Account.delete
-#POST    /account/submit                                              controllers.Account.submit(team_id: Long)
-
-# LOGIN
-POST    /login/submit                                                controllers.Login.authenticate
-
-# SIGNUP
-#POST    /signup/submit                                               controllers.SignUp.submit
 
 GET     /*file                      controllers.Assets.at(path="/public", file)

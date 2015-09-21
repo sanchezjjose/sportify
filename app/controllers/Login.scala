@@ -1,13 +1,21 @@
 package controllers
 
-import api.UserDb
-import models._
+import javax.inject.Inject
+
+import api.UserMongoDb
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
-import util.{Config, Helper}
+import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
+import reactivemongo.bson.BSONDocument
+import util.RequestHelper
 
-object Login extends Controller with Helper with Config {
+import scala.concurrent.Future
+
+class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
+  extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
+
+  override val userDb = new UserMongoDb(reactiveMongoApi)
 
   val loginForm: Form[(String, String)] = {
     Form {
@@ -15,40 +23,31 @@ object Login extends Controller with Helper with Config {
         "email" -> text,
         "password" -> text
       ) verifying("Invalid email or password.", result => result match {
-        case (email: String, password: String) => User.authenticate(email, password).isDefined
+        case (email: String, password: String) => userDb.authenticate(email, password).isDefined
       })
     }
   }
 
-  def authenticate = Action { implicit request =>
+  def authenticate = Action.async { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => {
-        Unauthorized("Invalid credentials")
+        Future successful Unauthorized("Invalid credentials")
       },
       credentials => {
-        implicit val user = User.findByEmail(credentials._1).get
-        val defaultTeamId = buildTeamView.current._id
-        Redirect(routes.Homepage.home(defaultTeamId))
-          .withSession("user_info" -> user.email)
-          .flashing("team_id" -> s"$defaultTeamId")
+
+        for {
+          userOpt <- userDb.findOne(BSONDocument("email" -> credentials._1))
+          currentTeam = buildTeamView()(userOpt.get, request)
+
+        } yield {
+          implicit val user = userOpt.get // TODO: handle Future[Option] the proper way
+          val defaultTeamId = currentTeam.current._id
+
+          Redirect(routes.Homepage.home(defaultTeamId))
+            .withSession("user_info" -> user.email)
+            .flashing("team_id" -> s"$defaultTeamId")
+        }
       }
     )
-  }
-}
-
-trait Secured {
-
-  private def sessionKey(request: RequestHeader): Option[String] = request.session.get("user_info")
-
-  private def onUnauthorized(request: RequestHeader): Result = Results.Unauthorized
-
-  def IsAuthenticated(f: => User => Request[AnyContent] => Result): EssentialAction = {
-    Security.Authenticated(sessionKey, onUnauthorized) { email =>
-      User.findByEmail(email).map { user =>
-        Action(request => f(user)(request))
-      }.getOrElse {
-        Action(request => onUnauthorized(request))
-      }
-    }
   }
 }

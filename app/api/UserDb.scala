@@ -1,5 +1,7 @@
 package api
 
+import java.util.concurrent.TimeUnit
+
 import org.mindrot.jbcrypt.BCrypt
 import models.{AccountView, Player}
 import models.{User, JsonUserFormats}, JsonUserFormats._
@@ -11,24 +13,25 @@ import reactivemongo.bson.{BSONObjectID, BSONDocument}
 import reactivemongo.api.commands.WriteResult
 import util.Helper
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 
 trait UserDb {
 
+  def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[User]]
+
   def find(query: BSONDocument): Future[List[JsObject]]
 
-  def create(user: User): Unit
+  def save(document: BSONDocument): Future[WriteResult]
 
-  def create(email: Option[String], password: Option[String], firstName: String, lastName: Option[String], players: Set[Player]): Unit
+  def update(user: User, data: AccountView): Future[WriteResult]
 
-  def update(user: User, data: AccountView): Unit
+  def updatePlayer(user: User, data: AccountView): Future[WriteResult]
 
-  def updatePlayer(user: User, data: AccountView): Unit
+  def updateAccessToken(access_token: String, user_id: String): Future[WriteResult]
 
-  def updateAccessToken(access_token: String, user_id: String): Unit
-
-  def delete(user: User): Unit
+  def delete(user: User): Future[WriteResult]
 }
 
 class UserMongoDb(reactiveMongoApi: ReactiveMongoApi) extends UserDb {
@@ -38,18 +41,12 @@ class UserMongoDb(reactiveMongoApi: ReactiveMongoApi) extends UserDb {
 
   protected def collection = reactiveMongoApi.db.collection[JSONCollection]("users")
 
+  // TODO: Make this method Reactive
   def authenticate(email: String, password: String): Option[User] = {
-    val query = BSONDocument("email" -> email, "password" -> password)
-//    userOpt.filter(user => BCrypt.checkpw(password, user.password.get))
-    val x = for {
-      userOpt: Future[Option[User]] <- findOne(query)
-      user: User <- userOpt.get
-      pw <- BCrypt.checkpw(password, user.password.get)
-    } yield {
-      user
-    }
 
-    x
+    Await
+      .result(findOne(BSONDocument("email" -> email, "password" -> password)), Duration(10, TimeUnit.SECONDS))
+      .filter(user => BCrypt.checkpw(password, user.password.get))
   }
 
   def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[User]] = {
@@ -60,40 +57,7 @@ class UserMongoDb(reactiveMongoApi: ReactiveMongoApi) extends UserDb {
     collection.find(query).cursor[User].collect[List]()
   }
 
-//  def findByEmail(email: String): Option[User] = {
-//    val dbObject = collection.findOne( MongoDBObject("email" -> email) )
-//    dbObject.map(o => grater[User].asObject(o))
-//  }
-//
-//  def findByEmailAndPassword(email: String, password: String): Option[User] = {
-//    val dbObject = collection.findOne( MongoDBObject("email" -> email, "password" -> password) )
-//    dbObject.map(o => grater[User].asObject(o))
-//  }
-//
-//  def findByPlayerId(id: Long): Option[User] = {
-//    val dbObject = collection.findOne( MongoDBObject("players.id" -> id) )
-//    dbObject.map(o => grater[User].asObject(o))
-//  }
-//
-//  def findAll: Future[List[JsObject]] =
-//    collection.find(Json.obj()).cursor[JsObject].collect[List]()
-
-  def create(user: User) = {
-    val dbo = grater[User].asDBObject(user)
-    dbo.put("_id", generateRandomId())
-    dbo.put("password", user.hashPassword)
-
-    collection += dbo
-  }
-
-  def create(email: Option[String], password: Option[String], firstName: String, lastName: Option[String], players: Set[Player]) = {
-    val id = generateRandomId()
-    val user = User(id, email.getOrElse(""), password, firstName, lastName.getOrElse(""), players)
-    val dbo = grater[User].asDBObject(user)
-    password.map(_ => dbo.put("password", user.hashPassword))
-
-    collection += dbo
-  }
+  def save(document: BSONDocument) = collection.save(document)
 
   def update(user: User, data: AccountView) = {
     collection.update(MongoDBObject("_id" -> user._id),

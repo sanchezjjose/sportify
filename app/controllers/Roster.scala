@@ -1,17 +1,20 @@
 package controllers
 
+import javax.inject.Inject
+
+import api.UserMongoDb
 import models.RosterView
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Controller}
-import util.{Config, Helper, RequestHelper}
+import play.api.mvc.Controller
+import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
+import util.RequestHelper
 
-object Roster extends Controller
-  with Helper
-  with RequestHelper
-  with Config
-  with Secured {
+class Roster @Inject() (val reactiveMongoApi: ReactiveMongoApi)
+  extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  def roster(teamId: Long) = Action { /*implicit user*/ => implicit request =>
+  override val userDb = new UserMongoDb(reactiveMongoApi)
+
+  def roster(teamId: Long) = isAuthenticatedAsync { user => implicit request =>
     withRosterContext(request, user, teamId) { rosterView: RosterView =>
       Ok(Json.toJson(rosterView))
     }

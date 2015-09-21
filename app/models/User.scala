@@ -35,3 +35,14 @@ object JsonUserFormats {
   // Generates Writes and Reads for Feed and User thanks to Json Macros
   implicit val userFormat = Json.format[User]
 }
+
+object UserFields {
+  val Id = "_id"
+  val Email = "email"
+  val Password = "password"
+  val FirstName = "first_name"
+  val LastName = "last_name"
+  val Players = "players"
+  val IsAdmin = "is_admin"
+  val PhoneNumber = "phone_number"
+}
