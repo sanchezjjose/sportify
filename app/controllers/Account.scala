@@ -1,28 +1,35 @@
 package controllers
 
 import javax.inject.Inject
-
-import api.UserMongoDb
+import api.SportifyDbApi
 import models._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.libs.json.Json
 import play.api.mvc._
-import play.modules.reactivemongo.{ReactiveMongoComponents, MongoController, ReactiveMongoApi}
+import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
+import reactivemongo.bson.BSONDocument
 import util.RequestHelper
-
 import scala.concurrent.Future
 
 
 class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val userDb = new UserMongoDb(reactiveMongoApi)
+  override val db = new SportifyDbApi(reactiveMongoApi)
 
-  private var tVm: TeamViewModel = _
-  private var pVm: PlayerViewModel = _
+  private case class AccountForm(
+    email: String,
+    password: Option[String],
+    firstName: String,
+    lastName: String,
+    number: Int,
+    phoneNumber: Option[String],
+    position: Option[String],
+    isAdmin: Boolean
+  )
 
-  val userForm: Form[AccountView] = Form(
+  val userForm: Form[AccountForm] = Form(
     mapping(
       "email" -> email,
       "password" -> optional(text),
@@ -35,7 +42,7 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
     ) {
       // Data Binding
       (email, password, firstName, lastName, number, phoneNumber, position, isAdmin) =>
-        AccountView(tVm, pVm.id, email, password, firstName, lastName, number, phoneNumber, position, isAdmin)
+        AccountForm(email, password, firstName, lastName, number, phoneNumber, position, isAdmin)
     } {
       // Data Unbinding
       userForm =>
@@ -46,35 +53,44 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
   def account(teamId: Long) = isAuthenticatedAsync { user => implicit request =>
     withAccountContext(request, user, teamId) { (accountView: AccountView, playerViewModel: PlayerViewModel) =>
-      pVm = playerViewModel // TODO: REMOVE THIS HACK
-
       Ok(Json.toJson(accountView))
     }
   }
 
   def delete = isAuthenticatedAsync { user => implicit request =>
-    Future {
-      User.delete(user)
+    db.userDb.remove(BSONDocument(UserFields.Id -> user._id)).map { _ =>
       NoContent
     }
   }
 
   def submit(teamId: Long) = isAuthenticatedAsync { user => implicit request =>
-    Future {
-      tVm = buildTeamView(teamId)
+    userForm.bindFromRequest.fold(
+      errors => Future successful BadRequest("An error has occurred"),
 
-      userForm.bindFromRequest.fold(
-        errors => BadRequest("An error has occurred"),
+      userFormData => {
 
-        userFormData => {
-          User.update(user, userFormData)
-          User.updatePlayer(user, userFormData)
+        withAccountContext(request, user, teamId) { (accountView: AccountView, playerViewModel: PlayerViewModel) =>
+
+          db.userDb.update(
+            BSONDocument(UserFields.Id -> user._id, PlayerFields.Id -> playerViewModel.id),
+            BSONDocument("$set" -> BSONDocument(
+              UserFields.Email -> userFormData.email,
+              UserFields.Password -> userFormData.password,
+              UserFields.FirstName -> userFormData.firstName,
+              UserFields.LastName -> userFormData.lastName,
+              UserFields.PhoneNumber -> userFormData.phoneNumber,
+              UserFields.Players -> BSONDocument(
+                PlayerFields.Position -> userFormData.position,
+                PlayerFields.Number -> userFormData.number,
+              )
+            ))
+          )
 
           Redirect(routes.Account.account(teamId)).flashing(
             "success" -> "Your account information has been successfully updated."
           )
         }
-      )
-    }
+      }
+    )
   }
 }

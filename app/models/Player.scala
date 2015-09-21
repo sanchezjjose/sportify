@@ -25,9 +25,11 @@ object PlayerViewModel {
 /**
 * A player is a registered user who is a part of a team.
 */
-case class Player(id: Long,
-                 number: Int,
-                 position: Option[String]) {
+case class Player(
+  id: Long,
+  number: Int,
+  position: Option[String]
+) {
 
  /*
   * The overrides below are there to avoid the scenario where a player
@@ -61,4 +63,10 @@ object Player {
    (JsPath \ "position").write[Option[String]]
  )(unlift(Player.unapply))
 
+}
+
+object PlayerFields {
+  val Id = "id"
+  val Number = "number"
+  val Position = "position"
 }

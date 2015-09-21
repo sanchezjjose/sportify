@@ -12,7 +12,7 @@ import util.RequestHelper
 class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val userDb = new UserMongoDb(reactiveMongoApi)
+  override val db = new UserMongoDb(reactiveMongoApi)
 
  def update(id: Long) = isAuthenticatedAsync { user => implicit request =>
    (for {

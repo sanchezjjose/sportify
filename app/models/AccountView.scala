@@ -3,16 +3,18 @@ package models
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
 
-case class AccountView(teams: TeamViewModel,
-                      playerId: Long,
-                      email: String,
-                      password: Option[String],
-                      firstName: String,
-                      lastName: String,
-                      number: Int,
-                      phoneNumber: Option[String],
-                      position: Option[String],
-                      isAdmin: Boolean)
+case class AccountView(
+  teams: TeamViewModel,
+  playerId: Long,
+  email: String,
+  password: Option[String],
+  firstName: String,
+  lastName: String,
+  number: Int,
+  phoneNumber: Option[String],
+  position: Option[String],
+  isAdmin: Boolean
+)
 
 object AccountView {
 

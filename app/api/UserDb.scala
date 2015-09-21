@@ -21,17 +21,23 @@ trait UserDb {
 
   def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[User]]
 
-  def find(query: BSONDocument): Future[List[JsObject]]
+  def find(query: BSONDocument)(implicit ec: ExecutionContext): Future[List[User]]
 
-  def save(document: BSONDocument): Future[WriteResult]
+  def save(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
 
-  def update(user: User, data: AccountView): Future[WriteResult]
+  def update(selector: BSONDocument, update: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
 
-  def updatePlayer(user: User, data: AccountView): Future[WriteResult]
+  def remove(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
 
-  def updateAccessToken(access_token: String, user_id: String): Future[WriteResult]
+  // DEPRECATE
 
-  def delete(user: User): Future[WriteResult]
+  def update(user: User, data: AccountView)(implicit ec: ExecutionContext): Future[WriteResult]
+
+  def updatePlayer(user: User, data: AccountView)(implicit ec: ExecutionContext): Future[WriteResult]
+
+  def updateAccessToken(access_token: String, user_id: String)(implicit ec: ExecutionContext): Future[WriteResult]
+
+  def delete(user: User)(implicit ec: ExecutionContext): Future[WriteResult]
 }
 
 class UserMongoDb(reactiveMongoApi: ReactiveMongoApi) extends UserDb {
@@ -41,23 +47,34 @@ class UserMongoDb(reactiveMongoApi: ReactiveMongoApi) extends UserDb {
 
   protected def collection = reactiveMongoApi.db.collection[JSONCollection]("users")
 
-  // TODO: Make this method Reactive
   def authenticate(email: String, password: String): Option[User] = {
-
-    Await
-      .result(findOne(BSONDocument("email" -> email, "password" -> password)), Duration(10, TimeUnit.SECONDS))
+    Await.result(findOne(BSONDocument("email" -> email, "password" -> password)), Duration(10, TimeUnit.SECONDS))
       .filter(user => BCrypt.checkpw(password, user.password.get))
   }
 
-  def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[User]] = {
+  override def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[User]] = {
     collection.find(query).one[User]
   }
 
-  def find(query: BSONDocument)(implicit ec: ExecutionContext): Future[List[User]] = {
+  override def find(query: BSONDocument)(implicit ec: ExecutionContext): Future[List[User]] = {
     collection.find(query).cursor[User].collect[List]()
   }
 
-  def save(document: BSONDocument) = collection.save(document)
+  override def save(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult] = {
+    collection.save(document)
+  }
+
+  override def update(selector: BSONDocument, update: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult] = {
+    collection.update(selector, update)
+  }
+
+  override def remove(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult] = {
+    collection.remove(document)
+  }
+
+
+
+  // DEPRECATE
 
   def update(user: User, data: AccountView) = {
     collection.update(MongoDBObject("_id" -> user._id),

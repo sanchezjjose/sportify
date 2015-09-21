@@ -15,7 +15,7 @@ import scala.concurrent.Future
 class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val userDb = new UserMongoDb(reactiveMongoApi)
+  override val db = new UserMongoDb(reactiveMongoApi)
 
   val loginForm: Form[(String, String)] = {
     Form {
@@ -23,7 +23,7 @@ class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         "email" -> text,
         "password" -> text
       ) verifying("Invalid email or password.", result => result match {
-        case (email: String, password: String) => userDb.authenticate(email, password).isDefined
+        case (email: String, password: String) => db.authenticate(email, password).isDefined
       })
     }
   }
@@ -36,7 +36,7 @@ class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
       credentials => {
 
         for {
-          userOpt <- userDb.findOne(BSONDocument("email" -> credentials._1))
+          userOpt <- db.findOne(BSONDocument("email" -> credentials._1))
           currentTeam = buildTeamView()(userOpt.get, request)
 
         } yield {

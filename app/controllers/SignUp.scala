@@ -25,7 +25,7 @@ case class PlayerData(
 class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val userDb = new UserMongoDb(reactiveMongoApi)
+  override val db = new UserMongoDb(reactiveMongoApi)
 
   val signupForm: Form[PlayerData] = Form(
     mapping(
@@ -46,7 +46,6 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         BadRequest
       },
       data => {
-        import UserFields._
 
         val teamId = data.teamId
 
@@ -70,14 +69,18 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
           val updatedTeam = team.copy(player_ids = team.player_ids + player.id)
 
-          userDb.save(BSONDocument(
-            Id -> user._id,
-            Email -> user.email,
-            Password -> user.password,
-            FirstName -> user.first_name,
-            LastName -> user.last_name,
-            Players -> user.players,
-            PhoneNumber -> user.phone_number
+          db.save(BSONDocument(
+            UserFields.Id -> user._id,
+            UserFields.Email -> user.email,
+            UserFields.Password -> user.password,
+            UserFields.FirstName -> user.first_name,
+            UserFields.LastName -> user.last_name,
+            UserFields.Players -> BSONDocument(
+              PlayerFields.Id -> player.id,
+              PlayerFields.Number -> player.number,
+              PlayerFields.Position -> player.position
+            ),
+            UserFields.PhoneNumber -> user.phone_number
           ))
 
           Team.update(updatedTeam)

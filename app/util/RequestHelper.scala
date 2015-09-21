@@ -1,6 +1,6 @@
 package util
 
-import api.UserDb
+import api.{SportifyDbApi, UserDb}
 import models._
 import play.api.mvc._
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
@@ -9,7 +9,7 @@ import scala.concurrent.Future
 
 trait RequestHelper {
 
-  val userDb: UserDb
+  val db: SportifyDbApi
 
   def isAuthenticatedAsync(f: => User => Request[AnyContent] => Future[Result]): EssentialAction = {
 
@@ -27,7 +27,7 @@ trait RequestHelper {
     val teams = buildTeamView(Some(teamId))(user, request)
     val currentSeason = Team.findById(teamId).get.season_ids.flatMap(Season.findById).find(_.is_current_season)
     val nextGame = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
-    val playersIn = nextGame.map(game => game.players_in.flatMap(id => userDb.find(BSONDocument("_id" -> BSONObjectID(id.toString)))))
+    val playersIn = nextGame.map(game => game.players_in.flatMap(id => db.userDb.find(BSONDocument("_id" -> BSONObjectID(id.toString)))))
     val playersOut = nextGame.map(game => game.players_out.flatMap(id => User.findByPlayerId(id))).getOrElse(Set.empty[User])
 
     process(HomepageView(teams, nextGame, playersIn, playersOut))

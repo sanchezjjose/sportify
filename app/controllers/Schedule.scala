@@ -12,7 +12,7 @@ import util.RequestHelper
 class Schedule @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val userDb = new UserMongoDb(reactiveMongoApi)
+  override val db = new UserMongoDb(reactiveMongoApi)
 
   def schedule(teamId: Long) = isAuthenticatedAsync { user => implicit request =>
     withScheduleContext(request, user, teamId) { scheduleView: ScheduleView =>

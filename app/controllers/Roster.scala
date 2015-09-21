@@ -12,7 +12,7 @@ import util.RequestHelper
 class Roster @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val userDb = new UserMongoDb(reactiveMongoApi)
+  override val db = new UserMongoDb(reactiveMongoApi)
 
   def roster(teamId: Long) = isAuthenticatedAsync { user => implicit request =>
     withRosterContext(request, user, teamId) { rosterView: RosterView =>
