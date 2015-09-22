@@ -30,17 +30,19 @@ class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
   def authenticate = Action.async { implicit request =>
     loginForm.bindFromRequest.fold(
+
       formWithErrors => {
         Future successful Unauthorized("Invalid credentials")
       },
+
       credentials => {
 
         for {
           userOpt <- db.findOne(BSONDocument("email" -> credentials._1))
-          currentTeam = buildTeamView()(userOpt.get, request)
+          currentTeam <- buildTeamView()(userOpt.get, request)
 
         } yield {
-          implicit val user = userOpt.get // TODO: handle Future[Option] the proper way
+          val user = userOpt.get // TODO: handle Future[Option] the proper way
           val defaultTeamId = currentTeam.current._id
 
           Redirect(routes.Homepage.home(defaultTeamId))

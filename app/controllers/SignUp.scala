@@ -1,15 +1,16 @@
 package controllers
 
 import javax.inject.Inject
-
-import api.UserMongoDb
+import api.SportifyDbApi
 import models._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
-import play.modules.reactivemongo.{ReactiveMongoComponents, MongoController, ReactiveMongoApi}
+import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
 import reactivemongo.bson.BSONDocument
 import util.{Helper, RequestHelper}
+import scala.concurrent.Future
+
 
 case class PlayerData(
   email: String,
@@ -25,9 +26,9 @@ case class PlayerData(
 class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val db = new UserMongoDb(reactiveMongoApi)
+  override val db = new SportifyDbApi(reactiveMongoApi)
 
-  val signupForm: Form[PlayerData] = Form(
+  private val form: Form[PlayerData] = Form(
     mapping(
       "email" -> email,
       "password" -> nonEmptyText,
@@ -40,16 +41,20 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
     )(PlayerData.apply)(PlayerData.unapply)
   )
 
-  def submit = Action { implicit request =>
-    signupForm.bindFromRequest.fold(
+  def submit = Action.async { implicit request =>
+
+    form.bindFromRequest.fold(
+
       errors => {
-        BadRequest
+        Future successful BadRequest
       },
+
       data => {
 
         val teamId = data.teamId
 
-        Team.findById(teamId).map { team =>
+        db.teamDb.findOne(BSONDocument(TeamFields.Id -> teamId)).map { teamOpt =>
+          val team = teamOpt.get // TODO: handle Options the proper way
 
           val player = Player(
             id = Helper.generateRandomId(),
@@ -67,9 +72,7 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
             phone_number = data.phoneNumber
           )
 
-          val updatedTeam = team.copy(player_ids = team.player_ids + player.id)
-
-          db.save(BSONDocument(
+          db.userDb.save(BSONDocument(
             UserFields.Id -> user._id,
             UserFields.Email -> user.email,
             UserFields.Password -> user.password,
@@ -83,13 +86,20 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
             UserFields.PhoneNumber -> user.phone_number
           ))
 
-          Team.update(updatedTeam)
+          // Add player to the team
+          val updatedTeam = team.copy(player_ids = team.player_ids + player.id)
+
+          db.teamDb.update(
+            BSONDocument(TeamFields.Id -> team._id),
+            BSONDocument("$set" ->
+              BSONDocument(TeamFields.PlayerIds -> updatedTeam.player_ids)
+            )
+          )
 
           Redirect(routes.Homepage.home(teamId))
             .withSession("user_info" -> user.email)
             .flashing("team_id" -> s"$teamId")
-
-        }.getOrElse(BadRequest)
+        }
       })
   }
 }

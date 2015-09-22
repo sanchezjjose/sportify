@@ -2,14 +2,12 @@ package controllers
 
 import javax.inject.Inject
 
-import api.{SportifyDbApi, UserMongoDb}
+import api.SportifyDbApi
 import models.HomepageView
 import play.api.libs.json.Json
 import play.api.mvc.Controller
-import play.modules.reactivemongo.{ReactiveMongoComponents, MongoController, ReactiveMongoApi}
+import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
 import util.RequestHelper
-
-import scala.concurrent.Future
 
 class Homepage @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
@@ -17,8 +15,8 @@ class Homepage @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   override val db = new SportifyDbApi(reactiveMongoApi)
 
   def index = isAuthenticatedAsync { implicit user => implicit request =>
-    Future {
-      Redirect(routes.Homepage.home(buildTeamView().current._id))
+    buildTeamView().map { tVm =>
+      Redirect(routes.Homepage.home(tVm.current._id))
     }
   }
 
