@@ -2,16 +2,13 @@ package api
 
 import java.util.concurrent.TimeUnit
 
+import models.JsonUserFormats._
+import models.User
 import org.mindrot.jbcrypt.BCrypt
-import models.{AccountView, Player}
-import models.{User, JsonUserFormats}, JsonUserFormats._
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Json, JsObject}
 import play.modules.reactivemongo.ReactiveMongoApi
 import play.modules.reactivemongo.json.collection.JSONCollection
-import reactivemongo.bson.{BSONObjectID, BSONDocument}
 import reactivemongo.api.commands.WriteResult
-import util.Helper
+import reactivemongo.bson.BSONDocument
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -28,16 +25,6 @@ trait UserDb {
   def update(selector: BSONDocument, update: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
 
   def remove(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
-
-  // DEPRECATE
-
-  def update(user: User, data: AccountView)(implicit ec: ExecutionContext): Future[WriteResult]
-
-  def updatePlayer(user: User, data: AccountView)(implicit ec: ExecutionContext): Future[WriteResult]
-
-  def updateAccessToken(access_token: String, user_id: String)(implicit ec: ExecutionContext): Future[WriteResult]
-
-  def delete(user: User)(implicit ec: ExecutionContext): Future[WriteResult]
 }
 
 class UserMongoDb(reactiveMongoApi: ReactiveMongoApi) extends UserDb {
@@ -70,32 +57,5 @@ class UserMongoDb(reactiveMongoApi: ReactiveMongoApi) extends UserDb {
 
   override def remove(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult] = {
     collection.remove(document)
-  }
-
-
-
-  // DEPRECATE
-
-  def update(user: User, data: AccountView) = {
-    collection.update(MongoDBObject("_id" -> user._id),
-      $set("email" -> data.email,
-           "password" -> data.password.filter(_.trim != "").map(hashPassword).getOrElse(user.password),
-           "first_name" -> data.firstName,
-           "last_name" -> data.lastName,
-           "phone_number" -> data.phoneNumber)
-    )
-  }
-
-  def updatePlayer(user: User, data: AccountView) = {
-    collection.update(MongoDBObject("_id" -> user._id, "players.id" -> data.playerId),
-      $set(
-        "players.$.position" -> data.position,
-        "players.$.number" -> data.number)
-    )
-  }
-
-  def delete(user: User) = {
-    val dbo = grater[User].asDBObject(user)
-    collection -= dbo
   }
 }

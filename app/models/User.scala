@@ -1,10 +1,6 @@
 package models
 
-import api.UserDb
 import org.mindrot.jbcrypt.BCrypt
-import play.api.libs.functional.syntax._
-import util.Helper
-
 
 case class User (
   _id: Long, 
@@ -12,7 +8,7 @@ case class User (
   password: Option[String], 
   first_name: String, 
   last_name: String, 
-  players: Set[Player] = Set.empty[Player], 
+  players: Set[Player] = Set.empty[Player],
   is_admin: Boolean = false, 
   phone_number: Option[String] = None
 ) {

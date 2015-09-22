@@ -68,7 +68,7 @@ trait RequestHelper {
     process(accountView, pVm)
   }
 
-  def buildTeamView(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): TeamViewModel = {
+  def buildTeamView(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[TeamViewModel] = {
     (for {
       selectedTeam <- Team.findById( getTeamId(user, teamIdOpt) )
       teams = Team.findAllByUser(user)
@@ -77,13 +77,33 @@ trait RequestHelper {
     } yield {
         TeamViewModel(selectedTeam.copy(selected = true), otherTeams)
       }).get
+
+
+    val x = (for {
+      selectedTeam <- db.teamDb.findOne(BSONDocument(TeamFields.Id -> getTeamId(user, teamIdOpt)))
+      teams <- db.teamDb.find(BSONDocument())
+      otherTeams = teams.filter(team => team._id != selectedTeam._id)
+
+    } yield {
+        TeamViewModel(selectedTeam.copy(selected = true), otherTeams)
+      }).get
+
+    x
+
+    val y = db.teamDb.findOne(BSONDocument(TeamFields.Id -> getTeamId(user, teamIdOpt))).map { teamOpt =>
+      val selectedTeam = teamOpt.get
+
+      db.teamDb.find(BSONDocument())
+    }
+
+    y
   }
 
-  def buildPlayerView(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): PlayerViewModel = {
+  def buildPlayerView(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[PlayerViewModel] = {
     buildPlayerViews(teamIdOpt).find(pVm => user.players.exists(_.id == pVm.id)).get
   }
 
-  def buildPlayerViews(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Set[PlayerViewModel] = {
+  def buildPlayerViews(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[Set[PlayerViewModel]] = {
     for {
       playerId <- buildTeamView(teamIdOpt).current.player_ids
       user <- userDb.findByPlayerId(playerId)

@@ -23,3 +23,9 @@ object Sport {
     val Basketball, Softball, Soccer, Football, Ping_Pong = Value
   }
 }
+
+object SportFields {
+  val Id = "_id"
+  val Name = "name"
+  val LogoImageUrl = "logo_image_url"
+}
