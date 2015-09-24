@@ -35,20 +35,20 @@ class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         Future successful Unauthorized("Invalid credentials")
       },
 
-      {  case (username, password) => {
+      credentials => {
+        val (username, _) = credentials
 
-          for {
-            userOpt <- db.findOne(BSONDocument("email" -> username))
-            currentTeam <- buildTeamView()(userOpt.get, request)
+        for {
+          userOpt <- db.findOne(BSONDocument("email" -> username))
+          currentTeam <- buildTeamView()(userOpt.get, request)
 
-          } yield {
-            val user = userOpt.get // TODO: handle Future[Option] the proper way
-            val defaultTeamId = currentTeam.current._id
+        } yield {
+          val user = userOpt.get // TODO: handle Future[Option] the proper way
+          val defaultTeamId = currentTeam.current._id
 
-            Redirect(routes.Homepage.home(defaultTeamId))
-              .withSession("user_info" -> user.email)
-              .flashing("team_id" -> s"$defaultTeamId")
-          }
+          Redirect(routes.Homepage.home(defaultTeamId))
+            .withSession("user_info" -> user.email)
+            .flashing("team_id" -> s"$defaultTeamId")
         }
       }
     )
