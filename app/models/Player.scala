@@ -27,6 +27,7 @@ object PlayerViewModel {
 */
 case class Player(
   id: Long,
+  user_id: Long,
   number: Int,
   position: Option[String]
 ) {
@@ -59,6 +60,7 @@ object Player {
 
  implicit val playerWrites: Writes[Player] = (
    (JsPath \ "id").write[Long] and
+   (JsPath \ "user_id").write[Long] and
    (JsPath \ "number").write[Int] and
    (JsPath \ "position").write[Option[String]]
  )(unlift(Player.unapply))
@@ -67,6 +69,7 @@ object Player {
 
 object PlayerFields {
   val Id = "id"
+  val UserId = "user_id"
   val Number = "number"
   val Position = "position"
 }

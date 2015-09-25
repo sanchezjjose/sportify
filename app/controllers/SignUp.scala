@@ -56,20 +56,24 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         db.teamDb.findOne(BSONDocument(TeamFields.Id -> teamId)).map { teamOpt =>
           val team = teamOpt.get // TODO: handle Options the proper way
 
-          val player = Player(
-            id = Helper.generateRandomId(),
-            number = data.jerseyNumber,
-            position = data.position
-          )
+          val playerId = Helper.generateRandomId()
+          val userId = Helper.generateRandomId()
 
           val user = User(
-            _id = Helper.generateRandomId(),
+            _id = userId,
             email = data.email,
             password = Some(data.password),
             first_name = data.firstName,
             last_name = data.lastName,
-            player_ids = Set(player.id),
+            player_ids = Set(playerId),
             phone_number = data.phoneNumber
+          )
+
+          val player = Player(
+            id = playerId,
+            user_id =userId,
+            number = data.jerseyNumber,
+            position = data.position
           )
 
           // TODO: both save commands should happen as a transaction

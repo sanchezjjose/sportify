@@ -30,22 +30,22 @@ trait RequestHelper {
   }
 
   def withHomepageContext(request: Request[AnyContent], user: User, teamId: Long)(process: (HomepageView) => Result): Future[Result] = {
-    val teams = buildTeamView(Some(teamId))(user, request)
-    val currentSeason = Team.findById(teamId).get.season_ids.flatMap(Season.findById).find(_.is_current_season)
-    val nextGame = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
-    val playersIn = nextGame.map(game => game.players_in.flatMap(id => db.userDb.find(BSONDocument("_id" -> BSONObjectID(id.toString)))))
-    val playersOut = nextGame.map(game => game.players_out.flatMap(id => User.findByPlayerId(id))).getOrElse(Set.empty[User])
 
     for {
       tVm <- buildTeamView(Some(teamId))(user, request)
-      nextGame <- db.gameDb.findNextGame(tVm.current.)
+      seasonId <- tVm.current.season_ids
+      currentSeasonOpt <- db.seasonDb.findOne(BSONDocument(SeasonFields.Id -> seasonId, SeasonFields.IsCurrentSeason -> true))
+      nextGame <- db.gameDb.findNextGame(currentSeasonOpt.get.game_ids)
+      playerInId <- nextGame.get.players_in
+      playerOutId <- nextGame.get.players_out
+      playerInOpt <- db.playerDb.findOne(BSONDocument(PlayerFields.Id -> playerInId))
+      playersInUser <- db.userDb.find(BSONDocument(UserFields.Id -> playerInOpt.get.user_id))
+      playerOutOpt <- db.playerDb.findOne(BSONDocument(PlayerFields.Id -> playerOutId))
+      playersOutUser <- db.userDb.find(BSONDocument(UserFields.Id -> playerOutOpt.get.user_id))
 
     } yield {
-
+      process(HomepageView(tVm, nextGame, playersInUser.toSet, playersOutUser.toSet))
     }
-
-
-    process(HomepageView(teams, nextGame, playersIn, playersOut))
   }
 
   def withRosterContext(request: Request[AnyContent], user: User, teamId: Long)(process: (RosterView) => Result): Future[Result] = {
@@ -59,12 +59,18 @@ trait RequestHelper {
   }
 
   def withScheduleContext(request: Request[AnyContent], user: User, teamId: Long)(process: (ScheduleView) => Result): Future[Result] = {
-    val teams = buildTeamView(Some(teamId))(user, request)
-    val currentSeason = Team.findById(teamId).get.season_ids.flatMap(Season.findById).find(_.is_current_season)
-    val games = currentSeason.map(_.game_ids.flatMap(Game.findById).toList.sortBy(_.number)).getOrElse(List.empty[Game])
-    val nextGame = currentSeason.flatMap(s => Game.getNextGame(s.game_ids))
 
-    process(ScheduleView(teams, currentSeason, games, nextGame))
+    for {
+      tVm <- buildTeamView(Some(teamId))(user, request)
+      seasonId <- tVm.current.season_ids
+      currentSeasonOpt <- db.seasonDb.findOne(BSONDocument(SeasonFields.Id -> seasonId, SeasonFields.IsCurrentSeason -> true))
+      nextGame <- db.gameDb.findNextGame(currentSeasonOpt.get.game_ids)
+      gameId <- currentSeasonOpt.get.game_ids
+      games <- db.gameDb.find(BSONDocument(GameFields.Id -> gameId))
+
+    } yield {
+      process(ScheduleView(tVm, currentSeasonOpt, games, nextGame))
+    }
   }
 
   def withAccountContext(request: Request[AnyContent], user: User, teamId: Long)(process: (AccountView, PlayerViewModel) => Result): Future[Result] = {
@@ -87,43 +93,26 @@ trait RequestHelper {
   }
 
   def buildTeamView(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[TeamViewModel] = {
-    (for {
-      selectedTeam <- Team.findById( getTeamId(user, teamIdOpt) )
-      teams = Team.findAllByUser(user)
-      otherTeams = teams.filter(team => team._id != selectedTeam._id)
 
-    } yield {
-        TeamViewModel(selectedTeam.copy(selected = true), otherTeams)
-      }).get
-
-
-    val x = (for {
-      selectedTeam <- db.teamDb.findOne(BSONDocument(TeamFields.Id -> getTeamId(user, teamIdOpt)))
+    for {
+      selectedTeamOpt <- db.teamDb.findOne(BSONDocument(TeamFields.Id -> getTeamId(user, teamIdOpt)))
       teams <- db.teamDb.find(BSONDocument())
-      otherTeams = teams.filter(team => team._id != selectedTeam._id)
+      otherTeams = teams.filter(team => team._id != selectedTeamOpt.get._id)
 
     } yield {
-        TeamViewModel(selectedTeam.copy(selected = true), otherTeams)
-      }).get
-
-    x
-
-    val y = db.teamDb.findOne(BSONDocument(TeamFields.Id -> getTeamId(user, teamIdOpt))).map { teamOpt =>
-      val selectedTeam = teamOpt.get
-
-      db.teamDb.find(BSONDocument())
+      TeamViewModel(selectedTeamOpt.get.copy(selected = true), otherTeams)
     }
-
-    y
   }
 
   def buildPlayerView(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[PlayerViewModel] = {
+
     buildPlayerViews(teamIdOpt).map { pVms =>
       pVms.find(pVm => user.player_ids.contains(pVm.id)).get
     }
   }
 
   private[util] def buildPlayerViews(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[Set[PlayerViewModel]] = {
+
     for {
       tVm <- buildTeamView(teamIdOpt)
       playerId <- tVm.current.player_ids
