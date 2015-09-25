@@ -10,7 +10,8 @@ import play.api.mvc._
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
 import reactivemongo.bson.BSONDocument
 import util.RequestHelper
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
+import ExecutionContext.Implicits.global
 
 
 class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
@@ -78,11 +79,15 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
               UserFields.Password -> userFormData.password,
               UserFields.FirstName -> userFormData.firstName,
               UserFields.LastName -> userFormData.lastName,
-              UserFields.PhoneNumber -> userFormData.phoneNumber,
-              UserFields.Players -> BSONDocument(
-                PlayerFields.Position -> userFormData.position,
-                PlayerFields.Number -> userFormData.number,
-              )
+              UserFields.PhoneNumber -> userFormData.phoneNumber
+            ))
+          )
+
+          db.playerDb.update(
+            BSONDocument(PlayerFields.Id -> playerViewModel.id),
+            BSONDocument("$set" -> BSONDocument(
+              PlayerFields.Position -> userFormData.position,
+              PlayerFields.Number -> userFormData.number
             ))
           )
 

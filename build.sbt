@@ -21,4 +21,4 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 PlayKeys.fileWatchService := play.runsupport.FileWatchService.sbt(2000)
 
-fork in run := true
+fork in run := false

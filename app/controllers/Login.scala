@@ -9,6 +9,7 @@ import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMo
 import reactivemongo.bson.BSONDocument
 import util.RequestHelper
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
 class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)

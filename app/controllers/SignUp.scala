@@ -10,6 +10,7 @@ import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMo
 import reactivemongo.bson.BSONDocument
 import util.{Helper, RequestHelper}
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
 case class PlayerData(

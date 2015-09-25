@@ -1,11 +1,12 @@
 package models
 
 
-
- case class Season (_id: Long,
-                    title: String,
-                    game_ids: Set[Long],
-                    is_current_season: Boolean)
+case class Season (
+  _id: Long,
+  title: String,
+  game_ids: Set[Long],
+  is_current_season: Boolean
+)
 
 object Season {
 

@@ -13,9 +13,9 @@ import scala.concurrent.{ExecutionContext, Future}
 trait GameDb {
 
   // TODO: move to separate API
-  def findNextGame(gameIds: Set[Long]): Future[Option[Game]]
+  def findNextGame(gameIds: Set[Long])(implicit ec: ExecutionContext): Future[Option[Game]]
 
-  def findFutureGames(): Future[List[Game]]
+  def findFutureGames()(implicit ec: ExecutionContext): Future[List[Game]]
 
   def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[Game]]
 
@@ -37,13 +37,13 @@ class GameMongoDb(reactiveMongoApi: ReactiveMongoApi) extends GameDb {
   protected def collection = reactiveMongoApi.db.collection[JSONCollection]("games")
 
   // TODO: move to separate API
-  def findNextGame(gameIds: Set[Long]): Future[Option[Game]] = {
+  def findNextGame(gameIds: Set[Long])(implicit ec: ExecutionContext): Future[Option[Game]] = {
     findFutureGames().map { futureGames =>
       futureGames.sortBy(_.start_time).headOption
     }
   }
 
-  override def findFutureGames(): Future[List[Game]] = {
+  override def findFutureGames()(implicit ec: ExecutionContext): Future[List[Game]] = {
     collection.find(
       GameFields.StartTime -> BSONDocument("$gt" -> BSONDateTime(DateTime.now().getMillis))
     ).cursor[Game].collect[List]()

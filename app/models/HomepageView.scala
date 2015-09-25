@@ -5,10 +5,12 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
 
 
-case class HomepageView(teams: TeamViewModel,
-                       nextGameInSeason: Option[Game],
-                       playersIn: Set[User],
-                       playersOut: Set[User])
+case class HomepageView (
+  teams: TeamViewModel,
+  nextGameInSeason: Option[Game],
+  playersIn: Set[User],
+  playersOut: Set[User]
+)
 
 object HomepageView {
 

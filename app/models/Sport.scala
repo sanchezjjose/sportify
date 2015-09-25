@@ -1,9 +1,11 @@
 package models
 
 
-case class Sport(_id: Long,
-                 name: String,
-                 logo_image_url: String)
+case class Sport(
+  _id: Long,
+  name: String,
+  logo_image_url: String
+)
 
 object Sport {
 

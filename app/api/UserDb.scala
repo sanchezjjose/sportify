@@ -17,7 +17,7 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 trait UserDb {
 
   // TODO: move this to a UserClient API
-  def authenticate(email: String, password: String): Option[User]
+  def authenticate(email: String, password: String)(implicit ec: ExecutionContext): Option[User]
 
   def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[User]]
 
@@ -37,7 +37,7 @@ class UserMongoDb(reactiveMongoApi: ReactiveMongoApi) extends UserDb {
 
   protected def collection = reactiveMongoApi.db.collection[JSONCollection]("users")
 
-  def authenticate(email: String, password: String): Option[User] = {
+  def authenticate(email: String, password: String)(implicit ec: ExecutionContext): Option[User] = {
     Await.result(findOne(BSONDocument("email" -> email, "password" -> password)), Duration(10, TimeUnit.SECONDS))
       .filter(user => BCrypt.checkpw(password, user.password.get))
   }

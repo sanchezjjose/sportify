@@ -4,11 +4,13 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
 
 
-case class PlayerViewModel(id: Long,
-                          name: String,
-                          number: Int,
-                          phoneNumber: Option[String],
-                          position: Option[String])
+case class PlayerViewModel(
+  id: Long,
+  name: String,
+  number: Int,
+  phoneNumber: Option[String],
+  position: Option[String]
+)
 
 object PlayerViewModel {
 

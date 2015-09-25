@@ -1,17 +1,19 @@
 package models
 
 
-case class Game (_id: Long, // TODO: change from Long to Int for all '_id' variables
-                number: Int,
-                start_time: Long,
-                address: String,
-                gym: String,
-                location_details: Option[String],
-                opponent: String,
-                result: Option[String],
-                players_in: Set[Long] = Set.empty[Long], // corresponds to player id's
-                players_out: Set[Long] = Set.empty[Long], // corresponds to player id's
-                is_playoff_game: Boolean = false)
+case class Game (
+  _id: Long, // TODO: change from Long to Int for all '_id' variables
+  number: Int,
+  start_time: Long,
+  address: String,
+  gym: String,
+  location_details: Option[String],
+  opponent: String,
+  result: Option[String],
+  players_in: Set[Long] = Set.empty[Long], // corresponds to player id's
+  players_out: Set[Long] = Set.empty[Long], // corresponds to player id's
+  is_playoff_game: Boolean = false
+)
 
 object Game {
 

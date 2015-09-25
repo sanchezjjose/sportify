@@ -8,6 +8,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Controller
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
 import util.RequestHelper
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class Homepage @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {

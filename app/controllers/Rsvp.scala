@@ -8,8 +8,7 @@ import play.api.mvc.{Controller, Cookie}
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
 import reactivemongo.bson.BSONDocument
 import util.RequestHelper
-
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
 class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
