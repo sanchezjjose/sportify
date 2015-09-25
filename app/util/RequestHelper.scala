@@ -23,7 +23,7 @@ trait RequestHelper {
     def onUnauthorized(request: RequestHeader): Result = Results.Unauthorized
 
     Security.Authenticated(sessionKey, onUnauthorized) { email =>
-      val user = User(111111L, "sanchezjjose@gmail.com", None, "Jose", "Sanchez")
+      val user = User(111111L, "ahouston20@knicks.com", Some("$2a$10$RJuUFQ0vMBr.bJ0haUkKAu0bXKjb824aR7XTUeT9x/KW0A3oNJsmy"), "Allan", "Houston")
       Action.async(request => f(user)(request))
     }
   }

@@ -16,6 +16,9 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 
 trait UserDb {
 
+  // TODO: move this to a UserClient API
+  def authenticate(email: String, password: String): Option[User]
+
   def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[User]]
 
   def find(query: BSONDocument)(implicit ec: ExecutionContext): Future[List[User]]
