@@ -4,25 +4,27 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
 
 
-case class TeamViewModel(current: Team, other: Iterable[Team])
+case class TeamViewModel(
+  current: Team,
+  other: Iterable[Team]
+)
 
 object TeamViewModel {
 
   implicit val tvmWrites: Writes[TeamViewModel] = (
     (JsPath \ "current").write[Team] and
-      (JsPath \ "other").write[Iterable[Team]]
-    )(unlift(TeamViewModel.unapply))
+    (JsPath \ "other").write[Iterable[Team]]
+  )(unlift(TeamViewModel.unapply))
 }
 
-/**
- * Model of a team, which is made up of players and a specific sport.
- */
-case class Team (_id: Long,
-                 name: String,
-                 player_ids: Set[Long],
-                 season_ids: Set[Long],
-                 sport: Sport,
-                 selected: Boolean = false) {
+case class Team(
+  _id: Long,
+  name: String,
+  player_ids: Set[Long],
+  season_ids: Set[Long],
+  sport: Sport,
+  selected: Boolean = false
+) {
 
   def playersRequired: Int = {
 

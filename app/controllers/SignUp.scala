@@ -68,9 +68,17 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
             password = Some(data.password),
             first_name = data.firstName,
             last_name = data.lastName,
-            players = Set(player),
+            player_ids = Set(player.id),
             phone_number = data.phoneNumber
           )
+
+          // TODO: both save commands should happen as a transaction
+
+          db.playerDb.save(BSONDocument(
+            PlayerFields.Id -> player.id,
+            PlayerFields.Number -> player.number,
+            PlayerFields.Position -> player.position
+          ))
 
           db.userDb.save(BSONDocument(
             UserFields.Id -> user._id,
@@ -78,11 +86,7 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
             UserFields.Password -> user.password,
             UserFields.FirstName -> user.first_name,
             UserFields.LastName -> user.last_name,
-            UserFields.Players -> BSONDocument(
-              PlayerFields.Id -> player.id,
-              PlayerFields.Number -> player.number,
-              PlayerFields.Position -> player.position
-            ),
+            UserFields.PlayerIds -> user.player_ids,
             UserFields.PhoneNumber -> user.phone_number
           ))
 

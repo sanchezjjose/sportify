@@ -1,16 +1,22 @@
 package util
 
+import java.util.concurrent.TimeUnit
+
 import api.{SportifyDbApi, UserDb}
 import models._
 import play.api.mvc._
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
 
-import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 trait RequestHelper {
 
   val db: SportifyDbApi
 
+  // TODO: fix and modify so it takes a body parser
+  // i.e => Action(parse.text)
+  // https://www.playframework.com/documentation/2.4.0/ScalaBodyParsers
   def isAuthenticatedAsync(f: => User => Request[AnyContent] => Future[Result]): EssentialAction = {
 
     def sessionKey(request: RequestHeader): Option[String] = request.session.get("user_info")
@@ -30,14 +36,26 @@ trait RequestHelper {
     val playersIn = nextGame.map(game => game.players_in.flatMap(id => db.userDb.find(BSONDocument("_id" -> BSONObjectID(id.toString)))))
     val playersOut = nextGame.map(game => game.players_out.flatMap(id => User.findByPlayerId(id))).getOrElse(Set.empty[User])
 
+    for {
+      tVm <- buildTeamView(Some(teamId))(user, request)
+      nextGame <- db.gameDb.findNextGame(tVm.current.)
+
+    } yield {
+
+    }
+
+
     process(HomepageView(teams, nextGame, playersIn, playersOut))
   }
 
   def withRosterContext(request: Request[AnyContent], user: User, teamId: Long)(process: (RosterView) => Result): Future[Result] = {
-    val teams = buildTeamView(Some(teamId))(user, request)
-    val pVms = buildPlayerViews(Some(teamId))(user, request).toList.sortBy(p => p.name)
+    for {
+      tVm <- buildTeamView(Some(teamId))(user, request)
+      pVms <- buildPlayerViews(Some(teamId))(user, request)
 
-    process(RosterView(teams, pVms))
+    } yield {
+      process(RosterView(tVm, pVms.toList.sortBy(p => p.name)))
+    }
   }
 
   def withScheduleContext(request: Request[AnyContent], user: User, teamId: Long)(process: (ScheduleView) => Result): Future[Result] = {
@@ -100,21 +118,38 @@ trait RequestHelper {
   }
 
   def buildPlayerView(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[PlayerViewModel] = {
-    buildPlayerViews(teamIdOpt).find(pVm => user.players.exists(_.id == pVm.id)).get
-  }
-
-  def buildPlayerViews(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[Set[PlayerViewModel]] = {
-    for {
-      playerId <- buildTeamView(teamIdOpt).current.player_ids
-      user <- userDb.findByPlayerId(playerId)
-      player <- user.players.find(_.id == playerId)
-
-    } yield {
-      PlayerViewModel(player.id, user.fullName, player.number, user.phone_number, player.position)
+    buildPlayerViews(teamIdOpt).map { pVms =>
+      pVms.find(pVm => user.player_ids.contains(pVm.id)).get
     }
   }
 
+  private[util] def buildPlayerViews(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[Set[PlayerViewModel]] = {
+    for {
+      tVm <- buildTeamView(teamIdOpt)
+      playerId <- tVm.current.player_ids
+      userOpt <- db.userDb.findOne(BSONDocument("$in" -> BSONDocument(TeamFields.PlayerIds -> playerId)))
+      playerOpt <- db.playerDb.findOne(BSONDocument(PlayerFields.Id -> playerId))
+
+    } yield for {
+      user <- userOpt
+      player <- playerOpt
+
+    } yield {
+        PlayerViewModel(player.id, user.fullName, player.number, user.phone_number, player.position)
+      }
+  }
+
   private[util] def getTeamId(user: User, teamIdOpt: Option[Long]): Long = {
-    teamIdOpt.getOrElse(Team.findAllByUser(user).head._id)
+
+    teamIdOpt.getOrElse {
+      user.player_ids.map { playerId =>
+        val request = db.teamDb.find(BSONDocument("$in" -> BSONDocument(TeamFields.PlayerIds -> playerId)))
+        val teams = Await.result(request, Duration(10, TimeUnit.SECONDS))
+
+        // TODO: should maybe find most recently viewed team / one with upcoming game
+        teams.sortBy(_._id).head._id
+
+      }.head
+    }
   }
 }

@@ -7,6 +7,8 @@ class SportifyDbApi(reactiveMongoApi: ReactiveMongoApi) {
 
   val userDb: UserDb = new UserMongoDb(reactiveMongoApi)
 
+  val playerDb: PlayerDb = new PlayerMongoDb(reactiveMongoApi)
+
   val teamDb: TeamDb = new TeamMongoDb(reactiveMongoApi)
 
   val seasonDb: SeasonDb = new SeasonMongoDb(reactiveMongoApi)

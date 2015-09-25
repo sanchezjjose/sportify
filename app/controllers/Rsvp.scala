@@ -9,6 +9,8 @@ import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMo
 import reactivemongo.bson.BSONDocument
 import util.RequestHelper
 
+import scala.concurrent.Future
+
 
 class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
