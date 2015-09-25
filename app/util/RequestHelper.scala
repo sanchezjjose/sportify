@@ -1,14 +1,13 @@
 package util
 
 import java.util.concurrent.TimeUnit
-
-import api.{SportifyDbApi, UserDb}
+import api.SportifyDbApi
 import models._
 import play.api.mvc._
-import reactivemongo.bson.{BSONDocument, BSONObjectID}
-
+import reactivemongo.bson.BSONDocument
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
+
 
 trait RequestHelper {
 
@@ -74,22 +73,27 @@ trait RequestHelper {
   }
 
   def withAccountContext(request: Request[AnyContent], user: User, teamId: Long)(process: (AccountView, PlayerViewModel) => Result): Future[Result] = {
-    val teams = buildTeamView(Some(teamId))(user, request)
-    val pVm = buildPlayerView(Some(teamId))(user, request)
-    val accountView = AccountView(
-      teams = teams,
-      playerId = pVm.id,
-      email = user.email,
-      password = user.password,
-      firstName = user.first_name,
-      lastName = user.last_name,
-      number = pVm.number,
-      phoneNumber = pVm.phoneNumber,
-      position = pVm.position,
-      isAdmin = user.is_admin
-    )
 
-    process(accountView, pVm)
+    for {
+      tVm <- buildTeamView(Some(teamId))(user, request)
+      pVm <- buildPlayerView(Some(teamId))(user, request)
+
+    } yield {
+      val accountView = AccountView(
+        teams = tVm,
+        playerId = pVm.id,
+        email = user.email,
+        password = user.password,
+        firstName = user.first_name,
+        lastName = user.last_name,
+        number = pVm.number,
+        phoneNumber = pVm.phoneNumber,
+        position = pVm.position,
+        isAdmin = user.is_admin
+      )
+
+      process(accountView, pVm)
+    }
   }
 
   def buildTeamView(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[TeamViewModel] = {
