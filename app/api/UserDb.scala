@@ -2,7 +2,6 @@ package api
 
 import java.util.concurrent.TimeUnit
 
-import models.JsonUserFormats._
 import models.User
 import org.mindrot.jbcrypt.BCrypt
 import play.modules.reactivemongo.ReactiveMongoApi
@@ -33,7 +32,9 @@ trait UserDb {
 class UserMongoDb(reactiveMongoApi: ReactiveMongoApi) extends UserDb {
 
   // BSON-JSON conversions
-  import play.modules.reactivemongo.json._, ImplicitBSONHandlers._
+  import play.modules.reactivemongo.json._
+  import ImplicitBSONHandlers._
+  import models.JsonFormats._
 
   protected def collection = reactiveMongoApi.db.collection[JSONCollection]("users")
 

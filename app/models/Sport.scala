@@ -9,14 +9,14 @@ case class Sport(
 
 object Sport {
 
-  import play.api.libs.functional.syntax._
-  import play.api.libs.json._
-
-  implicit val sportWrites: Writes[Sport] = (
-    (JsPath \ "_id").write[Long] and
-    (JsPath \ "name").write[String] and
-    (JsPath \ "logo_image_url").write[String]
-  )(unlift(Sport.unapply))
+//  import play.api.libs.functional.syntax._
+//  import play.api.libs.json._
+//
+//  implicit val sportWrites: Writes[Sport] = (
+//    (JsPath \ "_id").write[Long] and
+//    (JsPath \ "name").write[String] and
+//    (JsPath \ "logo_image_url").write[String]
+//  )(unlift(Sport.unapply))
 
 
   object Name extends Enumeration {

@@ -1,14 +1,12 @@
 package api
 
-import models.{Game, GameFields}
-import org.joda.time.DateTime
+import models.Game
+import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
 import play.modules.reactivemongo.json.collection.JSONCollection
 import reactivemongo.api.commands.WriteResult
-import reactivemongo.bson.{BSONDateTime, BSONDocument}
-
+import reactivemongo.bson.BSONDocument
 import scala.concurrent.{ExecutionContext, Future}
-
 
 trait GameDb {
 
@@ -33,6 +31,7 @@ class GameMongoDb(reactiveMongoApi: ReactiveMongoApi) extends GameDb {
   // BSON-JSON conversions
   import play.modules.reactivemongo.json._
   import ImplicitBSONHandlers._
+  import models.JsonFormats._
 
   protected def collection = reactiveMongoApi.db.collection[JSONCollection]("games")
 
@@ -44,9 +43,7 @@ class GameMongoDb(reactiveMongoApi: ReactiveMongoApi) extends GameDb {
   }
 
   override def findFutureGames()(implicit ec: ExecutionContext): Future[List[Game]] = {
-    collection.find(
-      GameFields.StartTime -> BSONDocument("$gt" -> BSONDateTime(DateTime.now().getMillis))
-    ).cursor[Game].collect[List]()
+    collection.find(Json.obj()).cursor[Game].collect[List]()
   }
 
   override def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[Game]] = {

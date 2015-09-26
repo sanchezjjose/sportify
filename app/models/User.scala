@@ -22,16 +22,6 @@ case class User (
   }
 }
 
-object JsonUserFormats {
-  import play.api.libs.json.Json
-  import play.api.data._
-  import play.api.data.Forms._
-  import play.modules.reactivemongo.json.BSONFormats._
-
-  // Generates Writes and Reads for Feed and User thanks to Json Macros
-  implicit val userFormat = Json.format[User]
-}
-
 object UserFields {
   val Id = "_id"
   val Email = "email"

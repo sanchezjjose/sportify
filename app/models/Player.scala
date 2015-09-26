@@ -12,16 +12,16 @@ case class PlayerViewModel(
   position: Option[String]
 )
 
-object PlayerViewModel {
-
- implicit val tvmWrites: Writes[PlayerViewModel] = (
-   (JsPath \ "id").write[Long] and
-   (JsPath \ "name").write[String] and
-   (JsPath \ "number").write[Int] and
-   (JsPath \ "phoneNumber").write[Option[String]] and
-   (JsPath \ "position").write[Option[String]]
- )(unlift(PlayerViewModel.unapply))
-}
+//object PlayerViewModel {
+//
+// implicit val tvmWrites: Writes[PlayerViewModel] = (
+//   (JsPath \ "id").write[Long] and
+//   (JsPath \ "name").write[String] and
+//   (JsPath \ "number").write[Int] and
+//   (JsPath \ "phoneNumber").write[Option[String]] and
+//   (JsPath \ "position").write[Option[String]]
+// )(unlift(PlayerViewModel.unapply))
+//}
 
 
 /**
@@ -58,16 +58,16 @@ case class Player(
 }
 
 
-object Player {
-
- implicit val playerWrites: Writes[Player] = (
-   (JsPath \ "id").write[Long] and
-   (JsPath \ "user_id").write[Long] and
-   (JsPath \ "number").write[Int] and
-   (JsPath \ "position").write[Option[String]]
- )(unlift(Player.unapply))
-
-}
+//object Player {
+//
+// implicit val playerWrites: Writes[Player] = (
+//   (JsPath \ "id").write[Long] and
+//   (JsPath \ "user_id").write[Long] and
+//   (JsPath \ "number").write[Int] and
+//   (JsPath \ "position").write[Option[String]]
+// )(unlift(Player.unapply))
+//
+//}
 
 object PlayerFields {
   val Id = "id"

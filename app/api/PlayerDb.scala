@@ -27,6 +27,7 @@ class PlayerMongoDb(reactiveMongoApi: ReactiveMongoApi) extends PlayerDb {
   // BSON-JSON conversions
   import play.modules.reactivemongo.json._
   import ImplicitBSONHandlers._
+  import models.JsonFormats._
 
   protected def collection = reactiveMongoApi.db.collection[JSONCollection]("players")
 
