@@ -1,23 +1,12 @@
 package models
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Writes}
 
-
-case class TeamViewModel(
+case class TeamViewModel (
   current: Team,
   other: Iterable[Team]
 )
 
-//object TeamViewModel {
-//
-//  implicit val tvmWrites: Writes[TeamViewModel] = (
-//    (JsPath \ "current").write[Team] and
-//    (JsPath \ "other").write[Iterable[Team]]
-//  )(unlift(TeamViewModel.unapply))
-//}
-
-case class Team(
+case class Team (
   _id: Long,
   name: String,
   player_ids: Set[Long],
@@ -35,21 +24,6 @@ case class Team(
     }
   }
 }
-
-//object Team {
-//
-//  import play.api.libs.functional.syntax._
-//  import play.api.libs.json._
-//
-//  implicit val teamWrites: Writes[Team] = (
-//    (JsPath \ "_id").write[Long] and
-//      (JsPath \ "name").write[String] and
-//      (JsPath \ "player_ids").write[Set[Long]] and
-//      (JsPath \ "seasons").write[Set[Long]] and
-//      (JsPath \ "sport").write[Sport] and
-//      (JsPath \ "selected").write[Boolean]
-//    )(unlift(Team.unapply))
-//}
 
 object TeamFields {
   val Id = "_id"

@@ -3,6 +3,7 @@ package controllers
 import javax.inject.Inject
 import api.UserMongoDb
 import models.RosterView
+import models.JsonFormats._
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}

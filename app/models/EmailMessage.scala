@@ -1,6 +1,6 @@
 package models
 
-case class EmailMessage(
+case class EmailMessage (
   _id: Long,
   user_id: Long,
   game_id: Long,

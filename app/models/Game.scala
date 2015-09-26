@@ -15,26 +15,6 @@ case class Game (
   is_playoff_game: Boolean = false
 )
 
-//object Game {
-//
-//  import play.api.libs.functional.syntax._
-//  import play.api.libs.json._
-//
-//  implicit val gameWrites: Writes[Game] = (
-//    (JsPath \ "_id").write[Long] and
-//    (JsPath \ "number").write[Int] and
-//    (JsPath \ "start_time").write[Long] and
-//    (JsPath \ "address").write[String] and
-//    (JsPath \ "gym").write[String] and
-//    (JsPath \ "location_details").write[Option[String]] and
-//    (JsPath \ "opponent").write[String] and
-//    (JsPath \ "result").write[Option[String]] and
-//    (JsPath \ "players_in").write[Set[Long]] and
-//    (JsPath \ "players_out").write[Set[Long]] and
-//    (JsPath \ "is_playoff_game").write[Boolean]
-//  )(unlift(Game.unapply))
-//}
-
 object GameFields {
   val Id = "_id"
   val Number = "number"

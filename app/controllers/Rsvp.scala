@@ -3,6 +3,7 @@ package controllers
 import javax.inject.Inject
 import api.SportifyDbApi
 import models.GameFields
+import models.JsonFormats._
 import play.api.libs.json.Json
 import play.api.mvc.{Controller, Cookie}
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
@@ -16,7 +17,7 @@ class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
   override val db = new SportifyDbApi(reactiveMongoApi)
 
- def update(gameId: Long) = isAuthenticatedAsync { user => implicit request =>
+ def update(gameId: Long) = isAuthenticatedAsync { implicit user => implicit request =>
 
    // TODO: fix this
    val rsvp: Cookie = request.cookies.get("rsvp").get

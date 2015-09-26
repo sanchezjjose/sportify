@@ -1,10 +1,7 @@
 package models
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Writes}
 
-
-case class PlayerViewModel(
+case class PlayerViewModel (
   id: Long,
   name: String,
   number: Int,
@@ -12,26 +9,16 @@ case class PlayerViewModel(
   position: Option[String]
 )
 
-//object PlayerViewModel {
-//
-// implicit val tvmWrites: Writes[PlayerViewModel] = (
-//   (JsPath \ "id").write[Long] and
-//   (JsPath \ "name").write[String] and
-//   (JsPath \ "number").write[Int] and
-//   (JsPath \ "phoneNumber").write[Option[String]] and
-//   (JsPath \ "position").write[Option[String]]
-// )(unlift(PlayerViewModel.unapply))
-//}
-
 
 /**
 * A player is a registered user who is a part of a team.
 */
-case class Player(
+case class Player (
   id: Long,
   user_id: Long,
   number: Int,
   position: Option[String]
+
 ) {
 
  /*
@@ -56,18 +43,6 @@ case class Player(
 
  override def hashCode = id.toInt
 }
-
-
-//object Player {
-//
-// implicit val playerWrites: Writes[Player] = (
-//   (JsPath \ "id").write[Long] and
-//   (JsPath \ "user_id").write[Long] and
-//   (JsPath \ "number").write[Int] and
-//   (JsPath \ "position").write[Option[String]]
-// )(unlift(Player.unapply))
-//
-//}
 
 object PlayerFields {
   val Id = "id"

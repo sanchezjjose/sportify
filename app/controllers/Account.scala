@@ -3,6 +3,7 @@ package controllers
 import javax.inject.Inject
 import api.SportifyDbApi
 import models._
+import models.JsonFormats._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.libs.json.Json
@@ -19,7 +20,7 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
   override val db = new SportifyDbApi(reactiveMongoApi)
 
-  private case class AccountForm(
+  private[controllers] case class AccountForm (
     email: String,
     password: Option[String],
     firstName: String,
