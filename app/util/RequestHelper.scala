@@ -3,6 +3,7 @@ package util
 import java.util.concurrent.TimeUnit
 import api.MongoManager
 import models._
+import play.api.libs.json.Json
 import play.api.mvc._
 import reactivemongo.bson.BSONDocument
 import scala.concurrent.duration.Duration
@@ -39,9 +40,9 @@ trait RequestHelper {
       playerInId <- nextGame.get.players_in
       playerOutId <- nextGame.get.players_out
       playerInOpt <- db.playerDb.findOne(BSONDocument(PlayerFields.Id -> playerInId))
-      playersInUser <- db.userDb.find(BSONDocument(UserFields.Id -> playerInOpt.get.user_id))
+      playersInUser <- db.userDb.find(Json.obj(UserFields.Id -> playerInOpt.get.user_id))
       playerOutOpt <- db.playerDb.findOne(BSONDocument(PlayerFields.Id -> playerOutId))
-      playersOutUser <- db.userDb.find(BSONDocument(UserFields.Id -> playerOutOpt.get.user_id))
+      playersOutUser <- db.userDb.find(Json.obj(UserFields.Id -> playerOutOpt.get.user_id))
 
     } yield {
       process(HomepageView(tVm, nextGame, playersInUser.toSet, playersOutUser.toSet))
@@ -121,7 +122,7 @@ trait RequestHelper {
     for {
       tVm <- buildTeamView(teamIdOpt)
       playerId <- tVm.selectedTeam.player_ids
-      userOpt <- db.userDb.findOne(BSONDocument("$in" -> BSONDocument(TeamFields.PlayerIds -> playerId)))
+      userOpt <- db.userDb.findOne(Json.obj("$in" -> Json.obj(TeamFields.PlayerIds -> playerId)))
       playerOpt <- db.playerDb.findOne(BSONDocument(PlayerFields.Id -> playerId))
 
     } yield for {

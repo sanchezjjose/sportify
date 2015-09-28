@@ -85,15 +85,7 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
             PlayerFields.Position -> player.position
           ))
 
-          db.userDb.save(BSONDocument(
-            UserFields.Id -> user._id,
-            UserFields.Email -> user.email,
-            UserFields.Password -> user.password,
-            UserFields.FirstName -> user.first_name,
-            UserFields.LastName -> user.last_name,
-            UserFields.PlayerIds -> user.player_ids,
-            UserFields.PhoneNumber -> user.phone_number
-          ))
+          db.userDb.insert(user)
 
           // Add player to the team
           val updatedTeam = team.copy(player_ids = team.player_ids + player._id)

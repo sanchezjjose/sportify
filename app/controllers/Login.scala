@@ -4,6 +4,7 @@ import javax.inject.Inject
 import api.MongoManager
 import play.api.data.Forms._
 import play.api.data._
+import play.api.libs.json.Json
 import play.api.mvc._
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
 import reactivemongo.bson.BSONDocument
@@ -39,7 +40,7 @@ class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         val (username, _) = credentials
 
         for {
-          userOpt <- db.userDb.findOne(BSONDocument("email" -> username))
+          userOpt <- db.userDb.findOne(Json.obj("email" -> username))
           currentTeam <- buildTeamView()(userOpt.get, request)
 
         } yield {

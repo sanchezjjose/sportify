@@ -60,7 +60,7 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   }
 
   def delete = isAuthenticatedAsync { user => implicit request =>
-    db.userDb.remove(BSONDocument(UserFields.Id -> user._id)).map { _ =>
+    db.userDb.remove(Json.obj(UserFields.Id -> user._id)).map { _ =>
       NoContent
     }
   }
@@ -74,8 +74,8 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         withAccountContext(request, user, teamId) { (accountView: AccountView, playerViewModel: PlayerViewModel) =>
 
           db.userDb.update(
-            BSONDocument(UserFields.Id -> user._id, PlayerFields.Id -> playerViewModel.id),
-            BSONDocument("$set" -> BSONDocument(
+            Json.obj(UserFields.Id -> user._id, PlayerFields.Id -> playerViewModel.id),
+            Json.obj("$set" -> Json.obj(
               UserFields.Email -> userFormData.email,
               UserFields.Password -> userFormData.password,
               UserFields.FirstName -> userFormData.firstName,
