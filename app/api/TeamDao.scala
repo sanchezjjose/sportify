@@ -8,7 +8,7 @@ import reactivemongo.bson.BSONDocument
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait TeamDb {
+trait TeamDao {
 
   def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[Team]]
 
@@ -21,7 +21,7 @@ trait TeamDb {
   def remove(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
 }
 
-class TeamMongoDb(reactiveMongoApi: ReactiveMongoApi) extends TeamDb {
+class TeamMongoDao(reactiveMongoApi: ReactiveMongoApi) extends TeamDao {
 
   // BSON-JSON conversions
 

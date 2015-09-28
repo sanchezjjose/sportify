@@ -9,7 +9,7 @@ import reactivemongo.bson.BSONDocument
 import scala.concurrent.{ExecutionContext, Future}
 
 
-trait SeasonDb {
+trait SeasonDao {
 
   def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[Season]]
 
@@ -22,7 +22,7 @@ trait SeasonDb {
   def remove(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
 }
 
-class SeasonMongoDb(reactiveMongoApi: ReactiveMongoApi) extends SeasonDb {
+class SeasonMongoDao(reactiveMongoApi: ReactiveMongoApi) extends SeasonDao {
 
   // BSON-JSON conversions
   import play.modules.reactivemongo.json._, ImplicitBSONHandlers._

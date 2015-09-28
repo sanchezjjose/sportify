@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject.Inject
-import api.SportifyDbApi
+import api.MongoManager
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
@@ -15,7 +15,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val db = new SportifyDbApi(reactiveMongoApi)
+  override val db = new MongoManager(reactiveMongoApi)
 
   val loginForm: Form[(String, String)] = {
     Form {
@@ -44,7 +44,7 @@ class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
         } yield {
           val user = userOpt.get
-          val defaultTeamId = currentTeam.current._id
+          val defaultTeamId = currentTeam.selectedTeam._id
 
           Redirect(routes.Homepage.home(defaultTeamId))
             .withSession("user_info" -> user.email)

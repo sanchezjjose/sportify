@@ -1,7 +1,7 @@
 package util
 
 import java.util.concurrent.TimeUnit
-import api.SportifyDbApi
+import api.MongoManager
 import models._
 import play.api.mvc._
 import reactivemongo.bson.BSONDocument
@@ -12,7 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait RequestHelper {
 
-  val db: SportifyDbApi
+  val db: MongoManager
 
   // TODO: fix and modify so it takes a body parser
   // i.e => Action(parse.text)
@@ -33,7 +33,7 @@ trait RequestHelper {
 
     for {
       tVm <- buildTeamView(Some(teamId))(user, request)
-      seasonId <- tVm.current.season_ids
+      seasonId <- tVm.selectedTeam.season_ids
       currentSeasonOpt <- db.seasonDb.findOne(BSONDocument(SeasonFields.Id -> seasonId, SeasonFields.IsCurrentSeason -> true))
       nextGame <- db.gameDb.findNextGame(currentSeasonOpt.get.game_ids)
       playerInId <- nextGame.get.players_in
@@ -62,7 +62,7 @@ trait RequestHelper {
 
     for {
       tVm <- buildTeamView(Some(teamId))(user, request)
-      seasonId <- tVm.current.season_ids
+      seasonId <- tVm.selectedTeam.season_ids
       currentSeasonOpt <- db.seasonDb.findOne(BSONDocument(SeasonFields.Id -> seasonId, SeasonFields.IsCurrentSeason -> true))
       nextGame <- db.gameDb.findNextGame(currentSeasonOpt.get.game_ids)
       gameId <- currentSeasonOpt.get.game_ids
@@ -105,7 +105,7 @@ trait RequestHelper {
       otherTeams = teams.filter(team => team._id != selectedTeamOpt.get._id)
 
     } yield {
-      TeamViewModel(selectedTeamOpt.get.copy(selected = true), otherTeams)
+      TeamViewModel(selectedTeamOpt.get.copy(is_selected = true), otherTeams)
     }
   }
 
@@ -120,7 +120,7 @@ trait RequestHelper {
 
     for {
       tVm <- buildTeamView(teamIdOpt)
-      playerId <- tVm.current.player_ids
+      playerId <- tVm.selectedTeam.player_ids
       userOpt <- db.userDb.findOne(BSONDocument("$in" -> BSONDocument(TeamFields.PlayerIds -> playerId)))
       playerOpt <- db.playerDb.findOne(BSONDocument(PlayerFields.Id -> playerId))
 

@@ -8,7 +8,7 @@ import reactivemongo.api.commands.WriteResult
 import reactivemongo.bson.BSONDocument
 import scala.concurrent.{ExecutionContext, Future}
 
-trait GameDb {
+trait GameDao {
 
   // TODO: move to separate API
   def findNextGame(gameIds: Set[Long])(implicit ec: ExecutionContext): Future[Option[Game]]
@@ -26,7 +26,7 @@ trait GameDb {
   def remove(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
 }
 
-class GameMongoDb(reactiveMongoApi: ReactiveMongoApi) extends GameDb {
+class GameMongoDao(reactiveMongoApi: ReactiveMongoApi) extends GameDao {
 
   // BSON-JSON conversions
   import play.modules.reactivemongo.json._

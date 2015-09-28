@@ -1,7 +1,7 @@
 package models
 
 
-case class Sport(
+case class Sport (
   _id: Long,
   name: String,
   logo_image_url: String

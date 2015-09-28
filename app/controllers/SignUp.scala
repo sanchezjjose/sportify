@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject.Inject
-import api.SportifyDbApi
+import api.MongoManager
 import models._
 import play.api.data.Forms._
 import play.api.data._
@@ -27,7 +27,7 @@ case class PlayerData(
 class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val db = new SportifyDbApi(reactiveMongoApi)
+  override val db = new MongoManager(reactiveMongoApi)
 
   private val form: Form[PlayerData] = Form(
     mapping(

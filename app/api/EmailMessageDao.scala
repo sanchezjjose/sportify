@@ -8,7 +8,7 @@ import reactivemongo.bson.BSONDocument
 
 import scala.concurrent.{Future, ExecutionContext}
 
-trait EmailMessageDb {
+trait EmailMessageDao {
 
   def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[EmailMessage]]
 
@@ -21,7 +21,7 @@ trait EmailMessageDb {
   def remove(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
 }
 
-class EmailMessageMongoDb(reactiveMongoApi: ReactiveMongoApi) extends EmailMessageDb {
+class EmailMessageMongoDao(reactiveMongoApi: ReactiveMongoApi) extends EmailMessageDao {
 
   // BSON-JSON conversions
   import play.modules.reactivemongo.json._, ImplicitBSONHandlers._

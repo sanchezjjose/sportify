@@ -13,7 +13,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 
-trait UserDb {
+trait UserDao {
 
   // TODO: move this to a UserClient API
   def authenticate(email: String, password: String)(implicit ec: ExecutionContext): Option[User]
@@ -29,7 +29,7 @@ trait UserDb {
   def remove(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
 }
 
-class UserMongoDb(reactiveMongoApi: ReactiveMongoApi) extends UserDb {
+class UserMongoDao(reactiveMongoApi: ReactiveMongoApi) extends UserDao {
 
   // BSON-JSON conversions
   import play.modules.reactivemongo.json._
