@@ -34,7 +34,7 @@ trait RequestHelper {
     for {
       tVm <- buildTeamView(Some(teamId))(user, request)
       seasonId <- tVm.selectedTeam.season_ids
-      currentSeasonOpt <- db.seasonDb.findOne(BSONDocument(SeasonFields.Id -> seasonId, SeasonFields.IsCurrentSeason -> true))
+      currentSeasonOpt <- db.seasonDb.findOne(BSONDocument(SeasonFields.Id -> seasonId, SeasonFields.IsCurrent -> true))
       nextGame <- db.gameDb.findNextGame(currentSeasonOpt.get.game_ids)
       playerInId <- nextGame.get.players_in
       playerOutId <- nextGame.get.players_out
@@ -63,7 +63,7 @@ trait RequestHelper {
     for {
       tVm <- buildTeamView(Some(teamId))(user, request)
       seasonId <- tVm.selectedTeam.season_ids
-      currentSeasonOpt <- db.seasonDb.findOne(BSONDocument(SeasonFields.Id -> seasonId, SeasonFields.IsCurrentSeason -> true))
+      currentSeasonOpt <- db.seasonDb.findOne(BSONDocument(SeasonFields.Id -> seasonId, SeasonFields.IsCurrent -> true))
       nextGame <- db.gameDb.findNextGame(currentSeasonOpt.get.game_ids)
       gameId <- currentSeasonOpt.get.game_ids
       games <- db.gameDb.find(BSONDocument(GameFields.Id -> gameId))
@@ -81,7 +81,7 @@ trait RequestHelper {
 
     } yield {
       val accountView = AccountView(
-        teams = tVm,
+        teamViewModel = tVm,
         playerId = pVm.id,
         email = user.email,
         password = user.password,
@@ -129,7 +129,7 @@ trait RequestHelper {
       player <- playerOpt
 
     } yield {
-        PlayerViewModel(player.id, user.fullName, player.number, user.phone_number, player.position)
+        PlayerViewModel(player._id, user.fullName, player.number, user.phone_number, player.position)
       }
   }
 

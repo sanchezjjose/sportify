@@ -71,7 +71,7 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
           )
 
           val player = Player(
-            id = playerId,
+            _id = playerId,
             user_id =userId,
             number = data.jerseyNumber,
             position = data.position
@@ -80,7 +80,7 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
           // TODO: both save commands should happen as a transaction
 
           db.playerDb.save(BSONDocument(
-            PlayerFields.Id -> player.id,
+            PlayerFields.Id -> player._id,
             PlayerFields.Number -> player.number,
             PlayerFields.Position -> player.position
           ))
@@ -96,7 +96,7 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
           ))
 
           // Add player to the team
-          val updatedTeam = team.copy(player_ids = team.player_ids + player.id)
+          val updatedTeam = team.copy(player_ids = team.player_ids + player._id)
 
           db.teamDb.update(
             BSONDocument(TeamFields.Id -> team._id),

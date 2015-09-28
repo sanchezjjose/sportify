@@ -1,9 +1,9 @@
 package models
 
 
-case class ScheduleView(
-  teams: TeamViewModel,
-  currentSeason: Option[Season],
+case class ScheduleView (
+  teamViewModel: TeamViewModel,
+  currentSeasonOpt: Option[Season],
   games: List[Game],
-  nextGame: Option[Game]
+  nextGameOpt: Option[Game]
 )

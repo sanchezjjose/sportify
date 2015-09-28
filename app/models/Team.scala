@@ -21,5 +21,5 @@ object TeamFields {
   val PlayerIds = "player_ids"
   val SeasonIds = "season_ids"
   val Sport = "sport"
-  val Selected = "selected"
+  val IsSelected = "is_selected"
 }

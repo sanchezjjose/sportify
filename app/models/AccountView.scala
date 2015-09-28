@@ -1,7 +1,7 @@
 package models
 
 case class AccountView (
-  teams: TeamViewModel,
+  teamViewModel: TeamViewModel,
   playerId: Long,
   email: String,
   password: Option[String],
@@ -12,4 +12,3 @@ case class AccountView (
   position: Option[String],
   isAdmin: Boolean
 )
-

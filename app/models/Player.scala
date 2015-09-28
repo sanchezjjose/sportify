@@ -9,12 +9,8 @@ case class PlayerViewModel (
   position: Option[String]
 )
 
-
-/**
-* A player is a registered user who is a part of a team.
-*/
 case class Player (
-  id: Long,
+  _id: Long,
   user_id: Long,
   number: Int,
   position: Option[String]
@@ -36,16 +32,16 @@ case class Player (
 
  override def equals(o: Any) = {
    o match {
-     case that: Player => this.id == that.id
+     case that: Player => this._id == that._id
      case _ => false
    }
  }
 
- override def hashCode = id.toInt
+ override def hashCode = _id.toInt
 }
 
 object PlayerFields {
-  val Id = "id"
+  val Id = "_id"
   val UserId = "user_id"
   val Number = "number"
   val Position = "position"
