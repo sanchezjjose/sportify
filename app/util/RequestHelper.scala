@@ -16,7 +16,7 @@ trait RequestHelper {
   val db: MongoManager
 
   // TODO: fix and modify so it takes a body parser
-  // i.e => Action(parse.text)
+  // e.g., Action(parse.text)
   // https://www.playframework.com/documentation/2.4.0/ScalaBodyParsers
   def isAuthenticatedAsync(f: => User => Request[AnyContent] => Future[Result]): EssentialAction = {
 
@@ -45,6 +45,7 @@ trait RequestHelper {
       playersOutUser <- db.userDb.find(Json.obj(UserFields.Id -> playerOutOpt.get.user_id))
 
     } yield {
+
       process(HomepageView(tVm, nextGame, playersInUser.toSet, playersOutUser.toSet))
     }
   }
