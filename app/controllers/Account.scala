@@ -9,7 +9,6 @@ import play.api.data._
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
-import reactivemongo.bson.BSONDocument
 import util.RequestHelper
 import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
@@ -53,28 +52,31 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
     }
   )
 
-  def account(teamId: Long) = isAuthenticatedAsync { user => implicit request =>
-    withAccountContext(request, user, teamId) { (accountView: AccountView, playerViewModel: PlayerViewModel) =>
+  def account(teamId: Long) = isAuthenticatedAsync { userContext => implicit request =>
+    withAccountContext(request, userContext, teamId) { accountView: AccountViewModel =>
       Ok(Json.toJson(accountView))
     }
   }
 
-  def delete = isAuthenticatedAsync { user => implicit request =>
-    db.userDb.remove(Json.obj(UserFields.Id -> user._id)).map { _ =>
-      NoContent
+  def delete = isAuthenticatedAsync { userContextFuture => implicit request =>
+
+    userContextFuture.flatMap { userContext =>
+      db.users.remove(Json.obj(UserFields.Id -> userContext.user._id)).map { _ =>
+        NoContent
+      }
     }
   }
 
-  def submit(teamId: Long) = isAuthenticatedAsync { user => implicit request =>
+  def submit(teamId: Long) = isAuthenticatedAsync { userContextFuture => implicit request =>
     userForm.bindFromRequest.fold(
       errors => Future successful BadRequest("An error has occurred"),
 
       userFormData => {
 
-        withAccountContext(request, user, teamId) { (accountView: AccountView, playerViewModel: PlayerViewModel) =>
+        withAccountContext(request, userContextFuture, teamId) { (accountView: AccountViewModel) =>
 
-          db.userDb.update(
-            Json.obj(UserFields.Id -> user._id, PlayerFields.Id -> playerViewModel.id),
+          db.users.update(
+            Json.obj(UserFields.Id -> accountView.userId, PlayerFields.Id -> accountView.playerId),
             Json.obj("$set" -> Json.obj(
               UserFields.Email -> userFormData.email,
               UserFields.Password -> userFormData.password,
@@ -84,9 +86,9 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
             ))
           )
 
-          db.playerDb.update(
-            BSONDocument(PlayerFields.Id -> playerViewModel.id),
-            BSONDocument("$set" -> BSONDocument(
+          db.players.update(
+            Json.obj(PlayerFields.Id -> accountView.playerId),
+            Json.obj("$set" -> Json.obj(
               PlayerFields.Position -> userFormData.position,
               PlayerFields.Number -> userFormData.number
             ))

@@ -5,7 +5,6 @@ import api.MongoManager
 import models._
 import play.api.libs.json.Json
 import play.api.mvc._
-import reactivemongo.bson.BSONDocument
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -15,137 +14,147 @@ trait RequestHelper {
 
   val db: MongoManager
 
-  // TODO: fix and modify so it takes a body parser
-  // e.g., Action(parse.text)
-  // https://www.playframework.com/documentation/2.4.0/ScalaBodyParsers
-  def isAuthenticatedAsync(f: => User => Request[AnyContent] => Future[Result]): EssentialAction = {
+  /*
+   * TODO: fix and modify so it takes a body parser
+   * https://www.playframework.com/documentation/2.4.0/ScalaBodyParsers -- e.g., Action(parse.text)
+   */
+  def isAuthenticatedAsync(f: => Future[UserContext] => Request[AnyContent] => Future[Result]): EssentialAction = {
 
-    def sessionKey(request: RequestHeader): Option[String] = request.session.get("user_info")
+    def sessionKey(request: RequestHeader): Option[String] = {
+      request.session.get("user_info")
+    }
 
-    def onUnauthorized(request: RequestHeader): Result = Results.Unauthorized
+    def onUnauthorized(request: RequestHeader): Result = {
+      Results.Unauthorized
+    }
 
     Security.Authenticated(sessionKey, onUnauthorized) { email =>
-      val user = User(111111L, "ahouston20@knicks.com", Some("$2a$10$RJuUFQ0vMBr.bJ0haUkKAu0bXKjb824aR7XTUeT9x/KW0A3oNJsmy"), "Allan", "Houston")
-      Action.async(request => f(user)(request))
+      val userFuture = db.users.findOne(Json.obj(UserFields.Email -> email))
+      val userOpt = Await.result(userFuture, Duration(10, TimeUnit.SECONDS))
+      val userContextFuture = buildUserContext(userOpt.get)
+
+      Action.async(request => f(userContextFuture)(request))
     }
   }
 
-  def withHomepageContext(request: Request[AnyContent], user: User, teamId: Long)(process: (HomepageView) => Result): Future[Result] = {
+  def buildUserContext(user: User): Future[UserContext] = {
 
     for {
-      tVm <- buildTeamView(Some(teamId))(user, request)
-      seasonId <- tVm.selectedTeam.season_ids
-      currentSeasonOpt <- db.seasonDb.findOne(BSONDocument(SeasonFields.Id -> seasonId, SeasonFields.IsCurrent -> true))
-      nextGame <- db.gameDb.findNextGame(currentSeasonOpt.get.game_ids)
-      playerInId <- nextGame.get.players_in
-      playerOutId <- nextGame.get.players_out
-      playerInOpt <- db.playerDb.findOne(BSONDocument(PlayerFields.Id -> playerInId))
-      playersInUser <- db.userDb.find(Json.obj(UserFields.Id -> playerInOpt.get.user_id))
-      playerOutOpt <- db.playerDb.findOne(BSONDocument(PlayerFields.Id -> playerOutId))
-      playersOutUser <- db.userDb.find(Json.obj(UserFields.Id -> playerOutOpt.get.user_id))
+      // TODO: how to know which is selected team? Team object might still need an is_selected boolean.
+      teams <- Future(List(Team(111111, "test", Set.empty[Long], Sport(111111, "Basketball", ""))))
+      currentSeasonOpt <- db.seasons.findOne(Json.obj("team_ids" -> Json.obj("$in" -> teams.head._id), "is_current" -> true))
+      nextGameOpt <- db.games.findNextGame(currentSeasonOpt.get.game_ids)
+      playerId = teams.head.player_ids.find(playerId => playerId == user._id).get
+      playerOpt <- db.players.findOne(Json.obj(PlayerFields.Id -> playerId))
 
     } yield {
 
-      process(HomepageView(tVm, nextGame, playersInUser.toSet, playersOutUser.toSet))
+      UserContext (
+        user = user,
+        player = playerOpt.get,
+        currentSeason = currentSeasonOpt.get,
+        teams = teams,
+        nextGame = nextGameOpt,
+        sport = teams.head.sport
+      )
     }
   }
 
-  def withRosterContext(request: Request[AnyContent], user: User, teamId: Long)(process: (RosterView) => Result): Future[Result] = {
+  def withHomepageContext(request: Request[AnyContent], userContextFuture: Future[UserContext], teamId: Long)(process: (HomepageViewModel) => Result): Future[Result] = {
+
     for {
-      tVm <- buildTeamView(Some(teamId))(user, request)
-      pVms <- buildPlayerViews(Some(teamId))(user, request)
+      userContext <- userContextFuture
+      playerInId <- userContext.nextGame match { case Some(game) => game.players_in case None => Set.empty[Long] }
+      playerOutId <- userContext.nextGame match { case Some(game) => game.players_out case None => Set.empty[Long] }
+      playerInOpt <- db.players.findOne(Json.obj(PlayerFields.Id -> playerInId))
+      playersInUser <- db.users.find(Json.obj(UserFields.Id -> playerInOpt.get.user_id))
+      playerOutOpt <- db.players.findOne(Json.obj(PlayerFields.Id -> playerOutId))
+      playersOutUser <- db.users.find(Json.obj(UserFields.Id -> playerOutOpt.get.user_id))
 
     } yield {
-      process(RosterView(tVm, pVms.toList.sortBy(p => p.name)))
+      val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
+
+      process(HomepageViewModel(tVm, userContext.nextGame, playersInUser.toSet, playersOutUser.toSet))
     }
   }
 
-  def withScheduleContext(request: Request[AnyContent], user: User, teamId: Long)(process: (ScheduleView) => Result): Future[Result] = {
+  def withRosterContext(request: Request[AnyContent], userContextFuture: Future[UserContext], teamId: Long)(process: (RosterViewModel) => Result): Future[Result] = {
 
-    for {
-      tVm <- buildTeamView(Some(teamId))(user, request)
-      seasonId <- tVm.selectedTeam.season_ids
-      currentSeasonOpt <- db.seasonDb.findOne(BSONDocument(SeasonFields.Id -> seasonId, SeasonFields.IsCurrent -> true))
-      nextGame <- db.gameDb.findNextGame(currentSeasonOpt.get.game_ids)
-      gameId <- currentSeasonOpt.get.game_ids
-      games <- db.gameDb.find(BSONDocument(GameFields.Id -> gameId))
+    val x = for {
+      userContext <- userContextFuture
+      playerId <- userContext.getTeam(teamId).player_ids
+      player <- db.players.findOne(Json.obj(PlayerFields.Id -> playerId))
+      user <- db.users.findOne(Json.obj(UserFields.Id -> player.get.user_id))
 
     } yield {
-      process(ScheduleView(tVm, currentSeasonOpt, games, nextGame))
+      PlayerViewModel(
+        player.get._id,
+        user.get.fullName,
+        player.get.number,
+        user.get.phone_number,
+        player.get.position
+      )
     }
-  }
 
-  def withAccountContext(request: Request[AnyContent], user: User, teamId: Long)(process: (AccountView, PlayerViewModel) => Result): Future[Result] = {
 
-    for {
-      tVm <- buildTeamView(Some(teamId))(user, request)
-      pVm <- buildPlayerView(Some(teamId))(user, request)
 
-    } yield {
-      val accountView = AccountView(
-        teamViewModel = tVm,
-        playerId = pVm.id,
-        email = user.email,
-        password = user.password,
-        firstName = user.first_name,
-        lastName = user.last_name,
-        number = pVm.number,
-        phoneNumber = pVm.phoneNumber,
-        position = pVm.position,
-        isAdmin = user.is_admin
+    userContextFuture.map { userContext =>
+      val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
+
+      userContext.getTeam(teamId).player_ids.map { playerId =>
+        db.users.findOne(Json.obj(UserFields.Id -> ))
+      }
+
+      val pVms = PlayerViewModel(
+        userContext.player._id,
+        userContext.user.fullName,
+        userContext.player.number,
+        userContext.user.phone_number,
+        userContext.player.position
       )
 
-      process(accountView, pVm)
+      process(RosterViewModel(tVm, pVms.toList.sortBy(p => p.name)))
     }
   }
 
-  def buildTeamView(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[TeamViewModel] = {
+  def withScheduleContext(request: Request[AnyContent], userContextFuture: Future[UserContext], teamId: Long)(process: (ScheduleViewModel) => Result): Future[Result] = {
 
     for {
-      selectedTeamOpt <- db.teamDb.findOne(BSONDocument(TeamFields.Id -> getTeamId(user, teamIdOpt)))
-      teams <- db.teamDb.find(BSONDocument())
-      otherTeams = teams.filter(team => team._id != selectedTeamOpt.get._id)
+      userContext <- userContextFuture
+      gameId <- userContext.currentSeason.game_ids
+      games <- db.games.find(Json.obj(GameFields.Id -> gameId))
 
     } yield {
-      TeamViewModel(selectedTeamOpt.get.copy(is_selected = true), otherTeams)
+      val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
+
+      process(ScheduleViewModel(tVm, userContext.currentSeason, games, userContext.nextGame))
     }
   }
 
-  def buildPlayerView(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[PlayerViewModel] = {
+  def withAccountContext(request: Request[AnyContent], userContextFuture: Future[UserContext], teamId: Long)(process: (AccountViewModel) => Result): Future[Result] = {
 
-    buildPlayerViews(teamIdOpt).map { pVms =>
-      pVms.find(pVm => user.player_ids.contains(pVm.id)).get
-    }
-  }
+    userContextFuture.map { userContext =>
 
-  private[util] def buildPlayerViews(teamIdOpt: Option[Long] = None)(implicit user: User, request: Request[AnyContent]): Future[Set[PlayerViewModel]] = {
+      val tVm = TeamViewModel(
+        selectedTeam = userContext.getTeam(teamId),
+        otherTeams = userContext.getOtherTeams(teamId)
+      )
 
-    for {
-      tVm <- buildTeamView(teamIdOpt)
-      playerId <- tVm.selectedTeam.player_ids
-      userOpt <- db.userDb.findOne(Json.obj("$in" -> Json.obj(TeamFields.PlayerIds -> playerId)))
-      playerOpt <- db.playerDb.findOne(BSONDocument(PlayerFields.Id -> playerId))
+      val accountView = AccountViewModel(
+        teamViewModel = tVm,
+        userId = userContext.user._id,
+        playerId = userContext.player._id,
+        email = userContext.user.email,
+        password = userContext.user.password,
+        firstName = userContext.user.first_name,
+        lastName = userContext.user.last_name,
+        number = userContext.player.number,
+        phoneNumber = userContext.user.phone_number,
+        position = userContext.player.position,
+        isAdmin = userContext.user.is_admin
+      )
 
-    } yield for {
-      user <- userOpt
-      player <- playerOpt
-
-    } yield {
-        PlayerViewModel(player._id, user.fullName, player.number, user.phone_number, player.position)
-      }
-  }
-
-  private[util] def getTeamId(user: User, teamIdOpt: Option[Long]): Long = {
-
-    teamIdOpt.getOrElse {
-      user.player_ids.map { playerId =>
-        val request = db.teamDb.find(BSONDocument("$in" -> BSONDocument(TeamFields.PlayerIds -> playerId)))
-        val teams = Await.result(request, Duration(10, TimeUnit.SECONDS))
-
-        // TODO: should maybe find most recently viewed team / one with upcoming game
-        teams.sortBy(_._id).head._id
-
-      }.head
+      process(accountView)
     }
   }
 }

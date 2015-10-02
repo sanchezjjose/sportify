@@ -5,9 +5,9 @@ import api.MongoManager
 import models._
 import play.api.data.Forms._
 import play.api.data._
+import play.api.libs.json.Json
 import play.api.mvc._
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
-import reactivemongo.bson.BSONDocument
 import util.{Helper, RequestHelper}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -54,7 +54,7 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
         val teamId = data.teamId
 
-        db.teamDb.findOne(BSONDocument(TeamFields.Id -> teamId)).map { teamOpt =>
+        db.teams.findOne(Json.obj(TeamFields.Id -> teamId)).map { teamOpt =>
           val team = teamOpt.get // TODO: handle Options the proper way
 
           val playerId = Helper.generateRandomId()
@@ -66,7 +66,7 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
             password = Some(data.password),
             first_name = data.firstName,
             last_name = data.lastName,
-            player_ids = Set(playerId),
+            team_ids = Set(team._id),
             phone_number = data.phoneNumber
           )
 
@@ -79,21 +79,21 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
           // TODO: both save commands should happen as a transaction
 
-          db.playerDb.save(BSONDocument(
+          db.players.save(Json.obj(
             PlayerFields.Id -> player._id,
             PlayerFields.Number -> player.number,
             PlayerFields.Position -> player.position
           ))
 
-          db.userDb.insert(user)
+          db.users.insert(user)
 
           // Add player to the team
           val updatedTeam = team.copy(player_ids = team.player_ids + player._id)
 
-          db.teamDb.update(
-            BSONDocument(TeamFields.Id -> team._id),
-            BSONDocument("$set" ->
-              BSONDocument(TeamFields.PlayerIds -> updatedTeam.player_ids)
+          db.teams.update(
+            Json.obj(TeamFields.Id -> team._id),
+            Json.obj(TeamFields.PlayerIds ->
+              Json.obj("$set" -> updatedTeam.player_ids)
             )
           )
 

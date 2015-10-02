@@ -7,7 +7,6 @@ import play.api.data._
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
-import reactivemongo.bson.BSONDocument
 import util.RequestHelper
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,7 +23,7 @@ class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         "email" -> text,
         "password" -> text
       ) verifying("Invalid email or password.", result => result match {
-        case (email: String, password: String) => db.userDb.authenticate(email, password).isDefined
+        case (email: String, password: String) => db.users.authenticate(email, password).isDefined
       })
     }
   }
@@ -40,16 +39,18 @@ class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         val (username, _) = credentials
 
         for {
-          userOpt <- db.userDb.findOne(Json.obj("email" -> username))
-          currentTeam <- buildTeamView()(userOpt.get, request)
+          userOpt <- db.users.findOne(Json.obj("email" -> username))
+          userContext <- buildUserContext(userOpt.get)
 
         } yield {
           val user = userOpt.get
-          val defaultTeamId = currentTeam.selectedTeam._id
+          val defaultTeamId = userContext.selectedTeam._id
 
           Redirect(routes.Homepage.home(defaultTeamId))
-            .withSession("user_info" -> user.email)
-            .flashing("team_id" -> s"$defaultTeamId")
+            .withSession (
+              "user_info" -> user.email,
+              "team_id" -> s"$defaultTeamId"
+            )
         }
       }
     )

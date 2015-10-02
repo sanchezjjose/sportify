@@ -1,8 +1,15 @@
 package models
 
 
-case class AccountView (
+case class TeamViewModel (
+  selectedTeam: Team,
+  otherTeams: Iterable[Team]
+)
+
+
+case class AccountViewModel (
   teamViewModel: TeamViewModel,
+  userId: Long,
   playerId: Long,
   email: String,
   password: Option[String],
@@ -15,7 +22,7 @@ case class AccountView (
 )
 
 
-case class HomepageView (
+case class HomepageViewModel (
   teamViewModel: TeamViewModel,
   nextGameOpt: Option[Game],
   playersIn: Set[User],
@@ -23,15 +30,15 @@ case class HomepageView (
 )
 
 
-case class RosterView (
-  teams: TeamViewModel,
+case class RosterViewModel (
+  teamViewModel: TeamViewModel,
   players: List[PlayerViewModel]
 )
 
 
-case class ScheduleView (
+case class ScheduleViewModel (
   teamViewModel: TeamViewModel,
-  currentSeasonOpt: Option[Season],
+  currentSeasonOpt: Season,
   games: List[Game],
   nextGameOpt: Option[Game]
 )

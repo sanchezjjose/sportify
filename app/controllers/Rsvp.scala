@@ -8,7 +8,6 @@ import models.JsonFormats._
 import play.api.libs.json.Json
 import play.api.mvc.{Result, Controller, Cookie}
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
-import reactivemongo.bson.BSONDocument
 import util.RequestHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -27,17 +26,15 @@ class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
     }
   }
 
-  def update(gameId: Long) = isAuthenticatedAsync { implicit user => implicit request =>
+  def update(gameId: Long) = isAuthenticatedAsync { implicit userContextFuture => implicit request =>
 
-    // TODO: remove .get calls here
-    val rsvp: Cookie = request.cookies.get("rsvp").get
-    val teamId: Cookie = request.cookies.get("team_id").get
+    getFuture(db.games.findOne(Json.obj(GameFields.Id -> gameId))) { game =>
 
-    getFuture(db.gameDb.findOne(BSONDocument(GameFields.Id -> gameId))) { game =>
+      userContextFuture.map { userContext =>
 
-      buildPlayerView(Some(teamId.value.toLong)).map { pVm =>
-
-        val playerId = pVm.id
+        // TODO: remove .get calls here
+        val rsvp: Cookie = request.cookies.get("rsvp").get
+        val playerId = userContext.player._id
 
         val updatedGame = if (rsvp.value == "in") {
           game.copy(
@@ -52,10 +49,10 @@ class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
           )
         }
 
-        db.gameDb.update(
-          BSONDocument(GameFields.Id -> gameId),
-          BSONDocument("$set" ->
-            BSONDocument(
+        db.games.update(
+          Json.obj(GameFields.Id -> gameId),
+          Json.obj("$set" ->
+            Json.obj(
               GameFields.PlayersIn -> updatedGame.players_in,
               GameFields.PlayersOut -> updatedGame.players_out
             )

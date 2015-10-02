@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import api.MongoManager
 import models.JsonFormats._
-import models.ScheduleView
+import models.ScheduleViewModel
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
@@ -16,8 +16,8 @@ class Schedule @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
   override val db = new MongoManager(reactiveMongoApi)
 
-  def schedule(teamId: Long) = isAuthenticatedAsync { user => implicit request =>
-    withScheduleContext(request, user, teamId) { scheduleView: ScheduleView =>
+  def schedule(teamId: Long) = isAuthenticatedAsync { userContext => implicit request =>
+    withScheduleContext(request, userContext, teamId) { scheduleView: ScheduleViewModel =>
       Ok(Json.toJson(scheduleView))
     }
   }

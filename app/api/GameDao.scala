@@ -1,11 +1,10 @@
 package api
 
 import models.Game
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.ReactiveMongoApi
 import play.modules.reactivemongo.json.collection.JSONCollection
 import reactivemongo.api.commands.WriteResult
-import reactivemongo.bson.BSONDocument
 import scala.concurrent.{ExecutionContext, Future}
 
 trait GameDao {
@@ -13,30 +12,29 @@ trait GameDao {
   // TODO: move to separate API
   def findNextGame(gameIds: Set[Long])(implicit ec: ExecutionContext): Future[Option[Game]]
 
+  // TODO: move to separate API
   def findFutureGames()(implicit ec: ExecutionContext): Future[List[Game]]
 
-  def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[Game]]
+  def findOne(query: JsObject)(implicit ec: ExecutionContext): Future[Option[Game]]
 
-  def find(query: BSONDocument)(implicit ec: ExecutionContext): Future[List[Game]]
+  def find(query: JsObject)(implicit ec: ExecutionContext): Future[List[Game]]
 
-  def save(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
+  def insert(game: Game)(implicit ec: ExecutionContext): Future[WriteResult]
 
-  def update(selector: BSONDocument, update: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
+  def update(selector: JsObject, update: JsObject)(implicit ec: ExecutionContext): Future[WriteResult]
 
-  def remove(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult]
+  def remove(document: JsObject)(implicit ec: ExecutionContext): Future[WriteResult]
 }
 
 class GameMongoDao(reactiveMongoApi: ReactiveMongoApi) extends GameDao {
 
   // BSON-JSON conversions
   import play.modules.reactivemongo.json._
-  import ImplicitBSONHandlers._
   import models.JsonFormats._
 
   protected def collection = reactiveMongoApi.db.collection[JSONCollection]("games")
 
-  // TODO: move to separate API
-  def findNextGame(gameIds: Set[Long])(implicit ec: ExecutionContext): Future[Option[Game]] = {
+  override def findNextGame(gameIds: Set[Long])(implicit ec: ExecutionContext): Future[Option[Game]] = {
     findFutureGames().map { futureGames =>
       futureGames.sortBy(_.start_time).headOption
     }
@@ -46,55 +44,23 @@ class GameMongoDao(reactiveMongoApi: ReactiveMongoApi) extends GameDao {
     collection.find(Json.obj()).cursor[Game].collect[List]()
   }
 
-  override def findOne(query: BSONDocument)(implicit ec: ExecutionContext): Future[Option[Game]] = {
+  override def findOne(query: JsObject)(implicit ec: ExecutionContext): Future[Option[Game]] = {
     collection.find(query).one[Game]
   }
 
-  override def find(query: BSONDocument)(implicit ec: ExecutionContext): Future[List[Game]] = ???
+  override def find(query: JsObject)(implicit ec: ExecutionContext): Future[List[Game]] = {
+    collection.find(query).cursor[Game].collect[List]()
+  }
 
-  override def save(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult] = ???
+  override def insert(game: Game)(implicit ec: ExecutionContext): Future[WriteResult] = {
+    collection.insert(game)
+  }
 
-  override def update(selector: BSONDocument, update: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult] = ???
+  override def update(selector: JsObject, update: JsObject)(implicit ec: ExecutionContext): Future[WriteResult] = {
+    collection.update(selector, update)
+  }
 
-  override def remove(document: BSONDocument)(implicit ec: ExecutionContext): Future[WriteResult] = ???
+  override def remove(document: JsObject)(implicit ec: ExecutionContext): Future[WriteResult] = {
+    collection.remove(document)
+  }
 }
-
-/*
-
-val gameDateFormat = DateTimeFormat.forPattern("E MM/dd/yyyy, H:mm a")
-
- def getNextGame(gameIds: Set[Long]): Option[Game] = {
-   gameIds.flatMap(findById).filter { game =>
-     DateTime.now().getMillis < gameDateFormat.parseDateTime(game.start_time).plusDays(1).getMillis
-   }.toList.sortBy(g => gameDateFormat.parseDateTime(g.start_time).plusDays(1).getMillis).headOption
- }
-
-
- /*
-  * MONGO API -- TODO: move to separate DB Trait
-  */
-
- private val mongoManager = MongoManagerFactory.instance
-
- def findById(id: Long): Option[Game] = {
-   val dbObject = mongoManager.games.findOne(MongoDBObject("_id" -> id))
-   dbObject.map(o => grater[Game].asObject(o))
- }
-
- def create(game: Game): Unit = {
-   val dbo = grater[Game].asDBObject(game)
-   mongoManager.games += dbo
- }
-
- def remove(id: Long): Unit = {
-   mongoManager.games.remove(MongoDBObject("_id" -> id))
- }
-
- def update(game: Game): Game = {
-   val dbo = grater[Game].asDBObject(game)
-   mongoManager.games.update(MongoDBObject("_id" -> game._id), dbo)
-   game
- }
-
-
- */
