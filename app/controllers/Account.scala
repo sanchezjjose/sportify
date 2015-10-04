@@ -52,8 +52,8 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
     }
   )
 
-  def account(teamId: Long) = isAuthenticatedAsync { userContext => implicit request =>
-    withAccountContext(request, userContext, teamId) { accountView: AccountViewModel =>
+  def account(teamId: Long) = isAuthenticatedAsync { userContextFuture => implicit request =>
+    withAccountContext(request, userContextFuture, teamId) { accountView: AccountViewModel =>
       Ok(Json.toJson(accountView))
     }
   }

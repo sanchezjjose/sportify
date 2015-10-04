@@ -54,9 +54,11 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
         val teamId = data.teamId
 
-        db.teams.findOne(Json.obj(TeamFields.Id -> teamId)).map { teamOpt =>
-          val team = teamOpt.get // TODO: handle Options the proper way
+        for {
+          teamOpt <- db.teams.findOne(Json.obj(TeamFields.Id -> teamId))
+          team <- teamOpt
 
+        } yield {
           val playerId = Helper.generateRandomId()
           val userId = Helper.generateRandomId()
 
@@ -72,7 +74,8 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
           val player = Player(
             _id = playerId,
-            user_id =userId,
+            user_id = userId,
+            team_id = teamId,
             number = data.jerseyNumber,
             position = data.position
           )
@@ -101,6 +104,7 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
             .withSession("user_info" -> user.email)
             .flashing("team_id" -> s"$teamId")
         }
-      })
+      }
+    )
   }
 }

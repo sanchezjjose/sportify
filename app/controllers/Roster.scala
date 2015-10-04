@@ -16,8 +16,8 @@ class Roster @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
   override val db = new MongoManager(reactiveMongoApi)
 
-  def roster(teamId: Long) = isAuthenticatedAsync { userContext => implicit request =>
-    withRosterContext(request, userContext, teamId) { rosterView: RosterViewModel =>
+  def roster(teamId: Long) = isAuthenticatedAsync { userContextFuture => implicit request =>
+    withRosterContext(request, userContextFuture, teamId) { rosterView: RosterViewModel =>
       Ok(Json.toJson(rosterView))
     }
   }

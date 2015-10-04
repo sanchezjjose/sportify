@@ -3,7 +3,7 @@ package models
 
 case class Game (
   _id: Long,
-  team_ids: Set[Long],
+  opponents_team_ids: Set[Long],
   home_team_id: Long,
   number: Int,
   start_time: Long,

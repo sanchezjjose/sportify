@@ -44,7 +44,7 @@ class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
         } yield {
           val user = userOpt.get
-          val defaultTeamId = userContext.selectedTeam._id
+          val defaultTeamId = userContext.teams.head._id
 
           Redirect(routes.Homepage.home(defaultTeamId))
             .withSession (

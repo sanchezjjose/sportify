@@ -3,15 +3,18 @@ package models
 
 case class UserContext (
   user: User,
-  player: Player,
-  currentSeason: Season,
+  playerOpt: Option[Player],
+  currentSeasonOpt: Option[Season],
   teams: List[Team],
-  nextGame: Option[Game],
-  sport: Sport
+  nextGame: Option[Game]
 
 ) {
 
-  def getTeam(teamId: Long): Team = teams.find(team => team._id == teamId).get
+  def getTeam(teamId: Long): Team = {
+    teams.find(team => team._id == teamId).get
+  }
 
-  def getOtherTeams(teamId: Long): List[Team] = teams.filter(team => team._id != teamId)
+  def getOtherTeams(teamId: Long): List[Team] = {
+    teams.filter(team => team._id != teamId)
+  }
 }

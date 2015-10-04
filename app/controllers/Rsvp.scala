@@ -6,9 +6,9 @@ import api.MongoManager
 import models.GameFields
 import models.JsonFormats._
 import play.api.libs.json.Json
-import play.api.mvc.{Result, Controller, Cookie}
+import play.api.mvc.{Result, Controller}
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
-import util.RequestHelper
+import util.{FutureO, RequestHelper}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -28,39 +28,39 @@ class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
   def update(gameId: Long) = isAuthenticatedAsync { implicit userContextFuture => implicit request =>
 
-    getFuture(db.games.findOne(Json.obj(GameFields.Id -> gameId))) { game =>
+    for {
+      userContext <- userContextFuture
+      player <- FutureO(Future(userContext.playerOpt))
+      rsvpCookie <- FutureO(Future(request.cookies.get("rsvp")))
+      game <- FutureO(db.games.findOne(Json.obj(GameFields.Id -> gameId)))
+      playerId = player._id
 
-      userContextFuture.map { userContext =>
+    } yield {
 
-        // TODO: remove .get calls here
-        val rsvp: Cookie = request.cookies.get("rsvp").get
-        val playerId = userContext.player._id
-
-        val updatedGame = if (rsvp.value == "in") {
-          game.copy(
-            players_in = game.players_in + playerId,
-            players_out = game.players_out - playerId
-          )
-
-        } else {
-          game.copy(
-            players_in = game.players_in - playerId,
-            players_out = game.players_out + playerId
-          )
-        }
-
-        db.games.update(
-          Json.obj(GameFields.Id -> gameId),
-          Json.obj("$set" ->
-            Json.obj(
-              GameFields.PlayersIn -> updatedGame.players_in,
-              GameFields.PlayersOut -> updatedGame.players_out
-            )
-          )
+      val updatedGame = if (rsvpCookie.value == "in") {
+        game.copy(
+          players_in = game.players_in + playerId,
+          players_out = game.players_out - playerId
         )
 
-        Ok(Json.toJson(updatedGame))
+      } else {
+        game.copy(
+          players_in = game.players_in - playerId,
+          players_out = game.players_out + playerId
+        )
       }
+
+      db.games.update(
+        Json.obj(GameFields.Id -> gameId),
+        Json.obj("$set" ->
+          Json.obj(
+            GameFields.PlayersIn -> updatedGame.players_in,
+            GameFields.PlayersOut -> updatedGame.players_out
+          )
+        )
+      )
+
+      Ok(Json.toJson(updatedGame))
     }
   }
 }
