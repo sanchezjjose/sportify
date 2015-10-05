@@ -26,14 +26,12 @@ class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
     }
   }
 
-  def update(gameId: Long) = isAuthenticatedAsync { implicit userContextFuture => implicit request =>
+  def update(playerId: Long, gameId: Long) = isAuthenticatedAsync { implicit userContextFuture => implicit request =>
 
     for {
       userContext <- userContextFuture
-      player <- FutureO(Future(userContext.playerOpt))
       rsvpCookie <- FutureO(Future(request.cookies.get("rsvp")))
       game <- FutureO(db.games.findOne(Json.obj(GameFields.Id -> gameId)))
-      playerId = player._id
 
     } yield {
 

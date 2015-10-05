@@ -3,10 +3,13 @@ package models
 
 case class UserContext (
   user: User,
-  playerOpt: Option[Player],
-  currentSeasonOpt: Option[Season],
-  teams: List[Team],
-  nextGame: Option[Game]
+  players: Set[Player],
+  teams: Set[Team]
+
+//  playerOpt: Option[Player],
+//  currentSeasonOpt: Option[Season],
+//  teams: List[Team],
+//  nextGame: Option[Game]
 
 ) {
 

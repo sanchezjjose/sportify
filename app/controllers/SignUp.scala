@@ -62,37 +62,30 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
           val playerId = Helper.generateRandomId()
           val userId = Helper.generateRandomId()
 
+          val player = Player(
+            _id = playerId,
+            number = data.jerseyNumber,
+            position = data.position
+          )
+
           val user = User(
             _id = userId,
             email = data.email,
             password = Some(data.password),
             first_name = data.firstName,
             last_name = data.lastName,
+            player_ids = Set(player._id),
             team_ids = Set(team._id),
+            is_admin = false,
             phone_number = data.phoneNumber
           )
 
-          val player = Player(
-            _id = playerId,
-            user_id = userId,
-            team_id = teamId,
-            number = data.jerseyNumber,
-            position = data.position
-          )
-
           // TODO: both save commands should happen as a transaction
-
-          db.players.save(Json.obj(
-            PlayerFields.Id -> player._id,
-            PlayerFields.Number -> player.number,
-            PlayerFields.Position -> player.position
-          ))
-
+          db.players.insert(player)
           db.users.insert(user)
 
           // Add player to the team
           val updatedTeam = team.copy(player_ids = team.player_ids + player._id)
-
           db.teams.update(
             Json.obj(TeamFields.Id -> team._id),
             Json.obj(TeamFields.PlayerIds ->

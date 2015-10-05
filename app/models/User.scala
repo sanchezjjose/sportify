@@ -8,8 +8,9 @@ case class User (
   password: Option[String], 
   first_name: String, 
   last_name: String, 
+  player_ids: Set[Long] = Set.empty[Long],
   team_ids: Set[Long] = Set.empty[Long],
-  is_admin: Boolean = false, 
+  is_admin: Boolean = false,
   phone_number: Option[String] = None
 
 ) {
@@ -29,6 +30,7 @@ object UserFields {
   val Password = "password"
   val FirstName = "first_name"
   val LastName = "last_name"
+  val PlayerIds = "player_ids"
   val TeamIds = "team_ids"
   val IsAdmin = "is_admin"
   val PhoneNumber = "phone_number"

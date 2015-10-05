@@ -22,7 +22,7 @@ POST    /login/submit                                                controllers
 
 POST    /signup/submit                                               controllers.SignUp.submit
 
-PUT     /games/:id                  controllers.Rsvp.update(id: Long)
+PUT     /rsvp/player/:player_id/game/:game_id                  controllers.Rsvp.update(player_id: Long, game_id: Long)
 
 GET     /api/posts                  controllers.Posts.list
 PATCH   /api/post/:id/like          controllers.Posts.like(id: String)

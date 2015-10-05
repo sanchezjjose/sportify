@@ -28,89 +28,38 @@ trait RequestHelper {
       Results.Unauthorized
     }
 
-    blocking {
+    Security.Authenticated(sessionKey, onUnauthorized) { email =>
+      val userFuture = db.users.findOne(Json.obj(UserFields.Email -> email))
+      val userContextFuture = buildUserContext(userFuture)
 
-      Security.Authenticated(sessionKey, onUnauthorized) { email =>
-        val userFuture = db.users.findOne(Json.obj(UserFields.Email -> email))
-        val userOpt = Await.result(userFuture, Duration(10, TimeUnit.SECONDS))
-        val userContextFuture = buildUserContext(userOpt.get)
-
-        Action.async(request => f(userContextFuture)(request))
-      }
+      Action.async(request => f(userContextFuture)(request))
     }
   }
 
-  object Test {
+  def buildUserContext(userFuture: Future[Option[User]]): Future[UserContext] = {
 
-    def findId(login: String): Future[Option[Int]] = Future.successful(Option(1))
-    def findName(id: Int): Future[Option[String]] = Future.successful(Option("Robert"))
-    def findFriends(name: String): Future[Option[List[String]]] = Future.successful(Option(List("loicd", "tpolecat")))
-
-    for {
-      id: Option[Int]      <- findId("TunaBoo")
-      name: Option[String]    <- id.map(findName).getOrElse(Future.successful(Option.empty))
-      friends: Option[List[String]] <- name.map(findFriends).getOrElse(Future.successful(Option.empty))
-    } yield friends
-  }
-
-  def buildUserContext(user: User): Future[UserContext] = {
-
-    import util.FutureO
-
-//    def findNextGame(season: Season): Future[Option[Game]] = {
-//      db.games.findNextGame(season.game_ids)
-//    }
-//
-//    def findPlayersTeams(teamIds: Set[Long]): Future[List[Team]] = {
-//
-//      val x = teamIds.map { teamId =>
-//        db.teams.find(
-//          Json.obj(
-//            TeamFields.Id -> teamId
-//          )
-//        )
-//      }
-//    }
-
-    for {
-      teamId <- Future.successful(user.team_ids)
-
-      teams: List[Team] <- db.teams.find(
-        Json.obj(
-          TeamFields.Id -> teamId
-        )
-      )
-
-      playerOpt <- FutureO(db.players.findOne(
-        Json.obj(
-          PlayerFields.UserId -> user._id
-        )
-      ))
-
-      currentSeasonOpt: Option[Season] <- db.seasons.findOne(
-        Json.obj(
-          "team_ids" -> Json.obj("$in" -> teams.head._id),
-          "is_current" -> true
-        )
-      )
-
-      nextGameOpt: Option[Game] <- currentSeasonOpt.map(findNextGame).getOrElse(Future.successful(None))
-
-    } yield {
-
-      // 1. get all Players a user has
-      // 2. get all team by finding all teams every UserPlayer is on
-      // 3. get current Season by checking which season has one of the Players teams, and which one of those is current
-      // 4. get next Game by getting all the games of a Season, and checking their dates
-
-      UserContext (
-        user = user,
-        playerOpt = playerOpt,
-        currentSeasonOpt = currentSeasonOpt,
-        teams = teams,
-        nextGame = nextGameOpt
-      )
+    // wrap a future into a FutureO
+    def liftFO[A](fut: Future[A]) = {
+      // convert Future[A] to Future[Option[A]] to conform to FutureO requirements
+      val futureOpt: Future[Option[A]] = fut.map(Some(_))
+      FutureO(futureOpt)
     }
+
+    val futureO: FutureO[UserContext] = for {
+      user <- FutureO(userFuture)
+      players <- liftFO(Future.traverse(user.player_ids)(id => db.players.findOne(Json.obj(PlayerFields.Id -> id))))
+      teams  <- liftFO(Future.traverse(user.team_ids)(id => db.teams.findOne(Json.obj(TeamFields.Id -> id))))
+
+    } yield UserContext(user, players.flatten, teams.flatten)
+
+    val result: Future[UserContext] = futureO.future flatMap { userContextOpt: Option[UserContext] =>
+
+      // handle Option (Future[Option[UserContext]] => Future[UserContext])
+      userContextOpt.map(user => Future.successful(user))
+        .getOrElse(Future.failed(new RuntimeException("Could not find UserContext")))
+    }
+
+    result
   }
 
   def withHomepageContext(request: Request[AnyContent], userContextFuture: Future[UserContext], teamId: Long)(process: HomepageViewModel => Result): Future[Result] = {
@@ -133,23 +82,34 @@ trait RequestHelper {
 
   def withRosterContext(request: Request[AnyContent], userContextFuture: Future[UserContext], teamId: Long)(process: RosterViewModel => Result): Future[Result] = {
 
-    for {
-      userContext <- userContextFuture
-      playerId <- userContext.getTeam(teamId).player_ids
-      player <- db.players.findOne(Json.obj(PlayerFields.Id -> playerId))
-      user <- db.users.findOne(Json.obj(UserFields.Id -> player.get.user_id))
+    case class ListOfPlayers(playerIds: Set[Long])
 
-    } yield {
-      val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
+    val x =
 
-      PlayerViewModel(
-        player.get._id,
-        user.get.fullName,
-        player.get.number,
-        user.get.phone_number,
-        player.get.position
-      )
-    }
+      for {
+        userContext <- userContextFuture
+
+      } yield for {
+        playerId <- userContext.getTeam(teamId).player_ids
+
+      } yield for {
+          player <- FutureO(db.players.findOne(Json.obj(PlayerFields.Id -> playerId)))
+          user <- FutureO(db.users.findOne(Json.obj(UserFields.Id -> 122)))
+
+        } yield {
+
+          PlayerViewModel(
+            player._id,
+            user.fullName,
+            player.number,
+            user.phone_number,
+            player.position
+          )
+      }
+
+    val y = x.flatMap(_)
+
+    y
 
     process(RosterViewModel(tVm, pVms.toList.sortBy(p => p.name)))
   }

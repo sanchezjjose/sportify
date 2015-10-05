@@ -15,7 +15,7 @@ trait PlayerDao {
 
   def find(query: JsObject)(implicit ec: ExecutionContext): Future[List[Player]]
 
-  def save(document: JsObject)(implicit ec: ExecutionContext): Future[WriteResult]
+  def insert(player: Player)(implicit ec: ExecutionContext): Future[WriteResult]
 
   def update(selector: JsObject, update: JsObject)(implicit ec: ExecutionContext): Future[WriteResult]
 
@@ -38,8 +38,8 @@ class PlayerMongoDao(reactiveMongoApi: ReactiveMongoApi) extends PlayerDao {
     collection.find(query).cursor[Player].collect[List]()
   }
 
-  override def save(document: JsObject)(implicit ec: ExecutionContext): Future[WriteResult] = {
-    collection.save(document)
+  override def insert(player: Player)(implicit ec: ExecutionContext): Future[WriteResult] = {
+    collection.insert(player)
   }
 
   override def update(selector: JsObject, update: JsObject)(implicit ec: ExecutionContext): Future[WriteResult] = {

@@ -39,11 +39,10 @@ class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         val (username, _) = credentials
 
         for {
-          userOpt <- db.users.findOne(Json.obj("email" -> username))
-          userContext <- buildUserContext(userOpt.get)
+          userContext <- buildUserContext(db.users.findOne(Json.obj("email" -> username)))
 
         } yield {
-          val user = userOpt.get
+          val user = userContext.user
           val defaultTeamId = userContext.teams.head._id
 
           Redirect(routes.Homepage.home(defaultTeamId))
