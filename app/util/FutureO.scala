@@ -19,3 +19,14 @@ case class FutureO[+A](future: Future[Option[A]]) extends AnyVal {
     FutureO(future.map(_ map f))
   }
 }
+
+object FutureO {
+
+  // wrap a Future[A] into a FutureO[A]
+  def liftFO[A](fut: Future[A])(implicit ec: ExecutionContext): FutureO[A] = {
+
+    // convert Future[A] to Future[Option[A]] to conform to FutureO requirements
+    val futureOpt: Future[Option[A]] = fut.map(Some(_))
+    FutureO(futureOpt)
+  }
+}

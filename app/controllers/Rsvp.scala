@@ -6,9 +6,10 @@ import api.MongoManager
 import models.GameFields
 import models.JsonFormats._
 import play.api.libs.json.Json
-import play.api.mvc.{Result, Controller}
+import play.api.mvc.{Results, Result, Controller}
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
 import util.{FutureO, RequestHelper}
+import FutureO._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -17,7 +18,7 @@ import scala.concurrent.Future
 class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val db = new MongoManager(reactiveMongoApi)
+  override val mongoDb = new MongoManager(reactiveMongoApi)
 
   def getFuture[T](futureOptionBlock: Future[Option[T]])(foundBlock: (T => Future[Result])): Future[Result] = {
     futureOptionBlock.flatMap {
@@ -28,10 +29,10 @@ class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
   def update(playerId: Long, gameId: Long) = isAuthenticatedAsync { implicit userContextFuture => implicit request =>
 
-    for {
-      userContext <- userContextFuture
+    (for {
+      userContext <- liftFO(userContextFuture)
       rsvpCookie <- FutureO(Future(request.cookies.get("rsvp")))
-      game <- FutureO(db.games.findOne(Json.obj(GameFields.Id -> gameId)))
+      game <- FutureO(mongoDb.games.findOne(Json.obj(GameFields.Id -> gameId)))
 
     } yield {
 
@@ -48,7 +49,7 @@ class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         )
       }
 
-      db.games.update(
+      mongoDb.games.update(
         Json.obj(GameFields.Id -> gameId),
         Json.obj("$set" ->
           Json.obj(
@@ -59,6 +60,11 @@ class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
       )
 
       Ok(Json.toJson(updatedGame))
+
+    }).future.flatMap {
+
+      case Some(result) => Future.successful(result)
+      case None => Future.successful(Results.NotFound)
     }
   }
 }

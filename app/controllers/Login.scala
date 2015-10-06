@@ -15,7 +15,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val db = new MongoManager(reactiveMongoApi)
+  override val mongoDb = new MongoManager(reactiveMongoApi)
 
   val loginForm: Form[(String, String)] = {
     Form {
@@ -23,7 +23,7 @@ class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         "email" -> text,
         "password" -> text
       ) verifying("Invalid email or password.", result => result match {
-        case (email: String, password: String) => db.users.authenticate(email, password).isDefined
+        case (email: String, password: String) => mongoDb.users.authenticate(email, password).isDefined
       })
     }
   }
@@ -39,7 +39,7 @@ class Login @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         val (username, _) = credentials
 
         for {
-          userContext <- buildUserContext(db.users.findOne(Json.obj("email" -> username)))
+          userContext <- buildUserContext(mongoDb.users.findOne(Json.obj("email" -> username)))
 
         } yield {
           val user = userContext.user

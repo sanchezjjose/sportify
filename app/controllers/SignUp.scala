@@ -12,7 +12,6 @@ import util.{Helper, RequestHelper}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-
 case class PlayerData(
   email: String,
   password: String,
@@ -27,7 +26,7 @@ case class PlayerData(
 class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val db = new MongoManager(reactiveMongoApi)
+  override val mongoDb = new MongoManager(reactiveMongoApi)
 
   private val form: Form[PlayerData] = Form(
     mapping(
@@ -54,48 +53,51 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
         val teamId = data.teamId
 
-        for {
-          teamOpt <- db.teams.findOne(Json.obj(TeamFields.Id -> teamId))
-          team <- teamOpt
+        mongoDb.teams.findOne(Json.obj(TeamFields.Id -> teamId)).map { teamOpt =>
 
-        } yield {
-          val playerId = Helper.generateRandomId()
-          val userId = Helper.generateRandomId()
+          teamOpt.map { team =>
 
-          val player = Player(
-            _id = playerId,
-            number = data.jerseyNumber,
-            position = data.position
-          )
+            val playerId = Helper.generateRandomId()
+            val userId = Helper.generateRandomId()
 
-          val user = User(
-            _id = userId,
-            email = data.email,
-            password = Some(data.password),
-            first_name = data.firstName,
-            last_name = data.lastName,
-            player_ids = Set(player._id),
-            team_ids = Set(team._id),
-            is_admin = false,
-            phone_number = data.phoneNumber
-          )
-
-          // TODO: both save commands should happen as a transaction
-          db.players.insert(player)
-          db.users.insert(user)
-
-          // Add player to the team
-          val updatedTeam = team.copy(player_ids = team.player_ids + player._id)
-          db.teams.update(
-            Json.obj(TeamFields.Id -> team._id),
-            Json.obj(TeamFields.PlayerIds ->
-              Json.obj("$set" -> updatedTeam.player_ids)
+            val player = Player(
+              _id = playerId,
+              number = data.jerseyNumber,
+              position = data.position
             )
-          )
 
-          Redirect(routes.Homepage.home(teamId))
-            .withSession("user_info" -> user.email)
-            .flashing("team_id" -> s"$teamId")
+            val user = User(
+              _id = userId,
+              email = data.email,
+              password = Some(data.password),
+              first_name = data.firstName,
+              last_name = data.lastName,
+              player_ids = Set(player._id),
+              team_ids = Set(team._id),
+              is_admin = false,
+              phone_number = data.phoneNumber
+            )
+
+            // TODO: both save commands should happen as a transaction
+            mongoDb.players.insert(player)
+            mongoDb.users.insert(user)
+
+            // Add player to the team
+            val updatedTeam = team.copy(player_ids = team.player_ids + player._id)
+            mongoDb.teams.update(
+              Json.obj(TeamFields.Id -> team._id),
+              Json.obj(TeamFields.PlayerIds ->
+                Json.obj("$set" -> updatedTeam.player_ids)
+              )
+            )
+
+            Redirect(routes.Homepage.home(teamId))
+              .withSession("user_info" -> user.email)
+              .flashing("team_id" -> s"$teamId")
+
+          }.getOrElse {
+            Results.NotFound
+          }
         }
       }
     )

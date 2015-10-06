@@ -24,9 +24,7 @@ case class AccountViewModel (
 
 case class HomepageViewModel (
   teamViewModel: TeamViewModel,
-  nextGameOpt: Option[Game],
-  playersIn: Set[User],
-  playersOut: Set[User]
+  nextGameOpt: Option[Game]
 )
 
 

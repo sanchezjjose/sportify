@@ -9,19 +9,12 @@ import play.api.mvc._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import FutureO._
 
 
 trait RequestHelper {
 
-  val db: MongoManager
-
-  // wrap a Future[A] into a FutureO[A]
-  private def liftFO[A](fut: Future[A]): FutureO[A] = {
-
-    // convert Future[A] to Future[Option[A]] to conform to FutureO requirements
-    val futureOpt: Future[Option[A]] = fut.map(Some(_))
-    FutureO(futureOpt)
-  }
+  val mongoDb: MongoManager
 
   /*
    * TODO: fix and modify so it takes a body parser
@@ -38,7 +31,7 @@ trait RequestHelper {
     }
 
     Security.Authenticated(sessionKey, onUnauthorized) { email =>
-      val userFuture = db.users.findOne(Json.obj(UserFields.Email -> email))
+      val userFuture = mongoDb.users.findOne(Json.obj(UserFields.Email -> email))
       val userContextFuture = buildUserContext(userFuture)
 
       Action.async(request => f(userContextFuture)(request))
@@ -49,8 +42,8 @@ trait RequestHelper {
 
     val futureO: FutureO[UserContext] = for {
       user <- FutureO(userFuture)
-      players <- liftFO(Future.traverse(user.player_ids)(id => db.players.findOne(Json.obj(PlayerFields.Id -> id))))
-      teams  <- liftFO(Future.traverse(user.team_ids)(id => db.teams.findOne(Json.obj(TeamFields.Id -> id))))
+      players <- liftFO(Future.traverse(user.player_ids)(id => mongoDb.players.findOne(Json.obj(PlayerFields.Id -> id))))
+      teams  <- liftFO(Future.traverse(user.team_ids)(id => mongoDb.teams.findOne(Json.obj(TeamFields.Id -> id))))
 
     } yield UserContext(user, players.flatten, teams.flatten)
 
@@ -66,19 +59,20 @@ trait RequestHelper {
 
   def withHomepageContext(request: Request[AnyContent], userContextFuture: Future[UserContext], teamId: Long)(process: HomepageViewModel => Result): Future[Result] = {
 
-    for {
-      userContext <- userContextFuture
-      playerInId <- userContext.nextGame match { case Some(game) => game.players_in case None => Set.empty[Long] }
-      playerOutId <- userContext.nextGame match { case Some(game) => game.players_out case None => Set.empty[Long] }
-      playerInOpt <- db.players.findOne(Json.obj(PlayerFields.Id -> playerInId))
-      playersInUser <- db.users.find(Json.obj(UserFields.Id -> playerInOpt.get.user_id))
-      playerOutOpt <- db.players.findOne(Json.obj(PlayerFields.Id -> playerOutId))
-      playersOutUser <- db.users.find(Json.obj(UserFields.Id -> playerOutOpt.get.user_id))
+    (for {
+      userContext <- liftFO(userContextFuture)
+      activeSeason <- FutureO(mongoDb.seasons.findOne(Json.obj(SeasonFields.TeamIds -> Json.obj("$in" -> teamId), SeasonFields.IsCurrent -> true)))
+      nextGameOpt <- liftFO(mongoDb.games.findNextGame(activeSeason.game_ids))
 
     } yield {
-      val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
+        val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
 
-      process(HomepageViewModel(tVm, userContext.nextGame, playersInUser.toSet, playersOutUser.toSet))
+        process(HomepageViewModel(tVm, nextGameOpt))
+
+      }).future.flatMap {
+
+      case Some(result) => Future.successful(result)
+      case None => Future.successful(Results.NotFound)
     }
   }
 
@@ -86,19 +80,19 @@ trait RequestHelper {
 
     (for {
       userContext <- liftFO(userContextFuture)
-      team <- FutureO(db.teams.findOne(Json.obj(TeamFields.Id -> teamId)))
-      players <- liftFO(Future.traverse(team.player_ids)(id => db.players.findOne(Json.obj(PlayerFields.Id -> id))))
+      team <- FutureO(mongoDb.teams.findOne(Json.obj(TeamFields.Id -> teamId)))
+      players <- liftFO(Future.traverse(team.player_ids)(id => mongoDb.players.findOne(Json.obj(PlayerFields.Id -> id))))
 
     } yield {
 
       // TODO: remove blocking call
       val pVms = players.flatten.map { player =>
-        val query = db.users.findOne(Json.obj(UserFields.PlayerIds -> Json.obj("$in" -> player._id)))
+        val query = mongoDb.users.findOne(Json.obj(UserFields.PlayerIds -> Json.obj("$in" -> player._id)))
         val user = Await.result(query, Duration(500, TimeUnit.MILLISECONDS)).get
 
         PlayerViewModel(player._id, user.fullName, player.number, user.phone_number, player.position)
       }
-      
+
       val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
 
       process(RosterViewModel(tVm, pVms.toList.sortBy(p => p.name)))
@@ -114,10 +108,10 @@ trait RequestHelper {
 
     (for {
       userContext <- liftFO(userContextFuture)
-      activeSeason <- FutureO(db.seasons.findOne(Json.obj(SeasonFields.TeamIds -> Json.obj("$in" -> teamId), SeasonFields.IsCurrent -> true)))
-      nextGame <- liftFO(db.games.findNextGame(activeSeason.game_ids))
+      activeSeason <- FutureO(mongoDb.seasons.findOne(Json.obj(SeasonFields.TeamIds -> Json.obj("$in" -> teamId), SeasonFields.IsCurrent -> true)))
+      nextGame <- liftFO(mongoDb.games.findNextGame(activeSeason.game_ids))
       games <- liftFO(Future.traverse(activeSeason.game_ids) { id =>
-        db.games.findOne(Json.obj(GameFields.Id -> id))
+        mongoDb.games.findOne(Json.obj(GameFields.Id -> id))
       })
 
     } yield {

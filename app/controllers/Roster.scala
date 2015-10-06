@@ -14,7 +14,7 @@ import util.RequestHelper
 class Roster @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val db = new MongoManager(reactiveMongoApi)
+  override val mongoDb = new MongoManager(reactiveMongoApi)
 
   def roster(teamId: Long) = isAuthenticatedAsync { userContextFuture => implicit request =>
     withRosterContext(request, userContextFuture, teamId) { rosterView: RosterViewModel =>

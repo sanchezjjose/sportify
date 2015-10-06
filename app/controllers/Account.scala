@@ -17,7 +17,7 @@ import ExecutionContext.Implicits.global
 class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents with RequestHelper {
 
-  override val db = new MongoManager(reactiveMongoApi)
+  override val mongoDb = new MongoManager(reactiveMongoApi)
 
   private[controllers] case class AccountForm (
     email: String,
@@ -61,7 +61,7 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
   def delete = isAuthenticatedAsync { userContextFuture => implicit request =>
 
     userContextFuture.flatMap { userContext =>
-      db.users.remove(Json.obj(UserFields.Id -> userContext.user._id)).map { _ =>
+      mongoDb.users.remove(Json.obj(UserFields.Id -> userContext.user._id)).map { _ =>
         NoContent
       }
     }
@@ -75,7 +75,7 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
 
         withAccountContext(request, userContextFuture, teamId) { (accountView: AccountViewModel) =>
 
-          db.users.update(
+          mongoDb.users.update(
             Json.obj(UserFields.Id -> accountView.userId, PlayerFields.Id -> accountView.playerId),
             Json.obj("$set" -> Json.obj(
               UserFields.Email -> userFormData.email,
@@ -86,7 +86,7 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
             ))
           )
 
-          db.players.update(
+          mongoDb.players.update(
             Json.obj(PlayerFields.Id -> accountView.playerId),
             Json.obj("$set" -> Json.obj(
               PlayerFields.Position -> userFormData.position,
