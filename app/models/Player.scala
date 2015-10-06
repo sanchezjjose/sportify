@@ -9,8 +9,6 @@ case class Player (
 
 object PlayerFields {
   val Id = "_id"
-  val UserId = "user_id"
-  val TeamId = "team_id"
   val Number = "number"
   val Position = "position"
 }

@@ -1,6 +1,7 @@
 package util
 
 import java.util.concurrent.TimeUnit
+
 import api.MongoManager
 import models._
 import play.api.libs.json.Json
@@ -8,11 +9,19 @@ import play.api.mvc._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.blocking
+
 
 trait RequestHelper {
 
   val db: MongoManager
+
+  // wrap a Future[A] into a FutureO[A]
+  private def liftFO[A](fut: Future[A]): FutureO[A] = {
+
+    // convert Future[A] to Future[Option[A]] to conform to FutureO requirements
+    val futureOpt: Future[Option[A]] = fut.map(Some(_))
+    FutureO(futureOpt)
+  }
 
   /*
    * TODO: fix and modify so it takes a body parser
@@ -37,13 +46,6 @@ trait RequestHelper {
   }
 
   def buildUserContext(userFuture: Future[Option[User]]): Future[UserContext] = {
-
-    // wrap a future into a FutureO
-    def liftFO[A](fut: Future[A]) = {
-      // convert Future[A] to Future[Option[A]] to conform to FutureO requirements
-      val futureOpt: Future[Option[A]] = fut.map(Some(_))
-      FutureO(futureOpt)
-    }
 
     val futureO: FutureO[UserContext] = for {
       user <- FutureO(userFuture)
@@ -82,55 +84,59 @@ trait RequestHelper {
 
   def withRosterContext(request: Request[AnyContent], userContextFuture: Future[UserContext], teamId: Long)(process: RosterViewModel => Result): Future[Result] = {
 
-    case class ListOfPlayers(playerIds: Set[Long])
+    (for {
+      userContext <- liftFO(userContextFuture)
+      team <- FutureO(db.teams.findOne(Json.obj(TeamFields.Id -> teamId)))
+      players <- liftFO(Future.traverse(team.player_ids)(id => db.players.findOne(Json.obj(PlayerFields.Id -> id))))
 
-    val x =
+    } yield {
 
-      for {
-        userContext <- userContextFuture
+      // TODO: remove blocking call
+      val pVms = players.flatten.map { player =>
+        val query = db.users.findOne(Json.obj(UserFields.PlayerIds -> Json.obj("$in" -> player._id)))
+        val user = Await.result(query, Duration(500, TimeUnit.MILLISECONDS)).get
 
-      } yield for {
-        playerId <- userContext.getTeam(teamId).player_ids
-
-      } yield for {
-          player <- FutureO(db.players.findOne(Json.obj(PlayerFields.Id -> playerId)))
-          user <- FutureO(db.users.findOne(Json.obj(UserFields.Id -> 122)))
-
-        } yield {
-
-          PlayerViewModel(
-            player._id,
-            user.fullName,
-            player.number,
-            user.phone_number,
-            player.position
-          )
+        PlayerViewModel(player._id, user.fullName, player.number, user.phone_number, player.position)
       }
+      
+      val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
 
-    val y = x.flatMap(_)
+      process(RosterViewModel(tVm, pVms.toList.sortBy(p => p.name)))
 
-    y
+    }).future.flatMap {
 
-    process(RosterViewModel(tVm, pVms.toList.sortBy(p => p.name)))
+      case Some(result) => Future.successful(result)
+      case None => Future.successful(Results.NotFound)
+    }
   }
 
   def withScheduleContext(request: Request[AnyContent], userContextFuture: Future[UserContext], teamId: Long)(process: ScheduleViewModel => Result): Future[Result] = {
 
-    for {
-      userContext <- userContextFuture
-      gameId <- userContext.currentSeasonOpt.game_ids
-      games <- db.games.find(Json.obj(GameFields.Id -> gameId))
+    (for {
+      userContext <- liftFO(userContextFuture)
+      activeSeason <- FutureO(db.seasons.findOne(Json.obj(SeasonFields.TeamIds -> Json.obj("$in" -> teamId), SeasonFields.IsCurrent -> true)))
+      nextGame <- liftFO(db.games.findNextGame(activeSeason.game_ids))
+      games <- liftFO(Future.traverse(activeSeason.game_ids) { id =>
+        db.games.findOne(Json.obj(GameFields.Id -> id))
+      })
 
     } yield {
       val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
 
-      process(ScheduleViewModel(tVm, userContext.currentSeasonOpt, games, userContext.nextGame))
+      process(ScheduleViewModel(tVm, activeSeason, games.flatten.toList, nextGame))
+
+    }).future.flatMap {
+
+      case Some(result) => Future.successful(result)
+      case None => Future.successful(Results.NotFound)
     }
   }
 
   def withAccountContext(request: Request[AnyContent], userContextFuture: Future[UserContext], teamId: Long)(process: AccountViewModel => Result): Future[Result] = {
 
     userContextFuture.map { userContext =>
+
+      val player = userContext.getPlayerOnTeam(teamId)
 
       val tVm = TeamViewModel(
         selectedTeam = userContext.getTeam(teamId),
@@ -140,14 +146,14 @@ trait RequestHelper {
       val accountView = AccountViewModel(
         teamViewModel = tVm,
         userId = userContext.user._id,
-        playerId = userContext.playerOpt.get._id,
+        playerId = player._id,
         email = userContext.user.email,
         password = userContext.user.password,
         firstName = userContext.user.first_name,
         lastName = userContext.user.last_name,
-        number = userContext.playerOpt.get.number,
+        number = player.number,
         phoneNumber = userContext.user.phone_number,
-        position = userContext.playerOpt.get.position,
+        position = player.position,
         isAdmin = userContext.user.is_admin
       )
 
