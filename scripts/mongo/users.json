@@ -1,0 +1,15 @@
+{
+  "_id" : NumberLong(111111),
+  "email" : "ahouston20@knicks.com",
+  "password" : "$2a$10$VLdM.yFwrWw.Th8czqUUeu7IsDX.De3ITSjJJlv/ag/Er/1Y7nMBK",
+  "first_name" : "Allan",
+  "last_name" : "Houston",
+  "players" : [
+    {
+      "id" : NumberLong(111111),
+      "number" : 20
+    }
+  ],
+  "is_admin" : true,
+  "phone_number" : "718-555-5555"
+}

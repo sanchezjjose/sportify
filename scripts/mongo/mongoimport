@@ -1,0 +1,15 @@
+#!/bin/bash
+
+
+MONGO_HOST=192.168.99.100 # $MONGO_1_PORT_27017_TCP_ADDR
+MONGO_PORT=27017
+DB_NAME=sportify_dev
+
+echo "Importing collections to $MONGO_HOST on port $MONGO_PORT"
+
+mongoimport --host $MONGO_HOST --port $MONGO_PORT --db $DB_NAME --collection games --file games.json
+mongoimport --host $MONGO_HOST --port $MONGO_PORT --db $DB_NAME --collection seasons --file seasons.json
+mongoimport --host $MONGO_HOST --port $MONGO_PORT --db $DB_NAME --collection users --file users.json
+mongoimport --host $MONGO_HOST --port $MONGO_PORT --db $DB_NAME --collection teams --file teams.json
+
+echo "Successfully imported mock data into sportify mongo database."

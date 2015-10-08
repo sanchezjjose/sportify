@@ -1,0 +1,16 @@
+{
+  "_id" : NumberLong(111111),
+  "game_ids" : [
+    NumberLong(111111)
+  ],
+  "is_current_season" : true,
+  "title" : "Winter 2020"
+}
+{
+  "_id" : NumberLong(222222),
+  "game_ids" : [
+    NumberLong(222222)
+  ],
+  "is_current_season" : true,
+  "title" : "Winter 2025"
+}
