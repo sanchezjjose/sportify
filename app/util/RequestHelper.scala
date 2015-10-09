@@ -23,6 +23,11 @@ trait RequestHelper {
   def isAuthenticatedAsync(f: => Future[UserContext] => Request[AnyContent] => Future[Result]): EssentialAction = {
 
     def sessionKey(request: RequestHeader): Option[String] = {
+      println("AAA")
+      println(request)
+      println(request.session)
+      println(request.session.get("user_info"))
+
       request.session.get("user_info")
     }
 

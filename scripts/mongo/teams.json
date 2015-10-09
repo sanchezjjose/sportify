@@ -4,24 +4,17 @@
   "player_ids" : [
     NumberLong(111111)
   ],
-  "season_ids" : [
-    NumberLong(111111)
-  ],
   "sport" : {
     "_id" : NumberLong(111111),
     "name" : "Basketball",
     "logo_image_url" : "images/basketball-icon-2.png"
-  },
-  "selected" : false
+  }
 }
 {
   "_id" : NumberLong(222222),
   "name" : "Ping Kings",
   "player_ids" : [ 
     NumberLong(111111)
-  ],
-  "season_ids" : [ 
-    NumberLong(222222)
   ],
   "sport" : {
     "name" : "Ping Pong",

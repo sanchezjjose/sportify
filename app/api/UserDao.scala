@@ -38,7 +38,7 @@ class UserMongoDao(reactiveMongoApi: ReactiveMongoApi) extends UserDao {
   protected def collection = reactiveMongoApi.db.collection[JSONCollection]("users")
 
   override def authenticate(email: String, password: String)(implicit ec: ExecutionContext): Option[User] = {
-    Await.result(findOne(Json.obj("email" -> email, "password" -> password)), Duration(10, TimeUnit.SECONDS))
+    Await.result(findOne(Json.obj("email" -> email)), Duration(10, TimeUnit.SECONDS))
       .filter(user => BCrypt.checkpw(password, user.password.get))
   }
 

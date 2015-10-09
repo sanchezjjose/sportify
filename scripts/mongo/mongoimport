@@ -11,5 +11,7 @@ mongoimport --host $MONGO_HOST --port $MONGO_PORT --db $DB_NAME --collection gam
 mongoimport --host $MONGO_HOST --port $MONGO_PORT --db $DB_NAME --collection seasons --file seasons.json
 mongoimport --host $MONGO_HOST --port $MONGO_PORT --db $DB_NAME --collection users --file users.json
 mongoimport --host $MONGO_HOST --port $MONGO_PORT --db $DB_NAME --collection teams --file teams.json
+mongoimport --host $MONGO_HOST --port $MONGO_PORT --db $DB_NAME --collection players --file players.json
+
 
 echo "Successfully imported mock data into sportify mongo database."

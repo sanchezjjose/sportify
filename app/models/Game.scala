@@ -3,8 +3,9 @@ package models
 
 case class Game (
   _id: Long,
-  opponents_team_ids: Set[Long],
   home_team_id: Long,
+  away_team_id: Option[Long],
+  opponent: String,
   number: Int,
   start_time: Long,
   address: String,
@@ -18,8 +19,9 @@ case class Game (
 
 object GameFields {
   val Id = "_id"
-  val TeamIds = "team_ids"
   val HomeTeamId = "home_team_id"
+  val AwayTeamId = "away_team_id"
+  val Opponent = "opponent"
   val Number = "number"
   val StartTime = "start_time"
   val Address = "address"

@@ -1,26 +1,30 @@
 {
   "_id" : NumberLong(111111),
+  "home_team_id" : NumberLong(111111),
+  "away_team_id" : "",
+  "opponent" : "Top Dogs",
+  "number" : 1,
+  "start_time" : NumberLong(1577836800000),
   "address" : "68th St. and Lexington Ave.",
   "gym" : "Hunter College",
-  "is_playoff_game" : false,
   "location_details" : "Game is on the 2nd Floor.",
-  "number" : 1,
-  "opponent" : "Top Dogs",
+  "result" : "",
   "players_in" : [ ],
   "players_out" : [ ],
-  "result" : "",
-  "start_time" : NumberLong(1577836800000)
+  "is_playoff_game" : false
 }
 {
   "_id" : NumberLong(222222),
+  "home_team_id" : NumberLong(222222),
+  "away_team_id" : "",
+  "opponent" : "The Beast of the East",
+  "number" : 1,
+  "start_time" : NumberLong(1735689600000),
   "address" : "75 9th Avenue",
   "gym" : "Chelsea Market South Gym",
-  "is_playoff_game" : false,
   "location_details" : "Game is on the 5th Floor.",
-  "number" : 1,
-  "opponent" : "The Beast of the East",
+  "result" : "",
   "players_in" : [ ],
   "players_out" : [ ],
-  "result" : "",
-  "start_time" : NumberLong(1735689600000)
+  "is_playoff_game" : false
 }
