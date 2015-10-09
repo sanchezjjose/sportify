@@ -26,21 +26,24 @@ case class AccountViewModel (
 case class HomepageViewModel (
   active_team: Team,
   other_teams: Set[Team],
-  next_game: Option[Game]
+  next_game: Option[Game],
+  player_id: Long
 )
 
 
 case class RosterViewModel (
-  teamViewModel: TeamViewModel,
+  active_team: Team,
+  other_teams: Set[Team],
   players: List[PlayerViewModel]
 )
 
 
 case class ScheduleViewModel (
-  teamViewModel: TeamViewModel,
-  currentSeasonOpt: Season,
+  active_team: Team,
+  other_teams: Set[Team],
+  active_season: Season,
   games: List[Game],
-  nextGameOpt: Option[Game]
+  next_game: Option[Game]
 )
 
 
@@ -48,6 +51,6 @@ case class PlayerViewModel (
   id: Long,
   name: String,
   number: Int,
-  phoneNumber: Option[String],
+  phone_number: Option[String],
   position: Option[String]
 )

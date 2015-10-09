@@ -65,11 +65,13 @@ trait RequestHelper {
       userContext <- liftFO(userContextFuture)
       activeSeason <- FutureO(mongoDb.seasons.findOne(Json.obj(SeasonFields.TeamIds -> Json.obj("$in" -> List(teamId)), SeasonFields.IsActive -> true)))
       nextGameOpt <- liftFO(mongoDb.games.findNextGame(activeSeason.game_ids))
+//      playersInOpt <- liftFO(mongoDb.players.findNextGame(activeSeason.game_ids))
 
     } yield {
         val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
+        val player = userContext.getPlayerOnTeam(teamId)
 
-        process(HomepageViewModel(tVm.active_team, tVm.other_teams, nextGameOpt))
+        process(HomepageViewModel(tVm.active_team, tVm.other_teams, nextGameOpt, player._id))
 
       }).future.flatMap {
 
@@ -97,7 +99,7 @@ trait RequestHelper {
 
       val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
 
-      process(RosterViewModel(tVm, pVms.toList.sortBy(p => p.name)))
+      process(RosterViewModel(tVm.active_team, tVm.other_teams, pVms.toList.sortBy(p => p.name)))
 
     }).future.flatMap {
 
@@ -119,7 +121,7 @@ trait RequestHelper {
     } yield {
       val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
 
-      process(ScheduleViewModel(tVm, activeSeason, games.flatten.toList, nextGame))
+      process(ScheduleViewModel(tVm.active_team, tVm.other_teams, activeSeason, games.flatten.toList, nextGame))
 
     }).future.flatMap {
 

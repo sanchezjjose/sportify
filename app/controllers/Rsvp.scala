@@ -35,7 +35,6 @@ class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
       game <- FutureO(mongoDb.games.findOne(Json.obj(GameFields.Id -> gameId)))
 
     } yield {
-
       val updatedGame = if (rsvpCookie.value == "in") {
         game.copy(
           players_in = game.players_in + playerId,
