@@ -7,7 +7,7 @@
   "game_ids" : [
     NumberLong(111111)
   ],
-  "is_current_season" : true
+  "is_active" : true
 }
 {
   "_id" : NumberLong(222222),
@@ -18,5 +18,5 @@
   "game_ids" : [
     NumberLong(222222)
   ],
-  "is_current_season" : true
+  "is_active" : true
 }

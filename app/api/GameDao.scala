@@ -1,6 +1,6 @@
 package api
 
-import models.Game
+import models.{GameFields, Game}
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.ReactiveMongoApi
 import play.modules.reactivemongo.json.collection.JSONCollection
@@ -11,9 +11,6 @@ trait GameDao {
 
   // TODO: move to separate API
   def findNextGame(gameIds: Set[Long])(implicit ec: ExecutionContext): Future[Option[Game]]
-
-  // TODO: move to separate API
-  def findFutureGames()(implicit ec: ExecutionContext): Future[List[Game]]
 
   def findOne(query: JsObject)(implicit ec: ExecutionContext): Future[Option[Game]]
 
@@ -35,13 +32,9 @@ class GameMongoDao(reactiveMongoApi: ReactiveMongoApi) extends GameDao {
   protected def collection = reactiveMongoApi.db.collection[JSONCollection]("games")
 
   override def findNextGame(gameIds: Set[Long])(implicit ec: ExecutionContext): Future[Option[Game]] = {
-    findFutureGames().map { futureGames =>
-      futureGames.sortBy(_.start_time).headOption
+    find(Json.obj(GameFields.Id -> Json.obj("$in" -> gameIds))).map { games =>
+      games.sortBy(_.start_time).headOption
     }
-  }
-
-  override def findFutureGames()(implicit ec: ExecutionContext): Future[List[Game]] = {
-    collection.find(Json.obj()).cursor[Game].collect[List]()
   }
 
   override def findOne(query: JsObject)(implicit ec: ExecutionContext): Future[Option[Game]] = {

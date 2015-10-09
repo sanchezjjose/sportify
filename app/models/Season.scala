@@ -6,7 +6,7 @@ case class Season (
   name: String,
   team_ids: Set[Long],
   game_ids: Set[Long],
-  is_current: Boolean = false
+  is_active: Boolean = false
 )
 
 object SeasonFields {
@@ -14,5 +14,5 @@ object SeasonFields {
   val Name = "name"
   val TeamIds = "team_ids"
   val GameIds = "game_ids"
-  val IsCurrent = "is_current"
+  val IsActive = "is_active"
 }

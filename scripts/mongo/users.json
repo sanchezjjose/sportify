@@ -8,7 +8,8 @@
     NumberLong(111111)
   ],
   "team_ids" : [
-    NumberLong(111111)
+    NumberLong(111111),
+    NumberLong(222222)
   ],
   "is_admin" : true,
   "phone_number" : "718-555-5555"

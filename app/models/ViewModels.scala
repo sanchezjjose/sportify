@@ -2,29 +2,31 @@ package models
 
 
 case class TeamViewModel (
-  selectedTeam: Team,
-  otherTeams: Iterable[Team]
+  active_team: Team,
+  other_teams: Set[Team]
 )
 
 
 case class AccountViewModel (
-  teamViewModel: TeamViewModel,
-  userId: Long,
-  playerId: Long,
+  active_team: Team,
+  other_teams: Set[Team],
+  user_id: Long,
+  player_id: Long,
   email: String,
   password: Option[String],
-  firstName: String,
-  lastName: String,
+  first_name: String,
+  last_name: String,
   number: Int,
-  phoneNumber: Option[String],
+  phone_number: Option[String],
   position: Option[String],
-  isAdmin: Boolean
+  is_admin: Boolean
 )
 
 
 case class HomepageViewModel (
-  teamViewModel: TeamViewModel,
-  nextGameOpt: Option[Game]
+  active_team: Team,
+  other_teams: Set[Team],
+  next_game: Option[Game]
 )
 
 

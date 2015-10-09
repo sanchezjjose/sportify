@@ -23,11 +23,6 @@ trait RequestHelper {
   def isAuthenticatedAsync(f: => Future[UserContext] => Request[AnyContent] => Future[Result]): EssentialAction = {
 
     def sessionKey(request: RequestHeader): Option[String] = {
-      println("AAA")
-      println(request)
-      println(request.session)
-      println(request.session.get("user_info"))
-
       request.session.get("user_info")
     }
 
@@ -50,9 +45,11 @@ trait RequestHelper {
       players <- liftFO(Future.traverse(user.player_ids)(id => mongoDb.players.findOne(Json.obj(PlayerFields.Id -> id))))
       teams  <- liftFO(Future.traverse(user.team_ids)(id => mongoDb.teams.findOne(Json.obj(TeamFields.Id -> id))))
 
-    } yield UserContext(user, players.flatten, teams.flatten)
+    } yield {
+        UserContext(user, players.flatten, teams.flatten)
+      }
 
-    val result: Future[UserContext] = futureO.future flatMap { userContextOpt: Option[UserContext] =>
+    val result: Future[UserContext] = futureO.future.flatMap { userContextOpt: Option[UserContext] =>
 
       // handle Option (Future[Option[UserContext]] => Future[UserContext])
       userContextOpt.map(user => Future.successful(user))
@@ -66,18 +63,18 @@ trait RequestHelper {
 
     (for {
       userContext <- liftFO(userContextFuture)
-      activeSeason <- FutureO(mongoDb.seasons.findOne(Json.obj(SeasonFields.TeamIds -> Json.obj("$in" -> teamId), SeasonFields.IsCurrent -> true)))
+      activeSeason <- FutureO(mongoDb.seasons.findOne(Json.obj(SeasonFields.TeamIds -> Json.obj("$in" -> List(teamId)), SeasonFields.IsActive -> true)))
       nextGameOpt <- liftFO(mongoDb.games.findNextGame(activeSeason.game_ids))
 
     } yield {
         val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
 
-        process(HomepageViewModel(tVm, nextGameOpt))
+        process(HomepageViewModel(tVm.active_team, tVm.other_teams, nextGameOpt))
 
       }).future.flatMap {
 
       case Some(result) => Future.successful(result)
-      case None => Future.successful(Results.NotFound)
+      case None => Future.successful(Results.Ok)
     }
   }
 
@@ -92,7 +89,7 @@ trait RequestHelper {
 
       // TODO: remove blocking call
       val pVms = players.flatten.map { player =>
-        val query = mongoDb.users.findOne(Json.obj(UserFields.PlayerIds -> Json.obj("$in" -> player._id)))
+        val query = mongoDb.users.findOne(Json.obj(UserFields.PlayerIds -> Json.obj("$in" -> List(player._id))))
         val user = Await.result(query, Duration(500, TimeUnit.MILLISECONDS)).get
 
         PlayerViewModel(player._id, user.fullName, player.number, user.phone_number, player.position)
@@ -113,7 +110,7 @@ trait RequestHelper {
 
     (for {
       userContext <- liftFO(userContextFuture)
-      activeSeason <- FutureO(mongoDb.seasons.findOne(Json.obj(SeasonFields.TeamIds -> Json.obj("$in" -> teamId), SeasonFields.IsCurrent -> true)))
+      activeSeason <- FutureO(mongoDb.seasons.findOne(Json.obj(SeasonFields.TeamIds -> Json.obj("$in" -> List(teamId)), SeasonFields.IsActive -> true)))
       nextGame <- liftFO(mongoDb.games.findNextGame(activeSeason.game_ids))
       games <- liftFO(Future.traverse(activeSeason.game_ids) { id =>
         mongoDb.games.findOne(Json.obj(GameFields.Id -> id))
@@ -138,22 +135,23 @@ trait RequestHelper {
       val player = userContext.getPlayerOnTeam(teamId)
 
       val tVm = TeamViewModel(
-        selectedTeam = userContext.getTeam(teamId),
-        otherTeams = userContext.getOtherTeams(teamId)
+        active_team = userContext.getTeam(teamId),
+        other_teams = userContext.getOtherTeams(teamId)
       )
 
       val accountView = AccountViewModel(
-        teamViewModel = tVm,
-        userId = userContext.user._id,
-        playerId = player._id,
+        active_team = tVm.active_team,
+        other_teams = tVm.other_teams,
+        user_id = userContext.user._id,
+        player_id = player._id,
         email = userContext.user.email,
         password = userContext.user.password,
-        firstName = userContext.user.first_name,
-        lastName = userContext.user.last_name,
+        first_name = userContext.user.first_name,
+        last_name = userContext.user.last_name,
         number = player.number,
-        phoneNumber = userContext.user.phone_number,
+        phone_number = userContext.user.phone_number,
         position = player.position,
-        isAdmin = userContext.user.is_admin
+        is_admin = userContext.user.is_admin
       )
 
       process(accountView)

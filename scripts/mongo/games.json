@@ -1,7 +1,6 @@
 {
   "_id" : NumberLong(111111),
   "home_team_id" : NumberLong(111111),
-  "away_team_id" : "",
   "opponent" : "Top Dogs",
   "number" : 1,
   "start_time" : NumberLong(1577836800000),
@@ -16,7 +15,6 @@
 {
   "_id" : NumberLong(222222),
   "home_team_id" : NumberLong(222222),
-  "away_team_id" : "",
   "opponent" : "The Beast of the East",
   "number" : 1,
   "start_time" : NumberLong(1735689600000),

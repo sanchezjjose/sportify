@@ -76,7 +76,7 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         withAccountContext(request, userContextFuture, teamId) { (accountView: AccountViewModel) =>
 
           mongoDb.users.update(
-            Json.obj(UserFields.Id -> accountView.userId, PlayerFields.Id -> accountView.playerId),
+            Json.obj(UserFields.Id -> accountView.user_id, PlayerFields.Id -> accountView.player_id),
             Json.obj("$set" -> Json.obj(
               UserFields.Email -> userFormData.email,
               UserFields.Password -> userFormData.password,
@@ -87,7 +87,7 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
           )
 
           mongoDb.players.update(
-            Json.obj(PlayerFields.Id -> accountView.playerId),
+            Json.obj(PlayerFields.Id -> accountView.player_id),
             Json.obj("$set" -> Json.obj(
               PlayerFields.Position -> userFormData.position,
               PlayerFields.Number -> userFormData.number
