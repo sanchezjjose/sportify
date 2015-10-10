@@ -65,13 +65,32 @@ trait RequestHelper {
       userContext <- liftFO(userContextFuture)
       activeSeason <- FutureO(mongoDb.seasons.findOne(Json.obj(SeasonFields.TeamIds -> Json.obj("$in" -> List(teamId)), SeasonFields.IsActive -> true)))
       nextGameOpt <- liftFO(mongoDb.games.findNextGame(activeSeason.game_ids))
-//      playersInOpt <- liftFO(mongoDb.players.findNextGame(activeSeason.game_ids))
+
+      playersInIds = nextGameOpt.map(_.players_in).getOrElse(Set.empty[Long])
+      playersInOpt <- liftFO(Future.traverse(playersInIds)(id => mongoDb.players.findOne(Json.obj(PlayerFields.Id -> id))))
+      usersInOpt <- liftFO(Future.traverse(playersInIds)(id => mongoDb.users.findOne(Json.obj(UserFields.PlayerIds -> Json.obj("$in" -> List(id))))))
+
+      playersOutIds = nextGameOpt.map(_.players_out).getOrElse(Set.empty[Long])
+      playersOutOpt <- liftFO(Future.traverse(playersOutIds)(id => mongoDb.players.findOne(Json.obj(PlayerFields.Id -> id))))
+      usersOutOpt <- liftFO(Future.traverse(playersOutIds)(id => mongoDb.users.findOne(Json.obj(UserFields.PlayerIds -> Json.obj("$in" -> List(id))))))
 
     } yield {
         val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
         val player = userContext.getPlayerOnTeam(teamId)
 
-        process(HomepageViewModel(tVm.active_team, tVm.other_teams, nextGameOpt, player._id))
+        val pVmsIn = playersInOpt.flatten.flatMap { player =>
+          usersInOpt.flatten.map { user =>
+            PlayerViewModel(player._id, user.fullName, player.number, user.phone_number, player.position)
+          }
+        }
+
+        val pVmsOut = playersOutOpt.flatten.flatMap { player =>
+          usersOutOpt.flatten.map { user =>
+            PlayerViewModel(player._id, user.fullName, player.number, user.phone_number, player.position)
+          }
+        }
+
+        process(HomepageViewModel(tVm.active_team, tVm.other_teams, nextGameOpt, player._id, pVmsIn, pVmsOut))
 
       }).future.flatMap {
 
@@ -99,7 +118,7 @@ trait RequestHelper {
 
       val tVm = TeamViewModel(userContext.getTeam(teamId), userContext.getOtherTeams(teamId))
 
-      process(RosterViewModel(tVm.active_team, tVm.other_teams, pVms.toList.sortBy(p => p.name)))
+      process(RosterViewModel(tVm.active_team, tVm.other_teams, pVms.toList.sortBy(p => p.full_name)))
 
     }).future.flatMap {
 

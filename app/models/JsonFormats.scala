@@ -16,8 +16,8 @@ object JsonFormats {
 
   implicit val teamViewModelFormat = Json.format[TeamViewModel]
   implicit val accountViewModelFormat = Json.format[AccountViewModel]
-  implicit val homeViewModelFormat = Json.format[HomepageViewModel]
   implicit val playerViewModelFormat = Json.format[PlayerViewModel]
+  implicit val homeViewModelFormat = Json.format[HomepageViewModel]
   implicit val rosterViewModelFormat = Json.format[RosterViewModel]
   implicit val scheduleViewModelFormat = Json.format[ScheduleViewModel]
 }
