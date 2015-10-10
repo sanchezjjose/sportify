@@ -1,7 +1,7 @@
-# Play Framework - ReactiveMongo - Polymer
+# SPORTIFY
 
-The purpose of this application is to demonstrate a Service Oriented Approach for Single Page App development.
+A RESTful, Reactive API written in Scala with Mongo and Play!
 
-To serve this purpose this application template integrates **Polymer**, **Play Framework** and **MongoDB**.
+The API supports scheduling games, managing player RSVP's to games, communicating upcoming games, and much more.
 
-For sake of this template this [sample app] (https://www.polymer-project.org/docs/start/tutorial/intro.html) available on Polymer website has been used.
+Stay tuned...
