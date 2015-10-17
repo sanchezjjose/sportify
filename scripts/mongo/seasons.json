@@ -1,22 +1,22 @@
 {
-  "_id" : NumberLong(111111),
+  "_id" : 111111,
   "name" : "Winter 2020",
   "team_ids" : [
-    NumberLong(111111)
+    111111
   ],
   "game_ids" : [
-    NumberLong(111111)
+    111111
   ],
   "is_active" : true
 }
 {
-  "_id" : NumberLong(222222),
+  "_id" : 222222,
   "name" : "Winter 2025",
   "team_ids" : [
-    NumberLong(222222)
+    222222
   ],
   "game_ids" : [
-    NumberLong(222222)
+    222222
   ],
   "is_active" : true
 }

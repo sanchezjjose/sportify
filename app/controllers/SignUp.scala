@@ -86,9 +86,9 @@ class SignUp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
             val updatedTeam = team.copy(player_ids = team.player_ids + player._id)
             mongoDb.teams.update(
               Json.obj(TeamFields.Id -> team._id),
-              Json.obj(TeamFields.PlayerIds ->
-                Json.obj("$set" -> updatedTeam.player_ids)
-              )
+              Json.obj("$set" -> Json.obj(
+                TeamFields.PlayerIds -> updatedTeam.player_ids
+              ))
             )
 
             Redirect(routes.Homepage.home(teamId))

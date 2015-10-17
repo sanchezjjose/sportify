@@ -1,24 +1,24 @@
 {
-  "_id" : NumberLong(111111),
+  "_id" : 111111,
   "name" : "Knicks Tape",
   "player_ids" : [
-    NumberLong(111111)
+    111111
   ],
   "sport" : {
-    "_id" : NumberLong(111111),
+    "_id" : 111111,
     "name" : "Basketball",
     "logo_image_url" : "images/basketball-icon-2.png"
   }
 }
 {
-  "_id" : NumberLong(222222),
+  "_id" : 222222,
   "name" : "Ping Kings",
   "player_ids" : [ 
-    NumberLong(111111)
+    111111
   ],
   "sport" : {
     "name" : "Ping Pong",
-    "_id" : NumberLong(222222),
+    "_id" : 222222,
     "logo_image_url" : "images/ping-pong-icon.png"
   }
 }

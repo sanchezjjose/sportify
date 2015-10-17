@@ -1,9 +1,9 @@
 {
-  "_id" : NumberLong(111111),
-  "home_team_id" : NumberLong(111111),
+  "_id" : 111111,
+  "home_team_id" : 111111,
   "opponent" : "Top Dogs",
   "number" : 1,
-  "start_time" : NumberLong(1577836800000),
+  "start_time" : 1577836800000,
   "address" : "68th St. and Lexington Ave.",
   "gym" : "Hunter College",
   "location_details" : "Game is on the 2nd Floor.",
@@ -13,11 +13,11 @@
   "is_playoff_game" : false
 }
 {
-  "_id" : NumberLong(222222),
-  "home_team_id" : NumberLong(222222),
+  "_id" : 222222,
+  "home_team_id" : 222222,
   "opponent" : "The Beast of the East",
   "number" : 1,
-  "start_time" : NumberLong(1735689600000),
+  "start_time" : 1735689600000,
   "address" : "75 9th Avenue",
   "gym" : "Chelsea Market South Gym",
   "location_details" : "Game is on the 5th Floor.",

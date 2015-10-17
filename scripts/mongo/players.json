@@ -1,5 +1,5 @@
 {
-  "_id" : NumberLong(111111),
+  "_id" : 111111,
   "number" : 20,
   "position" : "SG"
 }
