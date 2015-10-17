@@ -46,8 +46,8 @@ trait RequestHelper {
       teams  <- liftFO(Future.traverse(user.team_ids)(id => mongoDb.teams.findOne(Json.obj(TeamFields.Id -> id))))
 
     } yield {
-        UserContext(user, players.flatten, teams.flatten)
-      }
+      UserContext(user, players.flatten, teams.flatten)
+    }
 
     val result: Future[UserContext] = futureO.future.flatMap { userContextOpt: Option[UserContext] =>
 
