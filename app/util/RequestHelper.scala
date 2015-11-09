@@ -79,13 +79,13 @@ trait RequestHelper {
         val player = userContext.getPlayerOnTeam(teamId)
 
         val pVmsIn = playersInOpt.flatten.flatMap { player =>
-          usersInOpt.flatten.map { user =>
+          usersInOpt.flatten.filter(_.player_ids.contains(player._id)).map { user =>
             PlayerViewModel(player._id, user.fullName, player.number, user.phone_number, player.position)
           }
         }
 
         val pVmsOut = playersOutOpt.flatten.flatMap { player =>
-          usersOutOpt.flatten.map { user =>
+          usersOutOpt.flatten.filter(_.player_ids.contains(player._id)).map { user =>
             PlayerViewModel(player._id, user.fullName, player.number, user.phone_number, player.position)
           }
         }
