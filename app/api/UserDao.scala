@@ -51,7 +51,7 @@ class UserMongoDao(reactiveMongoApi: ReactiveMongoApi) extends UserDao {
   }
 
   override def insert(user: User)(implicit ec: ExecutionContext): Future[WriteResult] = {
-    collection.insert(user)
+    collection.insert(user.copy(password = Some(user.hashPassword)))
   }
 
   override def update(selector: JsObject, update: JsObject)(implicit ec: ExecutionContext): Future[WriteResult] = {
