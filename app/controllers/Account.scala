@@ -4,6 +4,7 @@ import javax.inject.Inject
 import api.MongoManager
 import models._
 import models.JsonFormats._
+import org.mindrot.jbcrypt.BCrypt
 import play.api.data.Forms._
 import play.api.data._
 import play.api.libs.json.Json
@@ -79,7 +80,7 @@ class Account @Inject() (val reactiveMongoApi: ReactiveMongoApi)
             Json.obj(UserFields.Id -> accountView.user_id, PlayerFields.Id -> accountView.player_id),
             Json.obj("$set" -> Json.obj(
               UserFields.Email -> userFormData.email,
-              UserFields.Password -> userFormData.password,
+              UserFields.Password -> userFormData.password.map(BCrypt.hashpw(_, BCrypt.gensalt())),
               UserFields.FirstName -> userFormData.firstName,
               UserFields.LastName -> userFormData.lastName,
               UserFields.PhoneNumber -> userFormData.phoneNumber
