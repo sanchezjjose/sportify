@@ -1,9 +1,10 @@
 package controllers
 
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 import api.MongoManager
-import models.GameFields
+import models.{RsvpViewModel, UserFields, PlayerViewModel, GameFields}
 import models.JsonFormats._
 import play.api.libs.json.Json
 import play.api.mvc.{Results, Result, Controller}
@@ -12,7 +13,8 @@ import util.{FutureO, RequestHelper}
 import FutureO._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 
 class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
@@ -58,7 +60,22 @@ class Rsvp @Inject() (val reactiveMongoApi: ReactiveMongoApi)
         )
       )
 
-      Ok(Json.toJson(updatedGame))
+      // TODO: remove blocking calls
+      val pVmsIn = updatedGame.players_in.map { playerId =>
+        val query = mongoDb.users.findOne(Json.obj(UserFields.PlayerIds -> Json.obj("$in" -> List(playerId))))
+        val user = Await.result(query, Duration(500, TimeUnit.MILLISECONDS)).get
+
+        PlayerViewModel(playerId, user.fullName, 0, user.phone_number, None)
+      }
+
+      val pVmsOut = updatedGame.players_out.map { playerId =>
+        val query = mongoDb.users.findOne(Json.obj(UserFields.PlayerIds -> Json.obj("$in" -> List(playerId))))
+        val user = Await.result(query, Duration(500, TimeUnit.MILLISECONDS)).get
+
+        PlayerViewModel(playerId, user.fullName, 0, user.phone_number, None)
+      }
+
+      Ok(Json.obj("players_in" -> pVmsIn, "players_out" -> pVmsOut))
 
     }).future.flatMap {
 
